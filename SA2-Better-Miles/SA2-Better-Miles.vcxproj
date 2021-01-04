@@ -146,6 +146,7 @@
     <ClCompile Include="abilities.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="voices.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper.h" />
