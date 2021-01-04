@@ -13,8 +13,6 @@ struct EntityData2_
 	float field_38;
 	float SomeMultiplier;
 };
-
-
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 
 void BetterMiles_Init();

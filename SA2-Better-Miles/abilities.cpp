@@ -35,8 +35,8 @@ int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharO
 void Tails_CheckGetAltitude(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 {
 	if (Controllers[a1->PlayerNum].on & Buttons_A) {
-		if (a1->Speed.y < 1.5)
-			a1->Speed.y += 0.08;
+		if (a1->Speed.y < 1.2)
+			a1->Speed.y += 0.06;
 	}
 }
 
@@ -48,7 +48,7 @@ void Miles_CheckLoseAltitude(CharObj2Base* a1, EntityData1* a2) {
 	if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
 	{
 		if (a1->Speed.y > -9.0)
-			a1->Speed.y -= 0.2;
+			a1->Speed.y -= 0.13;
 	}
 }
 
@@ -95,7 +95,6 @@ void Tails_Main_r(ObjectMaster* obj)
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 
-
 	//Spin Attack stuff
 	WriteData<7>((int*)0x74ed0e, 0x90); //remove reset anim for spin attack
 	WriteData<4>((int*)0x74ed0a, 0x90); //remove reset action for spin attack.
@@ -105,7 +104,6 @@ void BetterMiles_Init() {
 	WriteData<1>((int*)0xa0dbee, 0x5E);
 
 	WriteData<5>((void*)0x752d9a, 0x90); //Remove tails voice when doing spin attack;
-
 
 	//WriteData<1>((int*)0xa0dbf6, 0xC0);  //Animation Speed
 	//WriteData<1>((int*)0xa0dbf7, 0x3F);*/
@@ -121,7 +119,9 @@ void BetterMiles_Init() {
 	WriteJump((void*)0x752DB0, Tails_FlyStartASM);
 
 
-	//Increase Miles horizontal fly speed from 0.4 to 0.13
-	WriteData<1>((int*)0x753045, 0x70);
-	WriteData<1>((int*)0x753046, 0x63);
+	//Increase Miles horizontal fly speed from 0.4 to 0.12
+    WriteData<1>((int*)0x753045, 0xE8);
+    WriteData<1>((int*)0x753046, 0x50);
+	/*WriteData<1>((int*)0x753045, 0x70);
+	WriteData<1>((int*)0x753046, 0x63);*/
 }

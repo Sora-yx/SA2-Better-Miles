@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+
 bool isSA1Voice = true;
 
 
@@ -10,7 +11,6 @@ extern "C" {
 	{
 
 		BetterMiles_Init();
-
 	}
 
 
