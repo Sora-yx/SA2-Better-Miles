@@ -23,3 +23,21 @@ static const void* const Tails_FlyStartPtr = (void*)0x752DB0;
 static Buttons JumpButtons = Buttons_A;
 static Buttons AttackButtons = Buttons_X;
 extern bool isSA1Voice;
+extern bool isInfiniteFly;
+void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2);
+void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2);
+void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3);
+int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
+signed int __declspec() GetAnalog(EntityData1* a1, CharObj2Base* a2, signed int* a3, int a4);
+
+void Miles_SpinInit();
+
+enum MilesState {
+	Flying = 59,
+	Spinning
+};
+
+enum MilesAnimation {
+	FlyingAnim = 90,
+	SpinningAnim = 94
+};

@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Audio">
       <UniqueIdentifier>{91272366-f3ad-48ac-a6ac-dca44e1fc8be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\abilities">
+      <UniqueIdentifier>{786926ae-a97c-4e4b-8474-649fb1f9e08f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -24,11 +27,17 @@
     <ClCompile Include="mod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="abilities.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="voices.cpp">
       <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="fly.cpp">
+      <Filter>Source Files\abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="spin.cpp">
+      <Filter>Source Files\abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Miles.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

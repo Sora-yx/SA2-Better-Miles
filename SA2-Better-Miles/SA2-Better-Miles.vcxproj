@@ -143,7 +143,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="abilities.cpp" />
+    <ClCompile Include="Miles.cpp" />
+    <ClCompile Include="spin.cpp" />
+    <ClCompile Include="fly.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="voices.cpp" />

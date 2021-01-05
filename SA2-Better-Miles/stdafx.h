@@ -10,3 +10,4 @@
 #include "SA2ModLoader.h"
 #include "Trampoline.h"
 #include "helper.h"
+#include "IniFile.hpp"
