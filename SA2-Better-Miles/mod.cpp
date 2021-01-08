@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 bool isSA1Voice = true;
 bool isInfiniteFly = false;
 HelperFunctions HelperFunctionsGlobal;

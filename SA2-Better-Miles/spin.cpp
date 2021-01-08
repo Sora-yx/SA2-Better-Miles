@@ -1,8 +1,6 @@
 #include "stdafx.h"
 
-
 float savePosY = 0.0;
-
 
 /*void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2) {
 
@@ -63,8 +61,6 @@ static void __declspec(naked) CheckMiles_SpinAttackASM(NJS_OBJECT* a1, EntityDat
         retn
     }
 }
-
-
 
 void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2) //Loop system for animation might not need it for now.
 {
@@ -141,7 +137,6 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2) //Loop system for anima
 }
 
 
-
 void Miles_SpinInit() {
     WriteData<5>((void*)0x752567, 0x90);
 
@@ -158,6 +153,5 @@ WriteData<5>((void*)0x752d9a, 0x90); //Remove tails voice when doing spin attack
 
 //WriteData<1>((int*)0xa0dbf6, 0xC0);  //Animation Speed
 //WriteData<1>((int*)0xa0dbf7, 0x3F);*/
-
 
 }

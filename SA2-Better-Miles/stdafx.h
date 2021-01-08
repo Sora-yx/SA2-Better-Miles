@@ -12,3 +12,4 @@
 #include "helper.h"
 #include "IniFile.hpp"
 #include "AnimationFile.h"
+#include "animation.h"

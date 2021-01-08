@@ -19,29 +19,9 @@ struct EntityData2_
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 
 
-struct CameraInfo2
-{
-	int field_0;
-	int field_4;
-	int field_8;
-	char gapC[328];
-	float field_154;
-	float field_158;
-	float field_15C;
-	int field_160;
-	char gap164[48];
-	NJS_VECTOR position;
-	Rotation rotation;
-	char gap1AC[9000];
-	int field_24D4;
-};
-
-
-DataPointer(CameraInfo2, CameraInfoPtr, 0x1DCFF40);
-
 
 VoidFunc(sub_47BB50, 0x47BB50);
-
+void MilesFly_Init();
 void BetterMiles_Init();
 
 static const void* const Tails_FlyStartPtr = (void*)0x752DB0;

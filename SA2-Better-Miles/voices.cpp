@@ -7,15 +7,12 @@ DataPointer(char, CurrentLevelRank, 0x174B001);
 
 void PlayWinnerVoicePtr_r(int pnum) {
 
-
     if (MainCharObj2[0]->CharID == Characters_Tails) {
-
-        MainCharObj2[0]->CharID = Characters_Rouge; //give Tails a good camera
+        MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it think we are playing Rouge so it give a good camera for victory pose.
     }
 
     PlayWinnerVoiceProbably(pnum);
 }
-
 
 static void __declspec(naked) PlayWinnerVoiceProbablyASM(int pnum)
 {
@@ -43,9 +40,6 @@ __declspec(naked) void PlayRankVoice()
         jmp loc_44FD08
     }
 }
-
-
-
 
 void voices_Init() {
 
