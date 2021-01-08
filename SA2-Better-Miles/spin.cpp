@@ -4,7 +4,6 @@
 float savePosY = 0.0;
 
 
-
 /*void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2) {
 
 	if ((a2->Status & (Status_Unknown1 | Status_Ground)) == 0)
@@ -35,9 +34,8 @@ void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
     if ((AttackButtons & Controllers[a3->PlayerNum].on) != 0)
     {
-        a2->Action = Spinning;
-        a3->AnimInfo.Current = SpinningAnim;
-        a3->AnimInfo.field_8 = 0;
+        a3->AnimInfo.Current = 118;
+        //a3->AnimInfo.field_8 = 0;
         //a2->field_2 |= 2u;
         /*a1->SonicSpinTimeProbably = 0;
         a1->LightdashTime = 0;

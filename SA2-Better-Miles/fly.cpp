@@ -50,7 +50,7 @@ void Miles_CheckLoseAltitude(CharObj2Base* a1, EntityData1* a2) {
 	if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
 	{
 		if (a1->Speed.y > -9.0)
-			a1->Speed.y -= 0.13;
+			a1->Speed.y -= 0.14;
 	}
 }
 

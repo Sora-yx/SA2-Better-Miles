@@ -3,7 +3,7 @@
 
 bool isSA1Voice = true;
 bool isInfiniteFly = false;
-
+HelperFunctions HelperFunctionsGlobal;
 
 extern "C" {
 
@@ -14,7 +14,13 @@ extern "C" {
 		isInfiniteFly = config->getBool("Ability", "isInfiniteFly", false);
 		delete config;
 
+		HelperFunctionsGlobal = helperFunctions;
+
 		BetterMiles_Init();
+	}
+
+	__declspec(dllexport) void __cdecl OnFrame() {
+
 	}
 
 
