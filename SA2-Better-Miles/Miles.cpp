@@ -5,29 +5,6 @@
 Trampoline* Tails_Main_t = nullptr;
 AnimationIndex newTailsAnimIndex[130];
 
-/*static const void* const GetAnalogPtr2 = (void*)0x45A870;
-
-signed int __declspec() GetAnalog(EntityData1* a1, CharObj2Base* a2, signed int* a3, int a4)
-{
-	__asm
-	{
-		push[esp + 0Ch] // a4
-		push[esp + 0Ch] // int *a3
-		push[esp + 0Ch] // a2
-		push eax // a1
-
-		// Call your __cdecl function here:
-		call GetAnalogPtr2
-
-		add esp, 4 // a1<eax> is also used for return value
-		add esp, 4 // a2
-		add esp, 4 // int *a3
-		add esp, 4 // a4
-		retn
-	}
-}*/
-
-
 static const void* const sub_460860Ptr = (void*)0x460860;
 static void __declspec(naked) PGetAccelerationASM(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
 {
@@ -85,8 +62,6 @@ static void __declspec(naked) sub_469050ASM(EntityData1* a1, EntityData2_* a2, C
 		retn
 	}
 }
-
-
 
 
 AnimationInfo TailsAnimationList_R[] = {
@@ -209,17 +184,17 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 116, 208, 11, 0, 0.25f, 0.3f },
 	{ 117, 208, 11, 0, 0.25f, 0.3f },
 	{ VictoryAnim, 208, 6, 119, 0.5f, 0.7F },
-	{ VictoryPoseEnd, 208, 6, 0, 0.5f, 1.0F },
-	{ Spin1, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin2, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin3, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin4, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin5, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin6, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin7, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin8, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin9, 208, 6, 0, 0.125f, 0.7F },
-	{ Spin10, 208, 6, 0, 0.125f, 1.0F },
+	{ VictoryPoseEnd, 208, 6, 0, 0.5f, 1 },
+	{ Spin1, 208, 4, 0, 0.125f, 1 },
+	{ Spin2, 208, 4, 0, 0.125f, 1 },
+	{ Spin3, 208, 4, 0, 0.125f, 1 },
+	{ Spin4, 208, 4, 0, 0.125f, 1 },
+	{ Spin5, 208, 4, 0, 0.125f, 1 },
+	{ Spin6, 208, 4, 0, 0.125f, 1 },
+	{ Spin7, 208, 4, 0, 0.125f, 1 },
+	{ Spin8, 208, 4, 0, 0.125f, 1 },
+	{ Spin9, 208, 4, 0, 0.125f, 1 },
+	{ Spin10, 208, 4, 0, 0.125f, 1 },
 };
 
 
@@ -249,6 +224,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case Spinning:
 		spinonFrames(co2, data1);
+		break;
 	case RealVictory:
 		co2->AnimInfo.Current = VictoryAnim;
 		break;
