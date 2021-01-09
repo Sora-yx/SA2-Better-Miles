@@ -1,6 +1,7 @@
 #pragma once
 
 extern HelperFunctions HelperFunctionsGlobal;
+extern AnimationInfo TailsAnimationList_R[];
 
 struct EntityData2_
 {
@@ -16,10 +17,15 @@ struct EntityData2_
 	float SomeMultiplier;
 };
 
+FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
+//void __declspec() PlayerGetAccelerationASM(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3);
+//void __declspec() PlayerGetAccelerationASM(EntityData1* a1, EntityData2_* a3, CharObj2Base* a2);
 
 
+void spinonFrames(CharObj2Base* co2, EntityData1* data1);
 
+void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2);
 VoidFunc(sub_47BB50, 0x47BB50);
 void MilesFly_Init();
 void BetterMiles_Init();
@@ -32,10 +38,9 @@ static Buttons AttackButtons = Buttons_X;
 extern bool isSA1Voice;
 extern bool isInfiniteFly;
 void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2);
-void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2);
 void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3);
 int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
-signed int __declspec() GetAnalog(EntityData1* a1, CharObj2Base* a2, signed int* a3, int a4);
+//signed int __declspec() GetAnalog(EntityData1* a1, CharObj2Base* a2, signed int* a3, int a4);
 void voices_Init();
 
 void Miles_SpinInit();
@@ -50,8 +55,22 @@ enum MilesState {
 	RealVictory = 120,
 };
 
+
+
 enum MilesAnimation {
 	FlyingAnim = 90,
-	SpinningAnim = 94,
-	VictoryAnim = 118
+	TailAttackAnim = 94,
+	VictoryAnim = 118,
+	VictoryPoseEnd,
+	Spin1,
+	Spin2,
+	Spin3,
+	Spin4,
+	Spin5,
+	Spin6,
+	Spin7,
+	Spin8,
+	Spin9,
+	Spin10
 };
+

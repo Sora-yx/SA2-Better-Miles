@@ -62,9 +62,6 @@ void Tails_FatigueReloadCheck(EntityData1* data1) {
 
 	if ((data1->Status & (Status_Unknown1 | Status_Ground)) || MainCharObj1[0]->Action < Flying) {
 
-		if (data1->Action == 120)
-			data1->Action = 1;
-
 		TailsFlightTime = 0.0000000000;
 	}
 }
