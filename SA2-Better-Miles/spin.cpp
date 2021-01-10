@@ -65,29 +65,19 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
    // AnimationInfo* v3;
     __int16 v4; // ax
     __int16 v5; // ax
-    __int16 v6; // ax
+    __int16 getCurAnim; // ax
 
     curAnim = a1->AnimInfo.Current;
 
     if (curAnim == 94 || curAnim >= Spin1 && curAnim <= Spin10)
     {
-        //v3 = &TailsAnimationList_R[curAnim];
-
-        if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
+        if ((double)a1->AnimInfo.field_10 >= 14.5) //Field10 should be the current frame of the anim. 
         {
-            a2->Status |= Status_Attack;
-            if (a1->AnimInfo.Current < Spin1 || a1->AnimInfo.Current > Spin10)
-                a1->AnimInfo.Current = Spin1;
+            a1->AnimInfo.Next = 0;
         }
-        else if ((double)a1->AnimInfo.field_A <= 0.0) //IDK, hopefully it's correct. Back: Animation->motion->nbFrame - 10.0 >= a1->AnimationThing.Fra
-            {
-                //v3->NextAnimation = 0;
-                a1->AnimInfo.Next = 0;
-            }
-        }
-  
-
-            /*if (GetAnalogASM2(a2, a1, 0, 0)) 
+        else if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
+        {
+            if (GetAnalogASM2(a2, a1, 0, 0))
             {
                 v4 = (unsigned __int8)((((int)(4096
                     - (unsigned __int64)(atan2((double)(Controllers[a1->PlayerNum].y1 << 8),
@@ -95,56 +85,36 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                         * 65536.0
                         * -0.1591549762031479)) >> 13) & 7)
                     + Spin3);
-                if (v4 == a1->AnimInfo.Current)
-                {
-                    a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_A & 1) + Spin1;
-                    //v3->NextAnimation = ((unsigned __int64)a1->AnimInfo.AnimationFrame & 1) + Spin1; //idk a1->AnimationThing.Frame & 1) + Spin2;
+
+                if (a1->AnimInfo.field_10 >= 10.0) {
+                    if (v4 == a1->AnimInfo.Current)
+                    {
+                        a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_10 & 1) + Spin1;
+                    }
+                    else
+                    {
+                        a1->AnimInfo.Next = v4;
+                        //PlaySoundMiles(a2, 773);
+                    }
                 }
-                else
-                {
-                    a1->AnimInfo.Next = v4;
-                    //v3->NextAnimation = v4;
-                    //PlaySoundMiles(a2, 773);
-                }
-  
-                /*if ((a2->Status & 3) != 0)
-                {
-                    savePosY = a2->Position.y;
-                }
-                else if (savePosY + 100.0 < a2->Position.y)
-                {
-                    a2->Action = Flying;
-                    a1->AnimInfo.Current = FlyingAnim;
-                   // a1->TailsFlightTime = 0.0;
-                    /*v5 = a2->Status;
-                    (a2->Object) &= 0xFEu;
-                    a2->Status = v5 & 0xFEFF | 0x400;
-                    BYTE2(a2->Object) |= 1u;
-                    //PlaySoundMiles(a2, 1243);
-                }
-                
             }
             else
             {
-                v6 = a1->AnimInfo.Current;
-
-
-                if (v6 == Spin1 || v6 == Spin2)
-                {
-                    //v3->NextAnimation = v6 ^ 1;
-                    
-                    //a1->AnimInfo.Next = Spin2;
-                    //PlaySoundMiles(a2, 773);
+                getCurAnim = a1->AnimInfo.Current;
+                if (a1->AnimInfo.field_10 >= 12.0) {
+                    if (getCurAnim == Spin1 || getCurAnim == Spin2)
+                    {
+                        a1->AnimInfo.Next = getCurAnim ^ 1;
+                        //PlaySoundMiles(a2, 773);
+                    }
+                    else
+                    {
+                        a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_10 & 1) + Spin1;
+                    }
                 }
-                else
-                {
-                  //  v3->NextAnimation = ((unsigned __int64)a1->AnimInfo.AnimationFrame & 1) + Spin1; //idk
-                    a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_A & 1) + Spin1;
-                    short tata = a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_A & 1) + Spin1;
-                }
-            }*/
-    
-
+            }
+        }
+    }
 }
 
 

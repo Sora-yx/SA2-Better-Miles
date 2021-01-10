@@ -155,7 +155,7 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 87, 208, 3, 87, 0.03125f, 0.1f },
 	{ 88, 208, 3, 88, 0.03125f, 0.1f },
 	{ 89, 208, 7, 0, 0.25f, 0.25f },
-	{ 90, 208, 3, 90, 0.0625f, 0.1f },
+	{ FlyingAnim, 208, 3, 90, 0.0625f, 0.1f },
 	{ 91, 208, 4, 92, 0.25f, 0.1f },
 	{ 92, 208, 3, 92, 0.25f, 0.1f },
 	{ 93, 208, 6, 93, 0.25f, 0.1f },
@@ -185,15 +185,15 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 117, 208, 11, 0, 0.25f, 0.3f },
 	{ VictoryAnim, 208, 6, 119, 0.5f, 0.7F },
 	{ VictoryPoseEnd, 208, 6, 0, 0.5f, 1 },
-	{ Spin1, 208, 4, Spin2, 0.125f, 1 },
-	{ Spin2, 208, 4, Spin1, 0.125f, 1 },
+	{ Spin1, 208, 4, 0, 0.125f, 1 },
+	{ Spin2, 208, 4, 0, 0.125f, 1 },
 	{ Spin3, 208, 4, 0, 0.125f, 1 },
 	{ Spin4, 208, 4, 0, 0.125f, 1 },
 	{ Spin5, 208, 4, 0, 0.125f, 1 },
-	{ Spin6, 208, 4, 0, 0.125f, 1 },
+	{ Spin1, 208, 4, 0, 0.125f, 1 },
 	{ Spin7, 208, 4, 0, 0.125f, 1 },
 	{ Spin8, 208, 4, 0, 0.125f, 1 },
-	{ Spin9, 208, 4, 0, 0.125f, 1 },
+	{ Spin1, 208, 4, 0, 0.125f, 1 },
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
 };
 
@@ -257,7 +257,7 @@ void BetterMiles_Init() {
 	PhysicsArray[Characters_Tails].Brake = -0.25;
 	PhysicsArray[Characters_Tails].HangTime = 60;
 	PhysicsArray[Characters_Tails].JumpSpeed = 1.80;
-	PhysicsArray[Characters_Tails].GroundAccel = 0.14;
+	PhysicsArray[Characters_Tails].GroundAccel = 0.13;
 
 	MilesFly_Init();
 

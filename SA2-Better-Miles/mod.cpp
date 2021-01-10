@@ -25,7 +25,7 @@ extern "C" {
 		if (!MainCharObj1[0])
 			return;
 
-		float frame = MainCharObj2[0]->AnimInfo.field_10;
+		float frame = MainCharObj2[0]->AnimInfo.field_A;
 		float frame2 = MainCharObj2[0]->AnimInfo.field_14;
 		float frame3 = MainCharObj2[0]->AnimInfo.field_18;
 	
