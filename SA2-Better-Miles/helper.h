@@ -43,12 +43,13 @@ void Miles_SpinInit();
 
 
 enum MilesState {
-	stand,
-	walking,
-	victory = 18,
+	Standing,
+	Running,
+	Jumping = 6,
+	Victory = 18,
 	Flying = 59,
 	Spinning,
-	RealVictory = 120,
+	RealVictory = 190,
 };
 
 
@@ -69,4 +70,5 @@ enum MilesAnimation {
 	Spin9,
 	Spin10
 };
+
 

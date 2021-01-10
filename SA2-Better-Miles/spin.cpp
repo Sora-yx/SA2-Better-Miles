@@ -24,10 +24,11 @@ inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 
 void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
-    if (Controllers[a3->PlayerNum].on & (Buttons_X | Buttons_B))
+    if (Controllers[a3->PlayerNum].press & (Buttons_X | Buttons_B))
     {
         a2->Action = Spinning;
-        a3->AnimInfo.Current = Spin1;
+        a3->AnimInfo.Next = Spin1;
+        a3->AnimInfo.field_8 = 0;
         //a3->field_28 = Spin1;
         //a2->field_2 |= 2u;
         /*a1->SonicSpinTimeProbably = 0;
@@ -57,6 +58,7 @@ static void __declspec(naked) CheckMiles_SpinAttackASM(NJS_OBJECT* a1, EntityDat
     }
 }
 
+//Field 10 or 14 = Frame
 void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 {
     unsigned __int16 curAnim; // ax
@@ -71,14 +73,21 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
     {
         //v3 = &TailsAnimationList_R[curAnim];
 
-        if ((double)a1->AnimInfo.Motion->nbFrame - 10.0  >= a1->AnimInfo.AnimationFrame) //IDK, hopefully it's correct. Back: Animation->motion->nbFrame - 10.0 >= a1->AnimationThing.Fra
+        if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
         {
-            //v3->NextAnimation = 0;
-            a1->AnimInfo.Next = 0;
+            a2->Status |= Status_Attack;
+            if (a1->AnimInfo.Current < Spin1 || a1->AnimInfo.Current > Spin10)
+                a1->AnimInfo.Current = Spin1;
         }
-        else if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
-        {
-            if (GetAnalogASM2(a2, a1, 0, 0)) 
+        else if ((double)a1->AnimInfo.field_A <= 0.0) //IDK, hopefully it's correct. Back: Animation->motion->nbFrame - 10.0 >= a1->AnimationThing.Fra
+            {
+                //v3->NextAnimation = 0;
+                a1->AnimInfo.Next = 0;
+            }
+        }
+  
+
+            /*if (GetAnalogASM2(a2, a1, 0, 0)) 
             {
                 v4 = (unsigned __int8)((((int)(4096
                     - (unsigned __int64)(atan2((double)(Controllers[a1->PlayerNum].y1 << 8),
@@ -88,7 +97,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                     + Spin3);
                 if (v4 == a1->AnimInfo.Current)
                 {
-                    a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.AnimationFrame & 1) + Spin1;
+                    a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_A & 1) + Spin1;
                     //v3->NextAnimation = ((unsigned __int64)a1->AnimInfo.AnimationFrame & 1) + Spin1; //idk a1->AnimationThing.Frame & 1) + Spin2;
                 }
                 else
@@ -112,26 +121,30 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                     a2->Status = v5 & 0xFEFF | 0x400;
                     BYTE2(a2->Object) |= 1u;
                     //PlaySoundMiles(a2, 1243);
-                }*/
+                }
                 
             }
             else
             {
                 v6 = a1->AnimInfo.Current;
+
+
                 if (v6 == Spin1 || v6 == Spin2)
                 {
                     //v3->NextAnimation = v6 ^ 1;
-                    a1->AnimInfo.Next = v6 ^ 1;
+                    
+                    //a1->AnimInfo.Next = Spin2;
                     //PlaySoundMiles(a2, 773);
                 }
                 else
                 {
                   //  v3->NextAnimation = ((unsigned __int64)a1->AnimInfo.AnimationFrame & 1) + Spin1; //idk
-                    a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.AnimationFrame & 1) + Spin1;
+                    a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_A & 1) + Spin1;
+                    short tata = a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_A & 1) + Spin1;
                 }
-            }
-        }
-    }
+            }*/
+    
+
 }
 
 
@@ -140,7 +153,7 @@ void spinonFrames(CharObj2Base* co2, EntityData1* data1) {
         Miles_SpinAttack(co2, data1);
     }
     else {
-        data1->Action = 0;
+        data1->Action = 1;
         co2->AnimInfo.Current = 0;
     }
     return;
@@ -148,6 +161,7 @@ void spinonFrames(CharObj2Base* co2, EntityData1* data1) {
 
 void Miles_SpinInit() {
     WriteData<5>((void*)0x752567, 0x90);
+  //  WriteCall((void*)0x752567, CheckMiles_SpinAttackASM);
     WriteData<3>((int*)0x751e56, 0x90);
     WriteData<11>((int*)0x74ed0a, 0x90);
 

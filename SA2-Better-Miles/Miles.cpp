@@ -185,8 +185,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 117, 208, 11, 0, 0.25f, 0.3f },
 	{ VictoryAnim, 208, 6, 119, 0.5f, 0.7F },
 	{ VictoryPoseEnd, 208, 6, 0, 0.5f, 1 },
-	{ Spin1, 208, 4, 0, 0.125f, 1 },
-	{ Spin2, 208, 4, 0, 0.125f, 1 },
+	{ Spin1, 208, 4, Spin2, 0.125f, 1 },
+	{ Spin2, 208, 4, Spin1, 0.125f, 1 },
 	{ Spin3, 208, 4, 0, 0.125f, 1 },
 	{ Spin4, 208, 4, 0, 0.125f, 1 },
 	{ Spin5, 208, 4, 0, 0.125f, 1 },
@@ -211,13 +211,15 @@ void Tails_Main_r(ObjectMaster* obj)
 
 	switch (data1->Action)
 	{
-	case stand:
-	case 1:
-	case 2:
+	case Standing:
+	case Running:
 		if (co2->Speed.x < 2)
 			Miles_CheckSpinAttack(data1, co2);
 		break;
-	case victory: //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
+	case Jumping:
+		data1->Status |= Status_Attack;
+		break;
+	case Victory: //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
 		co2->field_28 = VictoryAnim;
 		co2->AnimInfo.Next = VictoryAnim;
 		data1->Action = RealVictory;
