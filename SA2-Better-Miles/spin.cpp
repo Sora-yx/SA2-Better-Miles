@@ -21,7 +21,6 @@ inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 }
 
 
-
 void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
     if (Controllers[a3->PlayerNum].press & (Buttons_X | Buttons_B))
@@ -73,12 +72,13 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
     {
         if ((double)a1->AnimInfo.field_10 >= 14.5) //Field10 should be the current frame of the anim. 
         {
-            a1->AnimInfo.Next = 0;
+            a1->AnimInfo.Next = 0; 
         }
         else if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
         {
             if (GetAnalogASM2(a2, a1, 0, 0))
             {
+                //The animation of the spin attack changes depending on the player direction.
                 v4 = (unsigned __int8)((((int)(4096
                     - (unsigned __int64)(atan2((double)(Controllers[a1->PlayerNum].y1 << 8),
                         (double)(Controllers[a1->PlayerNum].x1 << 8))
@@ -86,7 +86,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                         * -0.1591549762031479)) >> 13) & 7)
                     + Spin3);
 
-                if (a1->AnimInfo.field_10 >= 10.0) {
+                if (a1->AnimInfo.field_10 >= 13.0) {
                     if (v4 == a1->AnimInfo.Current)
                     {
                         a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_10 & 1) + Spin1;
@@ -118,7 +118,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 }
 
 
-void spinonFrames(CharObj2Base* co2, EntityData1* data1) {
+void spinOnFrames(CharObj2Base* co2, EntityData1* data1) {
     if (co2->AnimInfo.Current) {
         Miles_SpinAttack(co2, data1);
     }
@@ -130,23 +130,7 @@ void spinonFrames(CharObj2Base* co2, EntityData1* data1) {
 }
 
 void Miles_SpinInit() {
-    WriteData<5>((void*)0x752567, 0x90);
-  //  WriteCall((void*)0x752567, CheckMiles_SpinAttackASM);
+    WriteData<5>((void*)0x752567, 0x90); //Remove Tail Attack thing
     WriteData<3>((int*)0x751e56, 0x90);
     WriteData<11>((int*)0x74ed0a, 0x90);
-
-    //WriteJump((void*)0x752D60, CheckMiles_SpinAttackASM);
-    //Spin Attack stuff
-/*WriteData<7>((int*)0x74ed0e, 0x90); //remove reset anim for spin attack
-WriteData<4>((int*)0x74ed0a, 0x90); //remove reset action for spin attack.
-
-WriteData<1>((int*)0xa0dbf2, 0x80); //Increase transition speed (from 0.125 to 1.0)
-WriteData<1>((int*)0xa0dbf3, 0x3F);
-WriteData<1>((int*)0xa0dbee, 0x5E);
-
-WriteData<5>((void*)0x752d9a, 0x90); //Remove tails voice when doing spin attack;
-
-//WriteData<1>((int*)0xa0dbf6, 0xC0);  //Animation Speed
-//WriteData<1>((int*)0xa0dbf7, 0x3F);*/
-
 }

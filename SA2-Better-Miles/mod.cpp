@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-bool isSA1Voice = true;
+bool flySoundEffect = true;
 bool isInfiniteFly = false;
 HelperFunctions HelperFunctionsGlobal;
 
@@ -13,22 +13,21 @@ extern "C" {
 	{
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
 		isInfiniteFly = config->getBool("Ability", "isInfiniteFly", false);
+		flySoundEffect = config->getBool("Sound", "flySoundEffect", true);
 		delete config;
 
 		HelperFunctionsGlobal = helperFunctions;
+
+		if (!flySoundEffect)
+			WriteData<5>((void*)0x752e16, 0x90);
+
 
 		BetterMiles_Init();
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
 
-		if (!MainCharObj1[0])
-			return;
 
-		float frame = MainCharObj2[0]->AnimInfo.field_A;
-		float frame2 = MainCharObj2[0]->AnimInfo.field_14;
-		float frame3 = MainCharObj2[0]->AnimInfo.field_18;
-	
 	}
 
 

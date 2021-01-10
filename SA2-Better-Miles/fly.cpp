@@ -90,6 +90,7 @@ void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2) {
 
 
 void MilesFly_Init() {
+
 	WriteJump((void*)0x752DB0, Tails_FlyStartASM); 	//Remove the altitude nerf.
 	MilesFlySpeedValue = flyCustomSpeedValue; //asign a new value for horizontal fly speed.
 }

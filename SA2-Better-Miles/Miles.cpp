@@ -219,13 +219,15 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Jumping:
 		data1->Status |= Status_Attack;
 		break;
+		//TODO: FIX the victory pose added when using rocket and stuff
 	case Victory: //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
+	
 		co2->field_28 = VictoryAnim;
 		co2->AnimInfo.Next = VictoryAnim;
 		data1->Action = RealVictory;
 		break;
 	case Spinning:
-		spinonFrames(co2, data1);
+		spinOnFrames(co2, data1);
 		break;
 	case RealVictory:
 		co2->AnimInfo.Current = VictoryAnim;

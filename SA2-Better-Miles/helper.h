@@ -20,7 +20,7 @@ struct EntityData2_
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 
-void spinonFrames(CharObj2Base* co2, EntityData1* data1);
+void spinOnFrames(CharObj2Base* co2, EntityData1* data1);
 
 VoidFunc(sub_47BB50, 0x47BB50);
 void MilesFly_Init();
