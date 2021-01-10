@@ -2,6 +2,7 @@
 
 float savePosY = 0.0;
 
+
 //signed int __usercall GetAnalog@<eax>(EntityData1 *data@<eax>, CharObj2Base *co2, signed int *angle, float* magnitude)
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
 inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
@@ -28,6 +29,7 @@ void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
         a2->Action = Spinning;
         a3->AnimInfo.Next = Spin1;
         a3->AnimInfo.field_8 = 0;
+        Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
         //a3->field_28 = Spin1;
         //a2->field_2 |= 2u;
         /*a1->SonicSpinTimeProbably = 0;
@@ -61,9 +63,7 @@ static void __declspec(naked) CheckMiles_SpinAttackASM(NJS_OBJECT* a1, EntityDat
 void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 {
     unsigned __int16 curAnim; // ax
-   // AnimationInfo* v3;
     __int16 v4; // ax
-    __int16 v5; // ax
     __int16 getCurAnim; // ax
 
     curAnim = a1->AnimInfo.Current;
@@ -94,18 +94,20 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                     else
                     {
                         a1->AnimInfo.Next = v4;
-                        //PlaySoundMiles(a2, 773);
+                        Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
+                       // Play3DSoundProbably(8200, 0, 0, 0);
                     }
                 }
             }
             else
             {
                 getCurAnim = a1->AnimInfo.Current;
+
                 if (a1->AnimInfo.field_10 >= 12.0) {
                     if (getCurAnim == Spin1 || getCurAnim == Spin2)
                     {
                         a1->AnimInfo.Next = getCurAnim ^ 1;
-                        //PlaySoundMiles(a2, 773);
+                        Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
                     }
                     else
                     {

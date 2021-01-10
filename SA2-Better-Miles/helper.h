@@ -2,6 +2,7 @@
 
 extern HelperFunctions HelperFunctionsGlobal;
 extern AnimationInfo TailsAnimationList_R[];
+extern bool isCustomAnim;
 
 struct EntityData2_
 {

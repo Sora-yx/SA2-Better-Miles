@@ -213,7 +213,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	{
 	case Standing:
 	case Running:
-		if (co2->Speed.x < 2)
+		if (co2->Speed.x < 2 && isCustomAnim)
 			Miles_CheckSpinAttack(data1, co2);
 		break;
 	case Jumping:
@@ -221,13 +221,17 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 		//TODO: FIX the victory pose added when using rocket and stuff
 	case Victory: //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
-	
+
+		if (!isCustomAnim)
+			return;
+
 		co2->field_28 = VictoryAnim;
 		co2->AnimInfo.Next = VictoryAnim;
 		data1->Action = RealVictory;
 		break;
 	case Spinning:
-		spinOnFrames(co2, data1);
+		if (isCustomAnim)
+			spinOnFrames(co2, data1);
 		break;
 	case RealVictory:
 		co2->AnimInfo.Current = VictoryAnim;
@@ -245,14 +249,17 @@ void LoadCharacterAndNewAnimation() {
 	if (MainCharObj2[0]->CharID != Characters_Tails)
 		return;
 
-	MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R;
+	if (isCustomAnim) {
+		MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R;
+	}
 }
 
 
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 
-	Miles_SpinInit();
+	if (isCustomAnim)
+		Miles_SpinInit();
 
 	//Improve physic
 	PhysicsArray[Characters_Tails].AirAccel = 0.050;
@@ -263,8 +270,8 @@ void BetterMiles_Init() {
 
 	MilesFly_Init();
 
-	WriteCall((void*)0x439b13, LoadCharacterAndNewAnimation);	
+	WriteCall((void*)0x439b13, LoadCharacterAndNewAnimation);
 	WriteCall((void*)0x43cada, LoadCharacterAndNewAnimation);
-
+	
 	voices_Init();
 }
