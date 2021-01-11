@@ -198,6 +198,23 @@ AnimationInfo TailsAnimationList_R[] = {
 };
 
 
+//Jump to a specific address where the game will call the function to animate Miles's tails
+static const void* const loc_74D34C = (void*)0x74D34C;
+__declspec(naked) void GoToAnimatedTailAnimation()
+{
+	__asm jmp loc_74D34C
+}
+
+//Rework the condition to add the victory pose
+static const void* const loc_7512F2 = (void*)0x7512F2;
+__declspec(naked) void  CheckVictoryPose() {
+
+	if (MainCharObj1[0]->Action != 24 || MainCharObj1[0]->Action != RealVictory)
+	{
+		_asm jmp loc_7512F2
+	}
+}
+
 
 void Tails_Main_r(ObjectMaster* obj)
 {
@@ -234,7 +251,13 @@ void Tails_Main_r(ObjectMaster* obj)
 			spinOnFrames(co2, data1);
 		break;
 	case RealVictory:
-		co2->AnimInfo.Current = VictoryAnim;
+		if (co2->AnimInfo.Next == VictoryAnim) {
+			co2->AnimInfo.Current = VictoryAnim;
+			GoToAnimatedTailAnimation();
+		}
+		else {
+			data1->Action = 0;
+		}
 		break;
 	}
 
@@ -258,9 +281,6 @@ void LoadCharacterAndNewAnimation() {
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 
-	if (isCustomAnim)
-		Miles_SpinInit();
-
 	//Improve physic
 	PhysicsArray[Characters_Tails].AirAccel = 0.050;
 	PhysicsArray[Characters_Tails].Brake = -0.25;
@@ -272,6 +292,12 @@ void BetterMiles_Init() {
 
 	WriteCall((void*)0x439b13, LoadCharacterAndNewAnimation);
 	WriteCall((void*)0x43cada, LoadCharacterAndNewAnimation);
+
+
+	if (isCustomAnim) {
+		Miles_SpinInit();
+		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckVictoryPose);
+	}
 	
 	voices_Init();
 }

@@ -38,7 +38,7 @@ void Tails_CheckGetAltitude(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 				TailsFlightTime += 0.0043333338;
 
 			if (a1->Speed.y < 1.2)
-				a1->Speed.y += 0.06;
+				a1->Speed.y += 0.03;
 		}
 	}
 }

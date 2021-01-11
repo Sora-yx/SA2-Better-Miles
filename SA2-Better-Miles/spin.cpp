@@ -1,8 +1,5 @@
 #include "stdafx.h"
 
-float savePosY = 0.0;
-
-
 //signed int __usercall GetAnalog@<eax>(EntityData1 *data@<eax>, CharObj2Base *co2, signed int *angle, float* magnitude)
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
 inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
@@ -86,7 +83,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                         * -0.1591549762031479)) >> 13) & 7)
                     + Spin3);
 
-                if (a1->AnimInfo.field_10 >= 13.0) {
+                if (a1->AnimInfo.field_10 >= 10.0) {
                     if (v4 == a1->AnimInfo.Current)
                     {
                         a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_10 & 1) + Spin1;
@@ -95,6 +92,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                     {
                         a1->AnimInfo.Next = v4;
                         Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
+                        //Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
                        // Play3DSoundProbably(8200, 0, 0, 0);
                     }
                 }
@@ -103,11 +101,11 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
             {
                 getCurAnim = a1->AnimInfo.Current;
 
-                if (a1->AnimInfo.field_10 >= 12.0) {
+                if (a1->AnimInfo.field_10 >= 10.0) {
                     if (getCurAnim == Spin1 || getCurAnim == Spin2)
                     {
-                        a1->AnimInfo.Next = getCurAnim ^ 1;
                         Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
+                        a1->AnimInfo.Next = getCurAnim ^ 1;
                     }
                     else
                     {
