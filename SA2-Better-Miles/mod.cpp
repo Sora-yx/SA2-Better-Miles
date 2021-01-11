@@ -8,7 +8,6 @@ HelperFunctions HelperFunctionsGlobal;
 
 extern "C" {
 
-	FunctionPointer(void, FUN_00673ae0, (), 0x00673ae0);
 
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{

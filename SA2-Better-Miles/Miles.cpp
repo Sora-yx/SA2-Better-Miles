@@ -237,27 +237,23 @@ void Tails_Main_r(ObjectMaster* obj)
 		data1->Status |= Status_Attack;
 		break;
 		//TODO: FIX the victory pose added when using rocket and stuff
-	case Victory: //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
-
+	case Victory:
 		if (!isCustomAnim)
 			return;
 
-		co2->field_28 = VictoryAnim;
-		co2->AnimInfo.Next = VictoryAnim;
-		data1->Action = RealVictory;
+		if (TimerStopped == 1) {  //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
+			co2->field_28 = VictoryAnim;
+			co2->AnimInfo.Next = VictoryAnim;
+			data1->Action = RealVictory;
+		}
 		break;
 	case Spinning:
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
 	case RealVictory:
-		if (co2->AnimInfo.Next == VictoryAnim) {
-			co2->AnimInfo.Current = VictoryAnim;
-			GoToAnimatedTailAnimation();
-		}
-		else {
-			data1->Action = 0;
-		}
+		co2->AnimInfo.Current = VictoryAnim;
+		GoToAnimatedTailAnimation();
 		break;
 	}
 
