@@ -39,6 +39,9 @@
     <ClCompile Include="Miles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="roll.cpp">
+      <Filter>Source Files\abilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

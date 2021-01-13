@@ -33,7 +33,7 @@ extern "C" {
 
 	__declspec(dllexport) void __cdecl OnFrame() {
 
-
+		EntityData1* data1 = MainCharObj1[0];
 	}
 
 

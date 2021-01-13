@@ -3,67 +3,10 @@
 #include <iostream>
 
 Trampoline* Tails_Main_t = nullptr;
+Trampoline* Miles_CheckNextActions_t = nullptr;
 AnimationIndex newTailsAnimIndex[130];
 
-static const void* const sub_460860Ptr = (void*)0x460860;
-static void __declspec(naked) PGetAccelerationASM(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
-{
-	__asm
-	{
-		push[esp + 04h] // a3
-		push ebx // a2
-		push eax // a1
-
-		// Call your __cdecl function here:
-		call sub_460860Ptr
-
-		pop eax // a1
-		pop ebx // a2
-		add esp, 4 // a3
-		retn
-	}
-}
-
-
-static const void* const sub_4616E0Ptr = (void*)0x4616E0;
-void __declspec() sub_4616E0ASM(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
-{
-	__asm
-	{
-		push[esp + 08h] // a3
-		push[esp + 08h] // a2
-		push eax // a1
-
-		// Call your __cdecl function here:
-		call sub_4616E0Ptr
-
-		pop eax // a1
-		add esp, 4 // a2
-		add esp, 4 // a3
-		retn
-	}
-}
-
-static const void* const sub_469050Ptr = (void*)0x469050;
-static void __declspec(naked) sub_469050ASM(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
-{
-	__asm
-	{
-		push[esp + 04h] // a3
-		push ebx // a2
-		push eax // a1
-
-		// Call your __cdecl function here:
-		call sub_469050Ptr
-
-		pop eax // a1
-		pop ebx // a2
-		add esp, 4 // a3
-		retn
-	}
-}
-
-
+//Setup a new animation list for Custom Animation (adding the SA1 ones mostly)
 AnimationInfo TailsAnimationList_R[] = {
 	{ 95, 208, 3, 0, 0.0625f, 0.1f },
 	{ 95, 208, 3, 1, 0.25f, 0.1f },
@@ -195,7 +138,69 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ Spin8, 208, 4, 0, 0.125f, 1 },
 	{ Spin1, 208, 4, 0, 0.125f, 1 },
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
+	{ Spin10, 208, 4, 0, 0.125f, 1 },
+	{ RollAnim, 208, 10, RollAnim, 0.25f, 0.40000001 },
 };
+
+
+//Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
+static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
+signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+
+	const auto MilesCheck_ptr = Miles_CheckNextActions_t->Target();
+
+	signed int result;
+
+	__asm
+	{
+		mov esi, a4 // a4
+		mov edi, a3 // a3
+		mov ebx, a2 // a2
+		mov ecx, a1 // a1
+
+		// Call your __cdecl function here:
+		call MilesCheck_ptr
+
+		mov result, eax
+	}
+
+	return result;
+
+}
+signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+
+	if (a4->NextAction == 20)
+	{
+		a4->Action = Pulley;
+		a3->AnimInfo.Next = 75;
+		return 1;
+	}
+
+	return Miles_CheckNextActions_original(a1, a2, a3, a4);
+}
+
+
+static void __declspec(naked) Miles_CheckNextActionsASM()
+{
+
+	__asm
+	{
+		push esi // a4
+		push edi // a3
+		push ebx // a2
+		push ecx // a1
+
+		// Call your __cdecl function here:
+		call Miles_CheckNextActions_r
+
+		pop ecx // a1
+		pop ebx // a2
+		pop edi // a3
+		pop esi // a4
+		retn
+	}
+}
+
 
 
 //Jump to a specific address where the game will call the function to animate Miles's tails
@@ -205,14 +210,35 @@ __declspec(naked) void GoToAnimatedTailAnimation()
 	__asm jmp loc_74D34C
 }
 
+
 //Rework the condition to add the victory pose
 static const void* const loc_7512F2 = (void*)0x7512F2;
 __declspec(naked) void  CheckVictoryPose() {
 
-	if (MainCharObj1[0]->Action != 24 || MainCharObj1[0]->Action != RealVictory)
+	if (MainCharObj1[0]->Action != 24 || MainCharObj1[0]->Action != VictoryPose)
 	{
 		_asm jmp loc_7512F2
 	}
+}
+
+
+static const void* const TailsJumpPtr = (void*)0x751B80;
+inline int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
+{
+	int result;
+	__asm
+	{
+		push[a2]
+		push[a1]
+		mov eax, [a1]
+		// Call your __cdecl function here:
+		call TailsJumpPtr
+		mov result, eax
+		add esp, 4 // a1<eax> is also used for return value
+		pop ecx // a2
+	}
+
+	return result;
 }
 
 
@@ -226,43 +252,64 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData2_* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
 
+
 	switch (data1->Action)
 	{
 	case Standing:
 	case Running:
-		if (co2->Speed.x < 2 && isCustomAnim)
-			Miles_CheckSpinAttack(data1, co2);
+		if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7)
+			return;
+
+		if (co2->Speed.x < 1.3)  {
+			Miles_CheckSpinAttack(data1, co2);	
+		}
+		else {
+			//Miles_RollCheckInput(data1, co2);
+		}
 		break;
 	case Jumping:
-		data1->Status |= Status_Attack;
+
 		break;
-		//TODO: FIX the victory pose added when using rocket and stuff
-	case Victory:
+	case ObjectControl:
 		if (!isCustomAnim)
 			return;
 
-		if (TimerStopped == 1) {  //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
+		if (TimerStopped != 0) { //Check if the level is finished
 			co2->field_28 = VictoryAnim;
 			co2->AnimInfo.Next = VictoryAnim;
-			data1->Action = RealVictory;
+			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
 		}
+		break;
+	case Pulley:
+		//Miles_CheckNextActionsASM(data2, co2Miles, co2, data1);
+		if (data1->NextAction == 0) {
+			Tails_JumpStart(co2, data1);
+		}
+
 		break;
 	case Spinning:
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
-	case RealVictory:
+	case VictoryPose:
 		co2->AnimInfo.Current = VictoryAnim;
 		GoToAnimatedTailAnimation();
+		break;
+	case Rolling:
+		Miles_UnrollCheckInput(data1, co2);
 		break;
 	}
 
 	MilesFly(data1, co2, data2);
 }
 
-void LoadCharacterAndNewAnimation() {
 
-	CurrentCharacter = Characters_Tails;
+void LoadCharacterAndNewAnimation() {
+	PDS_PERIPHERAL p1 = Controllers[0];
+
+	//if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
+		CurrentCharacter = Characters_Tails;
+
 	LoadCharacters();
 
 	if (MainCharObj2[0]->CharID != Characters_Tails)
@@ -276,18 +323,25 @@ void LoadCharacterAndNewAnimation() {
 
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
+	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
 
 	//Improve physic
 	PhysicsArray[Characters_Tails].AirAccel = 0.050;
 	PhysicsArray[Characters_Tails].Brake = -0.25;
 	PhysicsArray[Characters_Tails].HangTime = 60;
 	PhysicsArray[Characters_Tails].JumpSpeed = 1.80;
-	PhysicsArray[Characters_Tails].GroundAccel = 0.13;
+	PhysicsArray[Characters_Tails].GroundAccel = 0.14;
 
 	MilesFly_Init();
 
+	//Custom anim + Force Load Tails Check
 	WriteCall((void*)0x439b13, LoadCharacterAndNewAnimation);
 	WriteCall((void*)0x43cada, LoadCharacterAndNewAnimation);
+
+	WriteData<5>((int*)0x751c6e, 0x90);	
+	//WriteData<4>((int*)0x74e175, 0x90);
+
+	//WriteCall((void*)0x6E5EDB, DoPulleyAction_r);
 
 
 	if (isCustomAnim) {
