@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 float TailsFlightTime = 0.0000000000; //fatigue
-double flyCustomSpeedValue = 0.10; //used to improves Miles flight speed
+double flyCustomSpeedValue = 0.10; //used to improve Miles flight speed
 
 static int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
 	a1->Action = Flying;
