@@ -6,6 +6,29 @@ Trampoline* Tails_Main_t = nullptr;
 Trampoline* Miles_CheckNextActions_t = nullptr;
 
 
+static const void* const GetAnalogPtr2 = (void*)0x45A870;
+inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
+{
+
+	int result;
+	__asm
+	{
+		push[magnitude]
+		push[angle]
+		push[co2]
+		mov eax, [data]
+		call GetAnalogPtr2
+		mov result, eax
+		add esp, 12
+	}
+	return result;
+}
+
+signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude) {
+	return GetAnalogASM2(data, co2, angle, magnitude);
+}
+
+
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
 signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
@@ -28,19 +51,52 @@ signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, 
 	}
 
 	return result;
-
 }
+
+signed char GetCharacterLevel() {
+
+	for (int i = 0; i < 33; i++)
+	{
+		if (CurrentLevel == StageSelectLevels[i].Level)
+		{
+			return StageSelectLevels[i].Character;
+		}
+	}
+	
+	return -1;
+}
+
 
 
 signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
-	if (a4->NextAction == 20)
+
+	switch (a4->NextAction)
 	{
+	case 9:
+		if (GetCharacterLevel() == Characters_Sonic || GetCharacterLevel() == Characters_Shadow) { //fix animations crashes
+			a4->Action = 18;
+			a3->AnimInfo.Next = 75;
+			a3->Speed = { 0, 0, 0 };
+			a4->Status &= 0xDAFFu;
+			return 1;
+		}
+		break;
+	case 20:
 		a4->Status &= 0xDAFFu;
 		a3->Speed = { 0, 0, 0 };
 		a4->Action = Pulley;
 		a3->AnimInfo.Next = 75;
 		return 1;
+	case 31:
+		/*a4->Status = a4->Status & 0xFAFF | 0x2000;
+		(a1[13].field_28) = 0;
+		(a1[13].field_2C) = 0;
+		a4->Action = 71;
+		a3->Speed.y = 0.0;
+		return 1;*/
+		break;
+
 	}
 
 	return Miles_CheckNextActions_original(a1, a2, a3, a4);
@@ -95,7 +151,7 @@ void Tails_Jump(CharObj2Base* co2, EntityData1* data) //Used for pulley
 		return;
 	}
 
-	data->Action = 6;
+	data->Action = Jumping;
 	co2->Speed.y = co2->PhysData.JumpSpeed;
 	co2->AnimInfo.Next = 65;
 	data->Status &= 65533u;

@@ -21,7 +21,7 @@ struct EntityData2_
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
-
+signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude);
 
 VoidFunc(sub_47BB50, 0x47BB50);
 void BetterMiles_Init();
@@ -32,7 +32,6 @@ static Buttons JumpButtons = Buttons_A;
 static Buttons AttackButtons = Buttons_X;
 
 void voices_Init();
-
 
 
 enum MilesState {

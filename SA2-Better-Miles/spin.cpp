@@ -1,23 +1,5 @@
 #include "stdafx.h"
 
-//signed int __usercall GetAnalog@<eax>(EntityData1 *data@<eax>, CharObj2Base *co2, signed int *angle, float* magnitude)
-static const void* const GetAnalogPtr2 = (void*)0x45A870;
-inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
-{
-    int result;
-    __asm
-    {
-        push[magnitude]
-        push[angle]
-        push[co2]
-        mov eax, [data]
-        call GetAnalogPtr2
-        mov result, eax
-        add esp, 12
-    }
-    return result;
-}
-
 
 void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
@@ -73,7 +55,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
         }
         else if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
         {
-            if (GetAnalogASM2(a2, a1, 0, 0))
+            if (CallGetAnalog(a2, a1, 0, 0))
             {
                 //The animation of the spin attack changes depending on the player direction.
                 v4 = (unsigned __int8)((((int)(4096
