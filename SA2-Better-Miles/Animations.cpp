@@ -67,8 +67,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 109, 208, 6, 62, 0.25f, 0.1f },
 	{ 110, 208, 4, 0, 0.25f, 0.3f },
 	{ 111, 208, 4, 0, 0.25f, 0.3f },
-	{ 105, 208, 4, 66, 0.25f, 0.4f },
-	{ 106, 208, 3, 66, 0.25f, 0.1f },
+	{ 65, 208, 4, 66, 0.25f, 1.4f },
+	{ 66, 208, 3, 66, 0.25f, 1 },
 	{ 107, 208, 4, 68, 0.125f, 0.4f },
 	{ 108, 208, 3, 68, 0.125f, 0.4f },
 	{ 69, 208, 4, 70, 0.25f, 0.1f },
@@ -133,8 +133,7 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ Spin1, 208, 4, 0, 0.125f, 1 },
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
-
-	//Sonic aniamtion NOT IN THE ANIMATION Tails FILE FOR NOW, but needed to avoid game crashes. 
+		//Sonic aniamtion NOT IN THE ANIMATION Tails FILE FOR NOW, but needed to avoid game crashes. 
 	{ 132, 208, 4, 121, 0.25f, 0.3f },
 	{ 131, 208, 4, 122, 0.25f, 0.3f },
 	{ 133, 208, 4, 130, 1, 1 },

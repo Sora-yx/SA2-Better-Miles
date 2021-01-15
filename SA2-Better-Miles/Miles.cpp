@@ -73,16 +73,16 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 
 	switch (a4->NextAction)
 	{
-		/*case 9:
-		if (GetCharacterLevel() == Characters_Sonic || GetCharacterLevel() == Characters_Shadow) { //fix animations crashes
+		case 9: //Used for Bar, Vine etc.
+		if (!isCustomAnim) { //Failsafe 
 			a4->Action = 18;
-			a3->AnimInfo.Next = 130;
+			a3->AnimInfo.Next = 75;
 			a3->Speed = { 0, 0, 0 };
 			a4->Status &= 0xDAFFu;
 			return 1;
 		}
-		break;*/
-	case 20:
+		break;
+	case 20: //Pulley
 		a4->Status &= 0xDAFFu;
 		a3->Speed = { 0, 0, 0 };
 		a4->Action = Pulley;

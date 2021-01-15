@@ -22,6 +22,7 @@ FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude);
+bool isMilesAttacking();
 
 VoidFunc(sub_47BB50, 0x47BB50);
 void BetterMiles_Init();
