@@ -73,15 +73,15 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 
 	switch (a4->NextAction)
 	{
-	case 9:
+		/*case 9:
 		if (GetCharacterLevel() == Characters_Sonic || GetCharacterLevel() == Characters_Shadow) { //fix animations crashes
 			a4->Action = 18;
-			a3->AnimInfo.Next = 75;
+			a3->AnimInfo.Next = 130;
 			a3->Speed = { 0, 0, 0 };
 			a4->Status &= 0xDAFFu;
 			return 1;
 		}
-		break;
+		break;*/
 	case 20:
 		a4->Status &= 0xDAFFu;
 		a3->Speed = { 0, 0, 0 };
@@ -136,7 +136,8 @@ __declspec(naked) void GoToAnimatedTailAnimation()
 static const void* const loc_7512F2 = (void*)0x7512F2;
 __declspec(naked) void  CheckVictoryPose() {
 
-	if (MainCharObj1[0]->Action != 24 || MainCharObj1[0]->Action != VictoryPose)
+
+	if (MainCharObj1[0]->Action != 24 || MainCharObj1[0]->Action != VictoryPose || MainCharObj1[0]->Action != ObjectControl || MainCharObj1[0]->Action != Pulley)
 	{
 		_asm jmp loc_7512F2
 	}
