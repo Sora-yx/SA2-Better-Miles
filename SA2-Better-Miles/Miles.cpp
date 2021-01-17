@@ -28,6 +28,20 @@ signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 	return GetAnalogASM2(data, co2, angle, magnitude);
 }
 
+signed char GetCharacterLevel() {
+
+	for (int i = 0; i < 33; i++)
+	{
+		if (CurrentLevel == StageSelectLevels[i].Level)
+		{
+			return StageSelectLevels[i].Character;
+		}
+	}
+
+	return -1;
+}
+
+
 
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
@@ -52,20 +66,6 @@ signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, 
 
 	return result;
 }
-
-signed char GetCharacterLevel() {
-
-	for (int i = 0; i < 33; i++)
-	{
-		if (CurrentLevel == StageSelectLevels[i].Level)
-		{
-			return StageSelectLevels[i].Character;
-		}
-	}
-	
-	return -1;
-}
-
 
 
 signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
