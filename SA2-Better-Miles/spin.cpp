@@ -5,7 +5,7 @@ void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
     if (Controllers[a3->PlayerNum].press & (Buttons_X | Buttons_B))
     {
-        a2->Action = Spinning;
+        a2->NextAction = Spinning;
         a3->AnimInfo.Next = Spin1;
         a3->AnimInfo.field_8 = 0;
         Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
@@ -74,8 +74,6 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                     {
                         a1->AnimInfo.Next = v4;
                         Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
-                        //Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
-                       // Play3DSoundProbably(8200, 0, 0, 0);
                     }
                 }
             }
@@ -103,6 +101,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 void spinOnFrames(CharObj2Base* co2, EntityData1* data1) {
     if (co2->AnimInfo.Current) {
         Miles_SpinAttack(co2, data1);
+        Miles_DoCollisionAttackStuff(data1);
     }
     else {
         data1->Action = 1;

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-//Setup a new animation list for Custom Animation (adding the SA1 ones mostly)
+//Setup a new animation list for Custom Animation. (Adding the SA1 ones mostly, but also extend the list to make Miles being able to use more actions such as Vine, Bar etc.)
 AnimationInfo TailsAnimationList_R[] = {
 	{ 95, 208, 3, 0, 0.0625f, 0.1f },
 	{ 95, 208, 3, 1, 0.25f, 0.1f },
@@ -120,6 +120,7 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 115, 208, 4, 0, 1, 0.3f },
 	{ 116, 208, 11, 0, 0.25f, 0.3f },
 	{ 117, 208, 11, 0, 0.25f, 0.3f },
+	//SA1 Anim
 	{ VictoryAnim, 208, 6, 119, 0.5f, 0.7F },
 	{ VictoryPoseEnd, 208, 6, 0, 0.5f, 1 },
 	{ Spin1, 208, 4, 0, 0.125f, 1 },
@@ -133,7 +134,7 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ Spin1, 208, 4, 0, 0.125f, 1 },
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
-		//Sonic aniamtion NOT IN THE ANIMATION Tails FILE FOR NOW, but needed to avoid game crashes. 
+	//Extended
 	{ 132, 208, 4, 121, 0.25f, 0.3f },
 	{ 131, 208, 4, 122, 0.25f, 0.3f },
 	{ 133, 208, 4, 130, 1, 1 },
@@ -188,8 +189,6 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 182, 208, 6, 182, 1, 1 },
 	{ 183, 208, 6, 183, 1, 1 },
 	{ 184, 208, 3, 184, 1, 0.5f },
-
-	//Sonic Animation ACTUALLY in Tails Anim File, such as Holding vine, Bar, Missile.)
 	{ 185, 208, 4, 186, 0.25f, 0.3f },
 	{ 186, 208, 3, 186, 0.25f, 0.5f },
 	{ 187, 208, 3, 187, 0.25f, 0.8f },
@@ -204,8 +203,6 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 196, 208, 3, 196, 0.0625f, 0.2f },
 	{ 197, 208, 3, 197, 0.0625f, 0.2f },
 	{ 198, 208, 3, 198, 0.125f, 0.2f },
-
-	//Not in the file for now
 	{ 199, 208, 3, 199, 0.25f, 0.2f },
 	{ 200, 208, 3, 200, 0.25f, 0.2f },
 	{ 201, 208, 6, 201, 0.125f, 0.8f },
@@ -217,13 +214,16 @@ void LoadCharacterAndNewAnimation() {
 
 	PDS_PERIPHERAL p1 = Controllers[0];
 
-	//if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
+	if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
 		CurrentCharacter = Characters_Tails;
 
 	LoadCharacters();
 
-	if (isCustomAnim && MainCharObj2[0]->CharID == Characters_Tails) {
+
+	if (MainCharObj2[0]->CharID == Characters_Tails) {
 		MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R;
+
+	
 	}
 }
 

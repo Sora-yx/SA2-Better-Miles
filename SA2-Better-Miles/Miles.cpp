@@ -73,15 +73,6 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 
 	switch (a4->NextAction)
 	{
-		case 9: //Used for Bar, Vine etc.
-		if (!isCustomAnim) { //Failsafe 
-			a4->Action = 18;
-			a3->AnimInfo.Next = 75;
-			a3->Speed = { 0, 0, 0 };
-			a4->Status &= 0xDAFFu;
-			return 1;
-		}
-		break;
 	case 20: //Pulley
 		a4->Status &= 0xDAFFu;
 		a3->Speed = { 0, 0, 0 };
@@ -143,6 +134,50 @@ __declspec(naked) void  CheckVictoryPose() {
 	}
 }
 
+static const void* const MilesThrowObjectPtr = (void*)0x475600; 
+static void __declspec(naked) MilesThrowObject(EntityData1* a1, CharObj2Base* a2)
+{
+	__asm
+	{
+		push[esp + 04h] // a2
+		push eax // a1
+
+		// Call your __cdecl function here:
+		call MilesThrowObjectPtr
+
+		pop eax // a1
+		add esp, 4 // a2
+		retn
+	}
+}
+
+static const void* const sub_45A2E0Ptr = (void*)0x45A2E0;
+signed int sub_45A2E0(CharObj2Base* a1, EntityData1* a2)
+{
+
+	int result;
+	__asm
+	{
+		push[a2]
+		push[a1]
+		mov eax, [a1]
+		call sub_45A2E0Ptr
+		mov result, edx
+	}
+	return result;
+}
+
+
+void Miles_DoCollisionAttackStuff(EntityData1* data1) {
+	data1->Status |= Status_Attack;
+	data1->Collision->CollisionArray[0].damage &= 0xFCu;
+	data1->Collision->CollisionArray[0].damage |= 0xCu;
+	data1->Collision->CollisionArray[0].damage |= 0xEF;
+	data1->Collision->CollisionArray[1].center = data1->Position;
+	data1->Collision->CollisionArray[1].attr &= 0xFFFFFFEF;
+	return;
+}
+
 
 void Tails_Jump(CharObj2Base* co2, EntityData1* data) //Used for pulley
 {
@@ -188,6 +223,9 @@ void Tails_Main_r(ObjectMaster* obj)
 			//Miles_RollCheckInput(data1, co2);
 		}
 		break;
+	case Jumping:
+		Miles_DoCollisionAttackStuff(data1);
+		break;
 	case ObjectControl:
 		if (!isCustomAnim)
 			return;
@@ -210,6 +248,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		GoToAnimatedTailAnimation();
 		break;
 	case Rolling:
+		Miles_DoCollisionAttackStuff(data1);
 		Miles_UnrollCheckInput(data1, co2);
 		break;
 	}
@@ -235,12 +274,18 @@ void BetterMiles_Init() {
 	//WriteData<4>((int*)0x74e175, 0x90);
 
 	//Custom anim + new moves
+	Init_NewAnimation();
+
 	if (isCustomAnim) {
-		Init_NewAnimation();
 		Miles_SpinInit();
 		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckVictoryPose);
 	}
 	
+
+	//WriteJump(reinterpret_cast<void*>(0x751c67), AddStatueAttack);
+
+	WriteData<1>((int*)0x472C99, 0x17); //remove miles check shit
+
 	//Audio fix
 	voices_Init();
 }
