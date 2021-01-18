@@ -21,7 +21,7 @@ signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, 
 		mov esi, a4 // a4
 		mov edi, a3 // a3
 		mov ebx, a2 // a2
-		mov ecx, a1 // a1
+		mov eax, a1 // a1
 
 		// Call your __cdecl function here:
 		call MilesCheck_ptr
@@ -127,55 +127,43 @@ signed int Tails_Jump(CharObj2Base* co2, EntityData1* data) //Used for pulley
 	return 1;
 }
 
-/*static const void* const tailsJumpPtr = (void*)0x751B80;
-signed int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
+
+
+//Math stuff that allow character to move on the rail
+static const void* const sub_46D040Ptr = (void*)0x46D040;
+int inline sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
 {
-	signed int result;
-
-	__asm
-	{
-		push[a2]
-		push[a1]
-		mov eax, [a1]
-		call tailsJumpPtr
-		mov result, eax
-		add esp, 4
-		pop ecx
-	}
-
-	return result;
-}*/
-
-static const void* const sub_46D040Ptr = (void*)0x46d040;
-static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
-{
-
 	__asm
 	{
 		push[a3]
-		push[a2]
+		mov ebx, [a2]
 		mov eax, [a1]
 
 		call sub_46D040Ptr
-		add esp, 4 // a3
+
+		add esp, 4 // a3        
 	}
 }
 
 static const void* const sub_46D140Ptr = (void*)0x46D140;
-static inline void sub_46D140(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
+int inline getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 {
+	int result;
+
 	__asm
 	{
-		push[a3] // a3
-		push[a2] // a2
-		mov eax, [a1] // a1
+
+		push[a3]
+		push[a2]
+		mov eax, [a1]
 
 		// Call your __cdecl function here:
 		call sub_46D140Ptr
+		mov result, eax
+		add esp, 8 // a2
 
-		add esp, 4 // a2
-		add esp, 4 // a3
 	}
+	return result;
 }
 
 
@@ -188,6 +176,8 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData1* data1 = MainCharObj1[0];
 	EntityData2_* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
+	NJS_VECTOR result;
+	NJS_VECTOR result2;
 
 
 	switch (data1->Action)
@@ -226,9 +216,18 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case 71:
 		DoGrindThing(data1, data2, co2, co2Miles);
+		sub_46D040(data1, co2, data2);
+		getRailAccel(co2, data1, data2);
+		
+		//sparkles thing not finished yet
+		result.x = rand() * 0.000030517578125 * 3.0 + 0.0;
+		result.y = rand() * 0.000030517578125 * 3.0 + 0.0;
+		result.z = rand() * 0.000030517578125 * 3.0 + 0.0;
+		result2 = result;
+		PowderExecute(&result, 32, &result2, co2->PlayerNum);
+
 		CheckGrindThing(data1, data2, co2, co2Miles);
-		//sub_46D040(data1, co2, data2);
-		//sub_46D140(co2, data1, data2);
+		//GoToAnimatedTailAnimation();
 	break;
 	case VictoryPose:
 		co2->AnimInfo.Current = VictoryAnim;

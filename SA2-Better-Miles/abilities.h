@@ -18,5 +18,7 @@ void spinOnFrames(CharObj2Base* co2, EntityData1* data1);
 
 signed int Miles_RollCheckInput(EntityData1* a1, CharObj2Base* a2);
 void Miles_UnrollCheckInput(EntityData1* data1, CharObj2Base* co2);
+
 void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
 void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles);
+

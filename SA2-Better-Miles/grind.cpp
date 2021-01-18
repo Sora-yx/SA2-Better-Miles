@@ -238,3 +238,4 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		idk(co2);
 	}
 }
+
