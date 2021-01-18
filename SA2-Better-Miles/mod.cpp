@@ -9,7 +9,7 @@ HelperFunctions HelperFunctionsGlobal;
 extern "C" {
 
 
-	StartPosition startMiles = { LevelIDs_WeaponsBed, 0, 0, 0, { 4251, -220, -10138 }, { 4231, -220, -10138 }, { 4281, -220, -10138 } };
+	StartPosition startMiles = { LevelIDs_SkyRail, 0x4000, 0x4000, 0x4000, { -9.5f, 800, -526.1438f }, { -9.5f, 800, -526.1438f }, { 8.7f, 800, -526.1438f } };
 
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
@@ -32,10 +32,15 @@ extern "C" {
 
 		BetterMiles_Init();
 
+		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
+		story->Type = 1;
+		story->Level = LevelIDs_FinalRush;
+		story->Character = Characters_Tails;*/
 
 		for (int i = 0; i < 16; i++) {
-			helperFunctions.RegisterEndPosition(i, startMiles);
+			helperFunctions.RegisterStartPosition(i, startMiles);
 		}
+
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
@@ -45,6 +50,9 @@ extern "C" {
 
 		if (GameState == 16)
 			co2->MechHP = 12.0;
+
+		/*if (Controllers[0].press & Buttons_Y)
+			PlaySoundProbably(8193, 0, 0, 0);*/
 	}
 
 

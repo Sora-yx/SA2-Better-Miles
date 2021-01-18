@@ -1,7 +1,44 @@
 #include "stdafx.h"
 
 Trampoline* CheckBreakObject_t;
-Trampoline* BrokenDownSmokeExec_t;
+
+
+static const void* const GetAnalogPtr2 = (void*)0x45A870;
+inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
+{
+
+	int result;
+	__asm
+	{
+		push[magnitude]
+		push[angle]
+		push[co2]
+		mov eax, [data]
+		call GetAnalogPtr2
+		mov result, eax
+		add esp, 12
+	}
+	return result;
+}
+
+signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude) {
+	return GetAnalogASM2(data, co2, angle, magnitude);
+}
+
+signed char GetCharacterLevel() {
+
+	for (int i = 0; i < 33; i++)
+	{
+		if (CurrentLevel == StageSelectLevels[i].Level)
+		{
+			return StageSelectLevels[i].Character;
+		}
+	}
+
+	return -1;
+}
+
+
 
 bool isMilesAttacking() {
 
@@ -15,7 +52,6 @@ bool isMilesAttacking() {
 
 	return false;
 }
-
 
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
@@ -41,16 +77,6 @@ __declspec(naked) void  CheckBreakCGGlasses() {
 	}
 }
 
-void BrokenDownSmokeExec_r(ObjectMaster* obj) {
-
-	if (CurrentCharacter != Characters_ChaoWalker && CurrentCharacter != Characters_DarkChaoWalker && CurrentCharacter != Characters_MechTails && CurrentCharacter != Characters_MechEggman) {
-		ObjectFunc(origin, BrokenDownSmokeExec_t->Target());
-		origin(obj);
-	}
-	else {
-		DeleteObject(obj);
-	}
-}
 
 static const void* const loc_6d6934 = (void*)0x6d6934;
 __declspec(naked) void  CheckBreakIronBox() {
@@ -88,7 +114,6 @@ static void __declspec(naked) sub_46EE00()
 
 void Init_MilesActions() {
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
-	//BrokenDownSmokeExec_t = new Trampoline((int)BrokenDownSmokeExec, (int)BrokenDownSmokeExec + 0x7, BrokenDownSmokeExec_r);
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	
     WriteJump((void*)0x46EE00, sub_46EE00);

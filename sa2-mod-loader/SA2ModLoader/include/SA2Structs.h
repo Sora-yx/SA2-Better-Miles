@@ -527,6 +527,7 @@ struct EntityData2
 	float field_3C;
 };
 
+
 struct PhysicsData
 {
 	int HangTime;

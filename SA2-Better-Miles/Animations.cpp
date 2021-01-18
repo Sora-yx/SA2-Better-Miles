@@ -214,7 +214,7 @@ void LoadCharacterAndNewAnimation() {
 
 	PDS_PERIPHERAL p1 = Controllers[0];
 
-	if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
+	//if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
 		CurrentCharacter = Characters_Tails;
 
 	LoadCharacters();
@@ -222,8 +222,6 @@ void LoadCharacterAndNewAnimation() {
 
 	if (MainCharObj2[0]->CharID == Characters_Tails) {
 		MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R;
-
-	
 	}
 }
 

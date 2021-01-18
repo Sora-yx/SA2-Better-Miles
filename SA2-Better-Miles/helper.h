@@ -19,6 +19,11 @@ struct EntityData2_
 };
 
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
+FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
+FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
+DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
+FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
+
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude);
