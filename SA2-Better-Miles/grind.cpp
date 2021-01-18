@@ -129,8 +129,6 @@ void idk(CharObj2Base* co2) {
 }
 
 
-
-
 static const void* const sub_726D00Ptr = (void*)0x726D00;
 static void __declspec(naked) DoTrickMaybe()
 {
@@ -236,6 +234,81 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 	else {
 		data1->Rotation.y = 12288.0 - njScalor(&co2->Speed) * 800.0 + data1->Rotation.y;
 		idk(co2);
+	}
+}
+
+
+//Math stuff that allow character to move on the rail
+static const void* const sub_46D040Ptr = (void*)0x46D040;
+int inline sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
+{
+	__asm
+	{
+		push[a3]
+		mov ebx, [a2]
+		mov eax, [a1]
+
+		call sub_46D040Ptr
+
+		add esp, 4 // a3        
+	}
+}
+
+static const void* const sub_46D140Ptr = (void*)0x46D140;
+int inline getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
+{
+	int result;
+
+	__asm
+	{
+
+		push[a3]
+		push[a2]
+		mov eax, [a1]
+
+		// Call your __cdecl function here:
+		call sub_46D140Ptr
+		mov result, eax
+		add esp, 8 // a2
+
+	}
+	return result;
+}
+
+void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3) {
+	sub_46D040(a1, a2, a3);
+	getRailAccel(a2, a1, a3);
+	return;
+}
+
+//Sparkles Rail thing
+//void __usercall sub_754EC0(int playernum@<ebx>)
+static const void* const sub_754EC0Ptr = (void*)0x754EC0;
+int inline sub_754EC0(int playernum)
+{
+	__asm {
+		mov ebx, [playernum]
+		call sub_754EC0Ptr
+	}
+}
+
+void PowderExecute_Rails(TailsCharObj2* sco2, NJS_VECTOR* dir) {
+	float idk = static_cast<float>(rand()) * 0.00003f * 3.0f;
+	if (idk > 0.0f) {
+		PowderExecute(dir, idk, (NJS_VECTOR*)&sco2->field_1BC[68], sco2->base.PlayerNum);
+	}
+}
+
+void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2) {
+	if (fabs(co2->base.Speed.x) >= 3.7f) {
+		NJS_VECTOR speed;
+		speed.x = data2->VelocityDirection.x * 0.9f;
+		speed.y = data2->VelocityDirection.y * 0.9f;
+		speed.z = data2->VelocityDirection.z * 0.9f;
+
+		PowderExecute_Rails(co2, &speed);
+		PowderExecute_Rails(co2, &speed);
+		sub_754EC0(co2->base.PlayerNum);
 	}
 }
 

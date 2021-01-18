@@ -129,43 +129,6 @@ signed int Tails_Jump(CharObj2Base* co2, EntityData1* data) //Used for pulley
 
 
 
-//Math stuff that allow character to move on the rail
-static const void* const sub_46D040Ptr = (void*)0x46D040;
-int inline sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
-{
-	__asm
-	{
-		push[a3]
-		mov ebx, [a2]
-		mov eax, [a1]
-
-		call sub_46D040Ptr
-
-		add esp, 4 // a3        
-	}
-}
-
-static const void* const sub_46D140Ptr = (void*)0x46D140;
-int inline getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
-{
-	int result;
-
-	__asm
-	{
-
-		push[a3]
-		push[a2]
-		mov eax, [a1]
-
-		// Call your __cdecl function here:
-		call sub_46D140Ptr
-		mov result, eax
-		add esp, 8 // a2
-
-	}
-	return result;
-}
-
 
 void Tails_Main_r(ObjectMaster* obj)
 {
@@ -216,16 +179,8 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case 71:
 		DoGrindThing(data1, data2, co2, co2Miles);
-		sub_46D040(data1, co2, data2);
-		getRailAccel(co2, data1, data2);
-		
-		//sparkles thing not finished yet
-		result.x = rand() * 0.000030517578125 * 3.0 + 0.0;
-		result.y = rand() * 0.000030517578125 * 3.0 + 0.0;
-		result.z = rand() * 0.000030517578125 * 3.0 + 0.0;
-		result2 = result;
-		PowderExecute(&result, 32, &result2, co2->PlayerNum);
-
+		MoveCharacterOnRail(data1, co2, data2);
+		LoadRailParticules(co2Miles, data2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		//GoToAnimatedTailAnimation();
 	break;
