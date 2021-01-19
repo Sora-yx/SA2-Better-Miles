@@ -6,8 +6,6 @@ Trampoline* Tails_Main_t = nullptr;
 Trampoline* Miles_CheckNextActions_t = nullptr;
 
 
-
-
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
 signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
@@ -177,10 +175,11 @@ void Tails_Main_r(ObjectMaster* obj)
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
-	case 71:
+	case Grinding:
 		DoGrindThing(data1, data2, co2, co2Miles);
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
+		PlayGrindAnimation(data1, co2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		//GoToAnimatedTailAnimation();
 	break;

@@ -84,11 +84,11 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 	a4->Action = 71;
 	if ((double)rand() * 0.000030517578125 <= 0.5)
 	{
-		a3->AnimInfo.Next = 108;
+		a3->AnimInfo.Next = 207;
 	}
 	else
 	{
-		a3->AnimInfo.Next = 104;
+		a3->AnimInfo.Next = 203;
 	}
 	if (CurrentLevel == LevelIDs_GreenForest)
 	{
@@ -197,10 +197,10 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 			}
 		}
 		else {
-			if (co2->AnimInfo.Current == 112) { // anim rail lose balance left
+			if (co2->AnimInfo.Current == 211) { // anim rail lose balance left
 				data1->Rotation.y -= 0x4000;
 			}
-			else if (co2->AnimInfo.Current == 113) {// anim rail lose balance right
+			else if (co2->AnimInfo.Current == 212) {// anim rail lose balance right
 				data1->Rotation.y += 0x4000;
 			}
 
@@ -312,3 +312,60 @@ void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2) {
 	}
 }
 
+//SA2 hardcode all the grinding animations id, sadly Miles already use those for different actions so we have to add new animation and full hack the function :(
+void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
+
+	if (a3->CharID != Characters_Tails)
+		return;
+
+	bool B_Buttons = Action_Held[a3->PlayerNum] == 0;
+	int curAnim = a3->AnimInfo.Current;
+
+	if (B_Buttons)
+	{
+		if (curAnim == 205)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 203;
+		}
+		if (curAnim == 206)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 204;
+		}
+		if (curAnim == 209)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 207;
+		}
+		if (curAnim == 210)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 208;
+		}
+	}
+	else {
+
+		if (curAnim == 203)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 206;
+		}
+		if (curAnim == 204)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 206;
+		}
+		if (curAnim == 207)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 209;
+		}
+		if (curAnim == 208)
+		{
+			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
+			a3->AnimInfo.Next = 210;
+		}
+	}
+
+}

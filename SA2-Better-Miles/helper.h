@@ -49,6 +49,7 @@ enum MilesState {
 	Pulley = 51,
 	Flying = 59,
 	Spinning,
+	Grinding = 71,
 	VictoryPose = 190,
 	Rolling
 };
