@@ -182,7 +182,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		PlayGrindAnimation(data1, co2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		//GoToAnimatedTailAnimation();
-	break;
+		break;
 	case VictoryPose:
 		co2->AnimInfo.Current = VictoryAnim;
 		GoToAnimatedTailAnimation();

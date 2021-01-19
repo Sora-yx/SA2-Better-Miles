@@ -82,14 +82,21 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 	}
 	a3->Speed.x = v23;
 	a4->Action = 71;
-	if ((double)rand() * 0.000030517578125 <= 0.5)
-	{
-		a3->AnimInfo.Next = 207;
+
+	if (isCustomAnim) {
+		if ((double)rand() * 0.000030517578125 <= 0.5)
+		{
+			a3->AnimInfo.Next = 207;
+		}
+		else
+		{
+			a3->AnimInfo.Next = 203;
+		}
 	}
-	else
-	{
-		a3->AnimInfo.Next = 203;
+	else {
+		a3->AnimInfo.Next = 4;
 	}
+
 	if (CurrentLevel == LevelIDs_GreenForest)
 	{
 		v25 = 6;
@@ -172,6 +179,7 @@ static signed int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 
 
 void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+
 	if (data1->NextAction != 0)
 		return;
 
@@ -315,7 +323,7 @@ void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2) {
 //SA2 hardcode all the grinding animations id, sadly Miles already use those for different actions so we have to add new animation and full hack the function :(
 void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
 
-	if (a3->CharID != Characters_Tails)
+	if (a3->CharID != Characters_Tails || !isCustomAnim)
 		return;
 
 	bool B_Buttons = Action_Held[a3->PlayerNum] == 0;

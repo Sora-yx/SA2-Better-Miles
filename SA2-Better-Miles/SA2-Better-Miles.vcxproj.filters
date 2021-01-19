@@ -42,17 +42,17 @@
     <ClCompile Include="roll.cpp">
       <Filter>Source Files\abilities</Filter>
     </ClCompile>
-    <ClCompile Include="Miles.cpp">
-      <Filter>Source Files\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Animations.cpp">
-      <Filter>Source Files\Character</Filter>
-    </ClCompile>
     <ClCompile Include="actions.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
     <ClCompile Include="grind.cpp">
       <Filter>Source Files\abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="miles.cpp">
+      <Filter>Source Files\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="animations.cpp">
+      <Filter>Source Files\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
