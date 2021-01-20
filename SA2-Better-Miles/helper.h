@@ -18,16 +18,17 @@ struct EntityData2_
 	float SomeMultiplier;
 };
 
-
+FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
-FunctionPointer(int, sub_4905A0, (void* a1, void* a2), 0x4905A0);
+
 
 FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
 FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x7271D0);
 FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x46D6D0);
+FunctionPointer(int, calcHandGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
 
 signed int SetHandGranding(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
 

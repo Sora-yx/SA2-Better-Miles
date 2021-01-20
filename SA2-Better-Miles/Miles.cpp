@@ -126,27 +126,27 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 }
 
 
-static const void* const TailsJumpPtr = (void*)0x751B80;
-signed int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
-{
-	signed int result;
-	__asm
-	{
-		mov ecx, [a2] // a4
-		mov eax, [a1] // a3
-		// Call your __cdecl function here:		
-		call TailsJumpPtr
-		mov result, eax
-	}
-	return result;
-}
+
 
 signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
 {
-	signed int result;
 
-	result = Tails_JumpStart(co2, data);
-	return result;
+	short curStat = data->Status;
+	char curPlay = co2->PlayerNum;
+
+	if ((curStat & 0x4000) != 0 || !Jump_Pressed[curPlay])
+	{
+		return 0;
+	}
+
+	data->Action = Action_Jump;
+	data->NextAction = Action_Jump;
+	data->Status = 0;
+	co2->AnimInfo.Next = 65;
+	co2->Speed.y = co2->PhysData.JumpSpeed;
+	data->Status = data->Status & ~0x2100 | 0x400;
+	data->Status &= 0xFFFDu;
+	return 1;
 }
 
 

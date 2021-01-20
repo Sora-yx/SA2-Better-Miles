@@ -613,80 +613,36 @@ float* sub_7274F0(EntityData1* a1)
 
 signed int SetHandGranding(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1) {
 
-	void* v26 = *(void**)co2Miles->field_1BC[16];
-	float v40 = co2Miles->field_3BC[4];
-	int a2a = 0;
-	NJS_VECTOR v37;
-	int result = 0;
-	float v35;
-	float v36;
-	signed int v39 = 0;
-	float v45 = 0;
-	double v28 = 0.0;
-	float v46 = 0.0;
+	NJS_VECTOR* vec = (NJS_VECTOR*)&co2->field_144[4];
 
+	data1->Status = data1->Status & 0xFAFF | Status_OnPath;
 
-	data1->Status = data1->Status & 0xFAFF | 0x2000;
-	data2[13].field_28 = 0;
-	data2[13].field_2C = 0;
-	*(float*)&co2Miles->field_3BC[16] = 0.0;
-	v37.x = 1.0;
-	v37.y = 0.0;
-	v37.z = 0.0;
-	sub_468E70(data1, &v37);
-	*(float*)&result = 0.0;
-	v35 = 1.0;
-	v36 = 0.0;
-	sub_429710();
-	float* v27 = (float*)nj_current_matrix_ptr_;
-	if (nj_current_matrix_ptr_)
-	{
-		memset(nj_current_matrix_ptr_, 0, 0x30u);
-		*v27 = 1.0;
-		v27[5] = 1.0;
-		v27[10] = 1.0;
-	}
-	if (v39)
-	{
-		njRotateZ(v27, v39);
-	}
-	if (a2a)
-	{
-		njRotateX(v27, a2a);
-	}
-	sub_4273B0((NJS_VECTOR*)&result, (NJS_VECTOR*)&result, v27);
-	sub_429000();
-	v45 = asin(-v36);
-	v28 = -*(float*)&result;
-	data1->Rotation.x = (signed int)(v45 * 10430.38043493439);
-	//v46 = secretly_atan2(-v35, v28);
-	data1->Rotation.z = (signed int)(v46 * -10430.38043493439);
-	sub_429710();
-	float* v29 = (float*)nj_current_matrix_ptr_;
-	if (nj_current_matrix_ptr_)
-	{
-		memset(nj_current_matrix_ptr_, 0, 0x30u);
-		*v29 = 1.0;
-		v29[5] = 1.0;
-		v29[10] = 1.0;
-	}
-	if (data1->Rotation.x)
-	{
-		njRotateX(v29, -data1->Rotation.x);
-	}
-	if (data1->Rotation.z)
-	{
-		njRotateZ(v29, -data1->Rotation.z);
-	}
-	sub_4273B0(&v37, (NJS_VECTOR*)&result, v29);
-	sub_429000();
-	float v47 = (*(float*)&result, v36);
-	int v30 = (signed int)(v47 * 10430.38043493439);
-	//data1->Rotation.y = v30;
-	*(DWORD*)&co2Miles->base.gap1C[2] = v30;
-	data1->Action = 72;
+	NJS_VECTOR playerdir = { 1.0f, 0.0f, 0.0f };
+	NJS_VECTOR playerup = { 0.0f, 1.0f, 0.0f };
+
+	CalcVector_PlayerRot(data1, &playerdir);
+
+	njPushUnitMatrix_();
+	njRotateZ(0, data1->Rotation.z);
+	njRotateX(0, data1->Rotation.x);
+	njCalcPoint_(&playerup, &playerup, 0);
+	njPopMatrixEx();
+
+	data1->Rotation.x = (asin(-playerup.z) * 10430.38043493439);
+	data1->Rotation.z = (atan2f(-playerup.y, -playerup.x) * -10430.38043493439);
+
+	njPushUnitMatrix_();
+	njRotateX(0, data1->Rotation.x);
+	njRotateZ(0, data1->Rotation.z);
+	njCalcPoint_(&playerdir, &playerup, 0);
+	njPopMatrixEx();
+
+	//data1->Rotation.y = (atan2f(playerup.x, playerup.z) * 10430.38043493439);
+	data2->Forward.y = data1->Rotation.y;
+	data1->Action = HandGrinding;
 	co2->AnimInfo.Next = 200;
-	co2->Speed.y = 0.0;
+	co2->Speed.y = 0.0f;
+	return 1;
 }
 
 void DoHangGrinding(EntityData1* data, CharObj2Base* co2) {
