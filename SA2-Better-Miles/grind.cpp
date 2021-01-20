@@ -682,7 +682,7 @@ signed int SetHandGranding(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj
 	sub_429000();
 	float v47 = (*(float*)&result, v36);
 	int v30 = (signed int)(v47 * 10430.38043493439);
-	data1->Rotation.y = v30;
+	//data1->Rotation.y = v30;
 	*(DWORD*)&co2Miles->base.gap1C[2] = v30;
 	data1->Action = 72;
 	co2->AnimInfo.Next = 200;

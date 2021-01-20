@@ -202,7 +202,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		PlayGrindAnimation(data1, co2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		break;
-	case 72:
+	case HandGrinding: //Or whatever you call that thing in CG
 		MoveCharacterOnRail(data1, co2, data2);
 		SomethingAboutHandGrind(data1, data2, co2Miles);
 		SomethingAboutHandGrind2(data1, data2, co2Miles);
