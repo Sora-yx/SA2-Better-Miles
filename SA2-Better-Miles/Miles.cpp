@@ -47,6 +47,16 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 		a4->Status &= 0xDAFFu;
 		setGrindingNextAction(a1, a2, a3, a4);
 	 	return 1;
+	 case 32:
+		 if (!CharacterAnimations[200].Animation)
+		 {
+			 return 1;
+		 }
+		 if (SetHandGranding(a1, a2, a3, a4))
+		 {
+			 return 1;
+		 }
+		 return 0;
 	 case 38:
 		 a4->Action = 6;
 		 return 1;
@@ -55,7 +65,7 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 		 a3->AnimInfo.field_8 = 0;
 		 a3->AnimInfo.Current = Spin1;
 		 Play3DSound_Pos(8200, &a4->Position, 0, 0, 0);
-		 break;
+		 return 1;
 	}
 
 	return Miles_CheckNextActions_original(a1, a2, a3, a4);
@@ -135,9 +145,6 @@ signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
 {
 	signed int result;
 
-	if ((data->Status & 0x2000) != 0)
-		data->NextAction = 38;
-
 	result = Tails_JumpStart(co2, data);
 	return result;
 }
@@ -194,6 +201,12 @@ void Tails_Main_r(ObjectMaster* obj)
 		LoadRailParticules(co2Miles, data2);
 		PlayGrindAnimation(data1, co2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
+		break;
+	case 72:
+		MoveCharacterOnRail(data1, co2, data2);
+		SomethingAboutHandGrind(data1, data2, co2Miles);
+		SomethingAboutHandGrind2(data1, data2, co2Miles);
+		DoHangGrinding(data1, co2);
 		break;
 	case 73:
 		CheckTrick(data1, co2, data2, co2Miles);

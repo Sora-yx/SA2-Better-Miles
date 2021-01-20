@@ -5,9 +5,11 @@ void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
     if (Controllers[a3->PlayerNum].press & (Buttons_X | Buttons_B))
     {
-        a2->NextAction = 39;
-        a3->AnimInfo.field_8 = 0;
-        a3->AnimInfo.Next = Spin1;
+        if (a3->AnimInfo.Next != Spin1) {
+            a2->NextAction = 39;
+            a3->AnimInfo.field_8 = 0;
+            a3->AnimInfo.Next = Spin1;
+        }
     }
 }
 

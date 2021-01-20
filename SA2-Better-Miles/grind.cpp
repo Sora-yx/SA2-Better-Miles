@@ -293,7 +293,8 @@ int inline getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 
 void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3) {
 	sub_46D040(a1, a2, a3);
-	getRailAccel(a2, a1, a3);
+	if (a1->Action != 72)
+		getRailAccel(a2, a1, a3);
 	return;
 }
 
@@ -562,4 +563,180 @@ void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, Tail
 	}
 	DeleteObject_(dispScore);
 
+}
+
+static const void* const Sub468E70Ptr = (void*)0x468E70;
+float*  sub_468E70(EntityData1* a1, NJS_VECTOR* a2)
+{
+	float* result;
+
+	__asm
+	{
+		mov esi, [a2] // a4
+		mov edi, [a1] // a3
+		// Call your __cdecl function here:		
+		call Sub468E70Ptr
+		mov result, edi
+	}
+	return result;
+}
+
+
+void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
+{
+	Float v3; // ST00_4
+	Float v4; // ST04_4
+
+	v3 = a3[4] * a1->x + a3[5] * a1->y + a3[6] * a1->z;
+	v4 = a3[8] * a1->x + a3[9] * a1->y + a3[10] * a1->z;
+	a2->x = a3[1] * a1->y + *a3 * a1->x + a3[2] * a1->z;
+	a2->y = v3;
+	a2->z = v4;
+}
+
+
+static const void* const sub_7274F0Ptr = (void*)0x7274F0;
+float* sub_7274F0(EntityData1* a1)
+{
+	float* result;
+	__asm
+	{
+		mov eax, [a1] // eax0
+		// Call your __cdecl function here:
+		call sub_7274F0Ptr
+		mov result, eax
+	}
+	return result;
+}
+
+
+
+signed int SetHandGranding(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1) {
+
+	void* v26 = *(void**)co2Miles->field_1BC[16];
+	float v40 = co2Miles->field_3BC[4];
+	int a2a = 0;
+	NJS_VECTOR v37;
+	int result = 0;
+	float v35;
+	float v36;
+	signed int v39 = 0;
+	float v45 = 0;
+	double v28 = 0.0;
+	float v46 = 0.0;
+
+
+	data1->Status = data1->Status & 0xFAFF | 0x2000;
+	data2[13].field_28 = 0;
+	data2[13].field_2C = 0;
+	*(float*)&co2Miles->field_3BC[16] = 0.0;
+	v37.x = 1.0;
+	v37.y = 0.0;
+	v37.z = 0.0;
+	sub_468E70(data1, &v37);
+	*(float*)&result = 0.0;
+	v35 = 1.0;
+	v36 = 0.0;
+	sub_429710();
+	float* v27 = (float*)nj_current_matrix_ptr_;
+	if (nj_current_matrix_ptr_)
+	{
+		memset(nj_current_matrix_ptr_, 0, 0x30u);
+		*v27 = 1.0;
+		v27[5] = 1.0;
+		v27[10] = 1.0;
+	}
+	if (v39)
+	{
+		njRotateZ(v27, v39);
+	}
+	if (a2a)
+	{
+		njRotateX(v27, a2a);
+	}
+	sub_4273B0((NJS_VECTOR*)&result, (NJS_VECTOR*)&result, v27);
+	sub_429000();
+	v45 = asin(-v36);
+	v28 = -*(float*)&result;
+	data1->Rotation.x = (signed int)(v45 * 10430.38043493439);
+	//v46 = secretly_atan2(-v35, v28);
+	data1->Rotation.z = (signed int)(v46 * -10430.38043493439);
+	sub_429710();
+	float* v29 = (float*)nj_current_matrix_ptr_;
+	if (nj_current_matrix_ptr_)
+	{
+		memset(nj_current_matrix_ptr_, 0, 0x30u);
+		*v29 = 1.0;
+		v29[5] = 1.0;
+		v29[10] = 1.0;
+	}
+	if (data1->Rotation.x)
+	{
+		njRotateX(v29, -data1->Rotation.x);
+	}
+	if (data1->Rotation.z)
+	{
+		njRotateZ(v29, -data1->Rotation.z);
+	}
+	sub_4273B0(&v37, (NJS_VECTOR*)&result, v29);
+	sub_429000();
+	float v47 = (*(float*)&result, v36);
+	int v30 = (signed int)(v47 * 10430.38043493439);
+	data1->Rotation.y = v30;
+	*(DWORD*)&co2Miles->base.gap1C[2] = v30;
+	data1->Action = 72;
+	co2->AnimInfo.Next = 200;
+	co2->Speed.y = 0.0;
+}
+
+void DoHangGrinding(EntityData1* data, CharObj2Base* co2) {
+	if (data->NextAction != 0)
+		return;
+
+		int curStatus = data->Status;
+		int curChar2 = co2->CharID2;
+		int curSound = 0;
+
+		if ((curStatus & 0x2000) != 0)
+		{
+			if ((data->Status & 0x4000) == 0 && Jump_Pressed[co2->PlayerNum])
+			{
+				data->Action = 10;
+				data->Status = curStatus & 0xDFFF;
+
+				if (curChar2 == 8)
+				{
+					curSound = 8212;
+				}
+				else if (curChar2 == 12)
+				{
+					curSound = 8215;
+				}
+				else
+				{
+					curSound = 8193;
+					if (co2->CharID)
+					{
+						curSound = 0x2000;
+					}
+				}
+				PlaySoundProbably(curSound, 0, 0, 0);
+				if (co2->PhysData.RollEnd > (double)co2->Speed.x)
+				{
+					co2->Speed.x = co2->PhysData.RollEnd;
+				}
+				co2->AnimInfo.Next = 15;
+				co2->Speed.y = -1.5;
+				sub_7274F0(data);
+			}
+		}
+		else
+		{
+			data->Action = 10;
+			co2->AnimInfo.Next = 15;
+			data->Status &= 0xDFFFu;
+			sub_7274F0(data);
+		}
+	
+	return;
 }
