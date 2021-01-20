@@ -24,7 +24,7 @@ static void __declspec(naked) sub_4372E0(int a1, NJS_VECTOR* a2, int a3, char a4
 	}
 }
 
-
+int backupAction = 0;
 void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
 	NJS_VECTOR result;
@@ -40,7 +40,7 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 	float v39 = 0.0;
 	float v40 = 0.0;
 	float v41 = 0.0;
-
+	backupAction = 0;
 	a4->Status = a4->Status & 0xFAFF | 0x2000;
 	(a1[13].field_28) = 0;
 	(a1[13].field_2C) = 0;
@@ -81,7 +81,8 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 		v23 = v22 * v40 + a3->Speed.x;
 	}
 	a3->Speed.x = v23;
-	a4->Action = 71;
+	a4->Action = Grinding;
+	backupAction = a4->Action;
 
 	if (isCustomAnim) {
 		if ((double)rand() * 0.000030517578125 <= 0.5)
@@ -119,6 +120,7 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 
 
 void idk(CharObj2Base* co2) {
+
 	if (co2->PhysData.RollEnd > co2->Speed.x) {
 		co2->Speed.x = co2->PhysData.RollEnd;
 	}
@@ -133,26 +135,7 @@ void idk(CharObj2Base* co2) {
 	}*/
 
 	co2->AnimInfo.Current = 15; // Falling
-}
-
-
-static const void* const sub_726D00Ptr = (void*)0x726D00;
-static void __declspec(naked) DoTrickMaybe()
-{
-	__asm
-	{
-		push[esp + 04h] // a3
-		push edi // a2
-		push eax // a1
-
-		// Call your __cdecl function here:
-		call sub_726D00Ptr
-
-		add esp, 4 // a1<eax> is also used for return value
-		pop edi // a2
-		add esp, 4 // a3
-		retn
-	}
+	return;
 }
 
 
@@ -177,24 +160,48 @@ static signed int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 	return result;
 }
 
+static const void* const CheckGrindPtr = (void*)0x726D00;
+signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
+{
+
+	int result;
+
+	__asm
+	{
+
+		push[a3]
+		mov edi, [a2]
+		mov eax, [a1]
+
+		call CheckGrindPtr
+		mov result, eax
+		add esp, 8 // a2
+
+	}
+	return result;
+}
+
 
 void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 
 	if (data1->NextAction != 0)
 		return;
 
-	if (!(data1->Status & Status_OnPath)) {
+	if ((data1->Status & 0x2000) == 0) {
+		co2->AnimInfo.Next = 15;
 		data1->Action = 10; //SA2Action_LaunchJumpOrFalling
 		co2->AnimInfo.Current = 15; //Falling
 		data1->Status &= 0xDFFFu;
 		return;
 	}
 
-	//if (CheckLaunchRailTrick(sonicco2, co2, data1)) {
-		//return;
-	//}
+	if (CheckTrick(co2Miles, co2, data1))
+	{
+		return;
+	}
 
 	if (data1->Status & Status_DisableControl || Jump_Pressed[co2->PlayerNum] == false || sub_45B2C0(co2, co2->PlayerNum, data1) == 0) {
+
 		if (Tails_Jump(co2, data1)) {
 			data1->Status &= 0xDFFFu;
 		}
@@ -243,6 +250,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		data1->Rotation.y = 12288.0 - njScalor(&co2->Speed) * 800.0 + data1->Rotation.y;
 		idk(co2);
 	}
+
 }
 
 
@@ -323,7 +331,7 @@ void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2) {
 //SA2 hardcode all the grinding animations id, sadly Miles already use those for different actions so we have to add new animation and full hack the function :(
 void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
 
-	if (a3->CharID != Characters_Tails || !isCustomAnim)
+	if (a3->CharID != Characters_Tails || !isCustomAnim || data1->Action != Grinding || a3->AnimInfo.Next == 15)
 		return;
 
 	bool B_Buttons = Action_Held[a3->PlayerNum] == 0;
@@ -375,5 +383,183 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
 			a3->AnimInfo.Next = 210;
 		}
 	}
+}
+
+static const void* const somethingAboutTrickPtr = (void*)0x45ABE0;
+bool somethingAboutTrick(int a1, EntityData1* a2, CharObj2Base* a3)
+{
+	signed int result;
+	__asm
+	{
+		mov esi, a3 // a3
+		mov edi, a2 // a2
+		mov ecx, a1 // a1
+
+		// Call your __cdecl function here:
+		call somethingAboutTrickPtr
+		mov result, ecx
+	}
+	return result;
+}
+
+static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
+signed int somethingAboutTrick2(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4)
+{
+	
+	signed int result;
+	__asm
+	{
+		push[a4]
+		mov esi, a2 // a2
+		mov eax, a1 // a1
+
+		// Call your __cdecl function here:
+		call somethingAboutTrick2Ptr
+		mov result, eax
+		add esp, 8
+	}
+	return result;
+}
+
+static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
+int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
+{
+	int result;
+	__asm
+	{
+		push[a2]
+		mov ebx, a1
+		mov result, ebx
+		// Call your __cdecl function here:
+		call somethingAboutTrick3Ptr	
+		add esp, 4 // a2
+	}
+	return result;
+}
+
+
+static const void* const sub_4EC330Ptr = (void*)0x4EC330;
+static void __declspec(naked) sub_4EC330(int a1, int a2, int a3)
+{
+	__asm
+	{
+		push ecx // a3
+		push ebx // a2
+		push edx // a1
+
+		// Call your __cdecl function here:
+		call sub_4EC330Ptr
+
+		pop edx // a1
+		pop ebx // a2
+		pop ecx // a3
+		retn
+	}
+}
+
+
+void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2) {
+
+	char getcharID2 = 0;
+	int curSound = 0;
+	int idk = 0;
+	int idk2 = 0;
+	int idk3 = 0;
+	char idk4 = 0;
+	ObjectMaster* dispScore;
+	ObjUnknownB* idk5;
+	char idk6;
+
+	if (data1->NextAction != 0 || !(data1->Status & Status_OnPath))
+		return;
+
+	getcharID2 = co2->CharID2;
+
+	if (getcharID2 == 8)
+	{
+		curSound = 8214;
+	}
+	else
+	{
+		curSound = 8218;
+		if (getcharID2 != 12)
+		{
+			curSound = 8195;
+		}
+	}
+	PlaySoundProbably(curSound, 0, 0, 0);
+	if (somethingAboutTrick(idk, data1, co2) && co2->Speed.x > 0.0)
+	{
+		data1->Action = 12;
+		idk2 = 18;
+		idk3 = 0;
+		co2->AnimInfo.Next = 18;
+		co2->AnimInfo.field_8 = 0;
+	}
+	else
+	{
+
+		if (somethingAboutTrick2(data1, co2, data2))
+		{
+			data1->Rotation.x = data2->field_28;
+			data1->Rotation.z = data2->field_30;
+			if (njScalor((const NJS_VECTOR*)data2) >= (double)FLOAT_01283704)
+			{
+				if (njScalor((const NJS_VECTOR*)data2) >= 2.5)
+				{
+					co2->AnimInfo.Next = 17;
+					//sub_438E70(0, 15, co2->PlayerNum, 6); //Vibe Thing
+				}
+				else
+				{
+					co2->AnimInfo.Next = 16;
+				}
+				idk3 = 0;
+				data1->Action = 0;
+				co2->IdleTime = 0;
+			}
+			else
+			{
+				co2->AnimInfo.Next = 1;
+				idk3 = 0;
+				data1->Action = 0;
+				co2->IdleTime = 0;
+			}
+		}
+		else
+		{
+			data1->Rotation.x = data2->field_28;
+			data1->Rotation.z = data2->field_30;
+			data1->Action = 1;
+			somethingAboutTrick3(co2, data1);
+		}
+	}
+	sub_4EC330(idk3, co2->PlayerNum, idk2);
+
+	idk6 = MilesCO2->field_3BC[1];
+	if (!idk6)
+	{
+		DispTechniqueScore_Load(1000);
+		return;
+	}
+	if (idk6 != 1)
+	{
+		//goto LABEL_241;
+	}
+	if (TwoPlayerMode)
+	{
+		return;
+	}
+	dispScore = AllocateObjectMaster(DispTechniqueScore_Main, 3, "DispTechniqueScore");
+	if (!dispScore)
+	{
+		return;
+	}
+	idk5 = AllocateObjUnknownB();
+	if (idk5)
+	{
+		//goto LABEL_240;
+	}
+	DeleteObject_(dispScore);
 
 }

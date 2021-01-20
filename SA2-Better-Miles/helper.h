@@ -18,6 +18,7 @@ struct EntityData2_
 	float SomeMultiplier;
 };
 
+
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
@@ -26,6 +27,7 @@ FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, Cha
 
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
+DataPointer(float, FLOAT_01283704, 0x1283704);
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude);
 bool isMilesAttacking();
 void Miles_DoCollisionAttackStuff(EntityData1* data1);

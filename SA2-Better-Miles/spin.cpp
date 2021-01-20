@@ -5,20 +5,12 @@ void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
     if (Controllers[a3->PlayerNum].press & (Buttons_X | Buttons_B))
     {
-        a2->NextAction = Spinning;
-        a3->AnimInfo.Next = Spin1;
+        a2->NextAction = 39;
         a3->AnimInfo.field_8 = 0;
-        Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
-        //a3->field_28 = Spin1;
-        //a2->field_2 |= 2u;
-        /*a1->SonicSpinTimeProbably = 0;
-        a1->LightdashTime = 0;
-        a1->field_12 = 0;
-        a1->field_90.x = 0.0;
-        a1->field_90.y = 0.0;
-        a1->field_90.z = 0.0;*/
+        a3->AnimInfo.Next = Spin1;
     }
 }
+
 
 static void __declspec(naked) CheckMiles_SpinAttackASM(NJS_OBJECT* a1, EntityData1* a2, CharObj2Base* a3)
 {

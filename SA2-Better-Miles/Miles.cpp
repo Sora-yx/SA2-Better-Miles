@@ -44,8 +44,18 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 	 	a3->AnimInfo.Next = 75;
 	 	return 1;
 	 case 31:
+		a4->Status &= 0xDAFFu;
 		setGrindingNextAction(a1, a2, a3, a4);
 	 	return 1;
+	 case 38:
+		 a4->Action = 6;
+		 return 1;
+	 case 39:
+		 a4->Action = Spinning;
+		 a3->AnimInfo.field_8 = 0;
+		 a3->AnimInfo.Current = Spin1;
+		 Play3DSound_Pos(8200, &a4->Position, 0, 0, 0);
+		 break;
 	}
 
 	return Miles_CheckNextActions_original(a1, a2, a3, a4);
@@ -83,7 +93,7 @@ __declspec(naked) void GoToAnimatedTailAnimation()
 
 
 //Rework the condition to add the victory pose
-static const void* const loc_7512F2 = (void*)0x7512F2;
+static const void* const loc_7512F2 = (void*)0x7512F2; 
 __declspec(naked) void  CheckVictoryPose() {
 
 
@@ -106,26 +116,31 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 }
 
 
-signed int Tails_Jump(CharObj2Base* co2, EntityData1* data) //Used for pulley
+static const void* const TailsJumpPtr = (void*)0x751B80;
+signed int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
 {
-
-	if ((data->Status & 0x4000) != 0 || !Jump_Pressed[co2->PlayerNum])
+	signed int result;
+	__asm
 	{
-		return 0;
+		mov ecx, [a2] // a4
+		mov eax, [a1] // a3
+		// Call your __cdecl function here:		
+		call TailsJumpPtr
+		mov result, eax
 	}
-
-	data->Action = Jumping;
-	co2->Speed.y = co2->PhysData.JumpSpeed;
-	co2->AnimInfo.Next = 65;
-	data->Status &= 65533u;
-	data->Status &= 0xFFFDu;
-	(co2->field_12) = 0;
-	PlaySoundProbably(0x2000, 0, 0, 0);
-	PlayVoice(2, 1627);
-	return 1;
+	return result;
 }
 
+signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
+{
+	signed int result;
 
+	if ((data->Status & 0x2000) != 0)
+		data->NextAction = 38;
+
+	result = Tails_JumpStart(co2, data);
+	return result;
+}
 
 
 void Tails_Main_r(ObjectMaster* obj)
@@ -137,9 +152,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData1* data1 = MainCharObj1[0];
 	EntityData2_* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
-	NJS_VECTOR result;
-	NJS_VECTOR result2;
-
+	
 
 	switch (data1->Action)
 	{
@@ -181,7 +194,9 @@ void Tails_Main_r(ObjectMaster* obj)
 		LoadRailParticules(co2Miles, data2);
 		PlayGrindAnimation(data1, co2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
-		//GoToAnimatedTailAnimation();
+		break;
+	case 73:
+		CheckTrick(data1, co2, data2, co2Miles);
 		break;
 	case VictoryPose:
 		co2->AnimInfo.Current = VictoryAnim;

@@ -3,6 +3,7 @@
 extern bool isInfiniteFly;
 
 signed int Tails_Jump(CharObj2Base* co2, EntityData1* data);
+extern int backupAction;
 
 void MilesFly_Init();
 int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
@@ -24,4 +25,5 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2);
 void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3);
 void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3);
+void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2);
 

@@ -112,6 +112,7 @@ static void __declspec(naked) sub_46EE00()
 	}
 }
 
+
 void Init_MilesActions() {
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
