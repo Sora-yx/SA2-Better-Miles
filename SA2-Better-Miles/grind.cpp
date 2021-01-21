@@ -2,29 +2,24 @@
 
 
 static const void* const Sub4372E0Ptr = (void*)0x4372E0;
-static void __declspec(naked) sub_4372E0(int a1, NJS_VECTOR* a2, int a3, char a4, char a5)
+static inline char PlaySound3DThingMaybe(int id, NJS_VECTOR* pos, int a3, char a4, char a5)
 {
+	char result;
 	__asm
 	{
-		push[esp + 0Ch] // a5
-		push[esp + 0Ch] // a4
-		push[esp + 0Ch] // a3
-		push esi // a2
-		push edi // a1
-
-		// Call your __cdecl function here:
+		push[a5]
+		push[a4]
+		push[a3]
+		mov esi, [pos]
+		mov edi, [id]
 		call Sub4372E0Ptr
-
-		pop edi // a1
-		pop esi // a2
-		add esp, 4 // a3
-		add esp, 4 // a4
-		add esp, 4 // a5
-		retn
+		mov result, al
+		add esp, 12
 	}
+	return result;
 }
 
-int backupAction = 0;
+
 void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
 	NJS_VECTOR result;
@@ -40,7 +35,6 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 	float v39 = 0.0;
 	float v40 = 0.0;
 	float v41 = 0.0;
-	backupAction = 0;
 	a4->Status = a4->Status & 0xFAFF | 0x2000;
 	(a1[13].field_28) = 0;
 	(a1[13].field_2C) = 0;
@@ -82,7 +76,6 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 	}
 	a3->Speed.x = v23;
 	a4->Action = Grinding;
-	backupAction = a4->Action;
 
 	if (isCustomAnim) {
 		if ((double)rand() * 0.000030517578125 <= 0.5)
@@ -110,8 +103,8 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 			v25 = 4103;
 		}
 	}
-	sub_4372E0(v25, &a4->Position, 0, 0, 127);
-	//sub_438E70(0, 15, a4->PlayerNum, 6); //Vibe thing 
+	PlaySound3DThingMaybe(v25, &a4->Position, 0, 0, 127);
+	CallVibeThing(0, 15, a3->PlayerNum, 6); //Vibe thing 
 	sub_429000();
 	v8 = 1;
 	a3->Speed.y = 0.0;
@@ -144,20 +137,19 @@ static signed int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 {
 
 	int result;
+
 	__asm
 	{
-		push[a3]
-		push[a2]
-		push[a1]
+		mov esi, [a3]
+		mov edi, [a2]
 		mov eax, [a1]
-		call sub_45B2C0Ptr
-		mov result, edx
 
-		pop edx // a1
-		pop ecx // a2
-		pop esi // a3
+		call sub_45B2C0Ptr
+		mov result, eax
 	}
+
 	return result;
+
 }
 
 static const void* const CheckGrindPtr = (void*)0x726D00;
@@ -168,7 +160,6 @@ signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 
 	__asm
 	{
-
 		push[a3]
 		mov edi, [a2]
 		mov eax, [a1]
@@ -176,7 +167,6 @@ signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 		call CheckGrindPtr
 		mov result, eax
 		add esp, 8 // a2
-
 	}
 	return result;
 }
@@ -200,16 +190,19 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		return;
 	}
 
-	if (data1->Status & Status_DisableControl || Jump_Pressed[co2->PlayerNum] == false || sub_45B2C0(co2, co2->PlayerNum, data1) == 0) {
+	if ((data1->Status & 0x4000) != 0 || !Jump_Pressed[co2->PlayerNum] || sub_45B2C0(co2, co2->PlayerNum, data1) == 0) {
 
 		if (Tails_Jump(co2, data1)) {
 			data1->Status &= 0xDFFFu;
 		}
-		else if (*(WORD*)&co2Miles->field_3BC[2] <= 120) {
-			if (!Action_Held[co2->PlayerNum])
+		else if (*(WORD*)&co2->gap1C[0] <= 120) {
+
+			if (Action_Held[co2->PlayerNum] != 0)
 			{
-				co2->ActionWindowItems[co2->ActionWindowItemCount++ & 7] = 71;
+				return;
 			}
+			co2->ActionWindowItems[co2->ActionWindowItemCount++ & 7] = 71;
+			return;
 		}
 		else {
 			if (co2->AnimInfo.Current == 211) { // anim rail lose balance left
@@ -223,12 +216,13 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 			if (co2->PhysData.RollEnd > co2->Speed.x) {
 				co2->Speed.x = co2->PhysData.RollEnd;
 			}
-			data1->Action = 10; //SA2Action_LaunchJumpOrFalling
+			/*data1->Action = 10; //SA2Action_LaunchJumpOrFalling
 			co2->AnimInfo.Current = 15; //Falling
-			data1->Status &= 0xDFFFu;
+			data1->Status &= 0xDFFFu;*/
 		}
 		return;
 	}
+
 
 	data1->Status &= 0xDFFFu;
 	data1->Action = 10; //SA2Action_LaunchJumpOrFalling
@@ -509,7 +503,7 @@ void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, Tail
 				if (njScalor((const NJS_VECTOR*)data2) >= 2.5)
 				{
 					co2->AnimInfo.Next = 17;
-					//sub_438E70(0, 15, co2->PlayerNum, 6); //Vibe Thing
+					CallVibeThing(0, 15, co2->PlayerNum, 6); //Vibe Thing
 				}
 				else
 				{
@@ -610,8 +604,7 @@ float* sub_7274F0(EntityData1* a1)
 }
 
 
-
-signed int SetHandGranding(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1) {
+signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* data1) {
 
 	NJS_VECTOR* vec = (NJS_VECTOR*)&co2->field_144[4];
 

@@ -33,8 +33,6 @@ signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, 
 
 signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
-
-
 	switch (a4->NextAction)
 	{
 	 case 20: //Pulley
@@ -44,7 +42,6 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 	 	a3->AnimInfo.Next = 75;
 	 	return 1;
 	 case 31:
-		a4->Status &= 0xDAFFu;
 		setGrindingNextAction(a1, a2, a3, a4);
 	 	return 1;
 	 case 32:
@@ -52,7 +49,7 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 		 {
 			 return 1;
 		 }
-		 if (SetHandGranding(a1, a2, a3, a4))
+		 if (SetHandGranding(a1, a3, a4))
 		 {
 			 return 1;
 		 }
@@ -113,8 +110,6 @@ __declspec(naked) void  CheckVictoryPose() {
 	}
 }
 
-
-
 void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 	data1->Status |= Status_Attack;
 	data1->Collision->CollisionArray[0].damage &= 0xFCu;
@@ -124,8 +119,6 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 	data1->Collision->CollisionArray[1].attr &= 0xFFFFFFEF;
 	return;
 }
-
-
 
 
 signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
@@ -144,8 +137,6 @@ signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
 	data->Status = 0;
 	co2->AnimInfo.Next = 65;
 	co2->Speed.y = co2->PhysData.JumpSpeed;
-	data->Status = data->Status & ~0x2100 | 0x400;
-	data->Status &= 0xFFFDu;
 	return 1;
 }
 
@@ -196,10 +187,10 @@ void Tails_Main_r(ObjectMaster* obj)
 			spinOnFrames(co2, data1);
 		break;
 	case Grinding:
+		PlayGrindAnimation(data1, co2);
 		DoGrindThing(data1, data2, co2, co2Miles);
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
-		PlayGrindAnimation(data1, co2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		break;
 	case HandGrinding: //Or whatever you call that thing in CG

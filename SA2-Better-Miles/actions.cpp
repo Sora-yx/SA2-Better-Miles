@@ -26,6 +26,35 @@ signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 	return GetAnalogASM2(data, co2, angle, magnitude);
 }
 
+
+static const void* const VibeThingPtr = (void*)0x438E70;
+static void __declspec(naked) VibeThingASM(int a1, signed int a2, int a3, signed int a4)
+{
+	__asm
+	{
+		push[esp + 04h] // int a4
+		push ecx // a3
+		push edx // int a2
+		push eax // a1
+
+		// Call your __cdecl function here:
+		call VibeThingPtr
+
+		pop eax // a1
+		pop edx // int a2
+		pop ecx // a3
+		add esp, 4 // int a4
+		retn
+	}
+}
+
+void CallVibeThing(int a1, signed int a2, int a3, signed int a4)
+{
+	VibeThingASM(a1, a2, a3, a4);
+	return;
+}
+
+
 signed char GetCharacterLevel() {
 
 	for (int i = 0; i < 33; i++)
@@ -204,6 +233,11 @@ __declspec(naked) void  CheckGravitySwitch() {
 	}
 }
 
+void ForceMiles(int player) {
+	CurrentCharacter = Characters_Tails;
+	LoadTails(0);
+}
+
 
 void Init_MilesActions() {
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
@@ -214,6 +248,8 @@ void Init_MilesActions() {
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteData<1>((int*)0x776D20, 0x0);
+
+	WriteCall((void*)0x43D6CD, ForceMiles);
 
 	//WriteJump(reinterpret_cast<void*>(0x776d1e), CheckGravitySwitch);
 	//WriteData<1>((int*)0x776d1e, )

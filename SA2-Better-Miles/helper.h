@@ -23,14 +23,13 @@ FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
+void CallVibeThing(int a1, signed int a2, int a3, signed int a4);
 
 
 FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
 FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x7271D0);
 FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x46D6D0);
 FunctionPointer(int, calcHandGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
-
-signed int SetHandGranding(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
 
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);

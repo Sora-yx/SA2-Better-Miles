@@ -32,14 +32,17 @@ extern "C" {
 
 		BetterMiles_Init();
 
-		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
-		story->Type = 1;
-		story->Level = LevelIDs_FinalRush;
-		story->Character = Characters_Tails;*/
 
-		for (int i = 0; i < 16; i++) {
-			helperFunctions.RegisterStartPosition(i, startMiles);
+		for (int i = 0; i < SonicStartArray_Length; i++) {
+			helperFunctions.RegisterStartPosition(Characters_Tails, SonicStartArray[i]);
 		}
+
+		StoryEntry* story = (StoryEntry*)0x173A5E0;
+		story->Type = 1;
+		story->Level = LevelIDs_SkyRail;
+		story->Character = Characters_Tails;
+
+
 
 	}
 
