@@ -9,7 +9,7 @@ HelperFunctions HelperFunctionsGlobal;
 extern "C" {
 
 
-	StartPosition startMiles = { LevelIDs_SkyRail, 0x4000, 0x4000, 0x4000, { -9.5f, 800, -526.1438f }, { -9.5f, 800, -526.1438f }, { 8.7f, 800, -526.1438f } };
+	StartPosition startMiles = { LevelIDs_FinalRush, 0x4000, 0x4000, 0x4000, { -9.5f, 800, -526.1438f }, { -9.5f, 800, -526.1438f }, { 8.7f, 800, -526.1438f } };
 
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{

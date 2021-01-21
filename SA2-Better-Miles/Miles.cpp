@@ -156,8 +156,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	{
 	case Standing:
 	case Running:
-		if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7)
-			return;
+
 
 		if (co2->Speed.x < 1.3) {
 			Miles_CheckSpinAttack(data1, co2);
@@ -173,7 +172,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		if (!isCustomAnim)
 			return;
 
-		if (TimerStopped != 0) { //Check if the level is finished
+		if (TimerStopped != 0 && (TimerSeconds > 0 || TimerMinutes > 0)) { //Check if the level is finished
 			co2->field_28 = VictoryAnim;
 			co2->AnimInfo.Next = VictoryAnim;
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.

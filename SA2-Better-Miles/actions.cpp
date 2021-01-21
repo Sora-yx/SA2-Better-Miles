@@ -215,7 +215,7 @@ EntityData2_* PlayMysticMelody(ObjectMaster* obj)
 
 	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 30))
 	{
-		if (Controllers[co2->PlayerNum].press & (Buttons_B || Buttons_X))
+		if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B))
 			SetMysticMelodyAction(co2, data);
 	}
 

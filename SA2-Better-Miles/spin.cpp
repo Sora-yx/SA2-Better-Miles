@@ -3,7 +3,11 @@
 
 void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
 {
-    if (Controllers[a3->PlayerNum].press & (Buttons_X | Buttons_B))
+
+    if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || a2->NextAction != 0)
+        return;
+
+    if (Controllers[a3->PlayerNum].on & (Buttons_X | Buttons_B))
     {
           a2->NextAction = 39;
           a3->AnimInfo.field_8 = 0;

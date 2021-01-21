@@ -133,7 +133,7 @@ void idk(CharObj2Base* co2) {
 
 
 static const void* const sub_45B2C0Ptr = (void*)0x45B2C0;
-static signed int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
+static inline int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 {
 
 	int result;
@@ -141,11 +141,11 @@ static signed int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 	__asm
 	{
 		mov esi, [a3]
-		mov edi, [a2]
-		mov eax, [a1]
+		mov ecx, [a2]
+		mov edx, [a1]
 
 		call sub_45B2C0Ptr
-		mov result, eax
+		mov result, edx
 	}
 
 	return result;
@@ -171,7 +171,7 @@ signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 	return result;
 }
 
-
+int v67 = 0;
 void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 
 	if (data1->NextAction != 0)
@@ -190,12 +190,12 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		return;
 	}
 
-	if ((data1->Status & 0x4000) != 0 || !Jump_Pressed[co2->PlayerNum] || sub_45B2C0(co2, co2->PlayerNum, data1) == 0) {
+	if (((data1->Status & 0x4000) != 0 || Jump_Pressed[(char)co2->PlayerNum] == 0) || !sub_45B2C0(co2, co2->PlayerNum, data1) || sub_45B2C0(co2, co2->PlayerNum, data1) > 3) {
 
 		if (Tails_Jump(co2, data1)) {
 			data1->Status &= 0xDFFFu;
 		}
-		else if (*(WORD*)&co2->gap1C[0] <= 120) {
+		else if (*(WORD*)&co2Miles->field_3BC[2] <= 120) {
 
 			if (Action_Held[co2->PlayerNum] != 0)
 			{
@@ -222,7 +222,6 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		}
 		return;
 	}
-
 
 	data1->Status &= 0xDFFFu;
 	data1->Action = 10; //SA2Action_LaunchJumpOrFalling
