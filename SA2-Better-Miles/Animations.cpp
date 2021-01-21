@@ -229,7 +229,7 @@ void LoadCharacterAndNewAnimation() {
 	PDS_PERIPHERAL p1 = Controllers[0];
 
 	//if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
-		CurrentCharacter = Characters_Tails;
+		//CurrentCharacter = Characters_Tails;
 
 	LoadCharacters();
 

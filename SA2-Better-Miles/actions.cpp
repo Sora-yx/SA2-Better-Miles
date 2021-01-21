@@ -90,6 +90,7 @@ Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data1 = MainCharObj1[0];
 
+
 	if (isMilesAttacking() && GetCollidingPlayer(obj))
 		return 1;
 
@@ -118,13 +119,15 @@ __declspec(naked) void  CheckBreakIronBox() {
 }
 
 
-static const void* const sub_46EE00ptr = (void*)0x46EE00;
-signed int CheckUpgradeBox(ObjectMaster* a1) {
+static const void* const loc_46ee89 = (void*)0x46ee89;
+static const void* const loc_46ee9b = (void*)0x46ee9b;
+__declspec(naked) void CheckUpgradeBox() {
 
-	if (isMilesAttacking() && MainCharObj2[0]->CharID == Characters_Tails)
-		return 1;
+	if (MainCharObj2[0]->CharID == Characters_Rouge && (MainCharObj2[0]->Upgrades & Upgrades_RougeIronBoots) != 0 || (isMilesAttacking() && MainCharObj2[0]->CharID == Characters_Tails)) {
+		_asm jmp loc_46ee89
+	}
 	else {
-		_asm call sub_46EE00ptr
+		_asm jmp loc_46ee9b
 	}
 }
 
@@ -243,8 +246,9 @@ void Init_MilesActions() {
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
 	MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
+
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	
-    WriteJump((void*)0x46EE00, sub_46EE00);
+    WriteJump(reinterpret_cast<void*>(0x46ee7c), CheckUpgradeBox);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteData<1>((int*)0x776D20, 0x0);
