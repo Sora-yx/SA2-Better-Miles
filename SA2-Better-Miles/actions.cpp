@@ -2,6 +2,8 @@
 
 Trampoline* CheckBreakObject_t;
 Trampoline* MysticMelody_t;
+Trampoline* Dynamite_t;
+Trampoline* DynamiteHiddenBase_t;
 
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
@@ -238,13 +240,47 @@ __declspec(naked) void  CheckGravitySwitch() {
 
 void ForceMiles(int player) {
 	CurrentCharacter = Characters_Tails;
-	LoadTails(0);
+	LoadTails(player);
+}
+
+
+void CheckBreakDynamite(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (obj) {
+		if (data->Action == 0 && isMilesAttacking() && GetCollidingPlayer(obj)) {
+			data->Status |= 4u;
+			obj->EntityData2->gap_44[0] = 0;
+		}
+	}
+
+	ObjectFunc(origin, Dynamite_t->Target());
+	origin(obj);
+}
+
+void CheckBreakDynamiteHiddenBase(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (obj) {
+		if (data->NextAction != 7 && isMilesAttacking() && GetCollidingPlayer(obj)) {
+			data->field_6 = 0;
+			data->NextAction = 7;
+		}
+	}
+
+	ObjectFunc(origin, DynamiteHiddenBase_t->Target());
+	origin(obj);
 }
 
 
 void Init_MilesActions() {
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
-	MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
+	//MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
+	Dynamite_t = new Trampoline((int)Dynamite_Main, (int)Dynamite_Main + 0x5, CheckBreakDynamite);
+	DynamiteHiddenBase_t = new Trampoline((int)DynamiteHiddenBase_Main, (int)DynamiteHiddenBase_Main + 0x5, CheckBreakDynamiteHiddenBase);
+
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	
@@ -255,6 +291,9 @@ void Init_MilesActions() {
 
 	WriteCall((void*)0x43D6CD, ForceMiles);
 
+	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
+
+	//WriteJump(reinterpret_cast<void*>(0x6da8dc), CheckBreakDynamite);
 	//WriteJump(reinterpret_cast<void*>(0x776d1e), CheckGravitySwitch);
 	//WriteData<1>((int*)0x776d1e, )
 }

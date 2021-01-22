@@ -33,14 +33,22 @@ extern "C" {
 		BetterMiles_Init();
 
 
-		for (int i = 0; i < SonicStartArray_Length; i++) {
+		/*for (int i = 0; i < SonicStartArray_Length; i++) {
 			helperFunctions.RegisterStartPosition(Characters_Tails, SonicStartArray[i]);
+		}*/
+
+		for (int i = 0; i < SonicEndArray_Length; i++) {
+			helperFunctions.RegisterEndPosition(Characters_Tails, SonicEndArray[i]);
+		}
+
+		for (int i = 0; i < MechTailsStartArray_Length; i++) {
+			helperFunctions.RegisterStartPosition(Characters_Tails, MechTailsStartArray[i]);
 		}
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_LostColony;
-		story->Character = Characters_MechEggman;
+		story->Level = LevelIDs_HiddenBase;
+		story->Character = Characters_Tails;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
@@ -53,6 +61,7 @@ extern "C" {
 
 		/*if (Controllers[0].press & Buttons_Y)
 			PlaySoundProbably(8193, 0, 0, 0);*/
+
 	}
 
 

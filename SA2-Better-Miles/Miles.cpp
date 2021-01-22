@@ -186,8 +186,8 @@ void Tails_Main_r(ObjectMaster* obj)
 			spinOnFrames(co2, data1);
 		break;
 	case Grinding:
-		PlayGrindAnimation(data1, co2);
 		DoGrindThing(data1, data2, co2, co2Miles);
+		PlayGrindAnimation(data1, co2);
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
 		CheckGrindThing(data1, data2, co2, co2Miles);
@@ -239,10 +239,10 @@ void BetterMiles_Init() {
 		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckVictoryPose);
 	}
 
-
 	//WriteJump(reinterpret_cast<void*>(0x751c67), AddStatueAttack);
 
 	WriteData<1>((int*)0x472C99, 0x17); //remove miles check shit
+
 
 	//Audio fix
 	voices_Init();

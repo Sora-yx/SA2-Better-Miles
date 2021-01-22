@@ -3,7 +3,8 @@
 //Setup a new animation list for Custom Animation. (Adding the SA1 ones mostly, but also extend the list to make Miles being able to use more actions such as Vine, Bar etc.)
 AnimationInfo TailsAnimationList_R[] = {
 	{ 95, 208, 3, 0, 0.0625f, 0.1f },
-	{ 95, 208, 3, 1, 0.25f, 0.1f },
+	{ 1, 208, 3, 1, 0.25f, 0.1f },
+	//{ 95, 208, 3, 1, 0.25f, 0.1f },
 	{ 95, 208, 3, 2, 0.25f, 0.1f },
 	{ 95, 208, 4, 0, 0.25f, 0.1f },
 	{ 4, 208, 3, 4, 0.03125f, 0.1f },
@@ -228,8 +229,8 @@ void LoadCharacterAndNewAnimation() {
 
 	PDS_PERIPHERAL p1 = Controllers[0];
 
-	//if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
-		//CurrentCharacter = Characters_Tails;
+	if (p1.press & Buttons_Y || p1.on & Buttons_Y || p1.release & Buttons_Y)
+		CurrentCharacter = Characters_Tails;
 
 	LoadCharacters();
 

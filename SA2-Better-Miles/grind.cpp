@@ -194,7 +194,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 
 		if (Tails_Jump(co2, data1)) {
 			data1->Status &= 0xDFFFu;
-		}
+		}	
 		else if (*(WORD*)&co2Miles->field_3BC[2] <= 120) {
 
 			if (Action_Held[co2->PlayerNum] != 0)
@@ -205,6 +205,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 			return;
 		}
 		else {
+
 			if (co2->AnimInfo.Current == 211) { // anim rail lose balance left
 				data1->Rotation.y -= 0x4000;
 			}
@@ -216,10 +217,13 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 			if (co2->PhysData.RollEnd > co2->Speed.x) {
 				co2->Speed.x = co2->PhysData.RollEnd;
 			}
+
 			/*data1->Action = 10; //SA2Action_LaunchJumpOrFalling
 			co2->AnimInfo.Current = 15; //Falling
 			data1->Status &= 0xDFFFu;*/
+
 		}
+
 		return;
 	}
 

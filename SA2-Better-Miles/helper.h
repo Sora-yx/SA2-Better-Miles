@@ -18,6 +18,8 @@ struct EntityData2_
 	float SomeMultiplier;
 };
 
+ObjectFunc(Dynamite_Main, 0x6da880);
+ObjectFunc(DynamiteHiddenBase_Main, 0x714610);
 FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
