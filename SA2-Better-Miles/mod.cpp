@@ -19,7 +19,7 @@ extern "C" {
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
 		isInfiniteFly = config->getBool("General", "isInfiniteFly", false);
 		isCustomAnim = config->getBool("General", "isCustomAnim", true);
-		isMechRemoved = config->getBool("General", "isMechAllowed", false);
+		isMechRemoved = config->getBool("General", "isMechRemoved", false);
 		isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
 
 		flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
@@ -41,10 +41,9 @@ extern "C" {
 
 		BetterMiles_Init();
 
-
 		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_GreenHill;
+		story->Level = LevelIDs_PrisonLane;
 		story->Character = Characters_Tails;*/
 	}
 

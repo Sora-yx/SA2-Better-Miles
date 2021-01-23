@@ -4,6 +4,10 @@ Trampoline* CheckBreakObject_t;
 Trampoline* MysticMelody_t;
 Trampoline* Dynamite_t;
 Trampoline* DynamiteHiddenBase_t;
+Trampoline* PrisonLaneDoor_t;
+Trampoline* PrisonLaneDoor2_t;
+Trampoline* PrisonLaneDoor3_t;
+Trampoline* PrisonLaneDoor4_t;
 
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
@@ -224,8 +228,14 @@ __declspec(naked) void  CheckGravitySwitch() {
 }
 
 void ForceMiles(int player) {
-	CurrentCharacter = Characters_Tails;
-	LoadTails(player);
+	if (!TwoPlayerMode) {
+		CurrentCharacter = Characters_Tails;
+		LoadTails(player);
+	}
+	else {
+		CurrentCharacter = Characters_MechTails;
+		LoadMechTails(player);
+	}
 }
 
 
@@ -259,12 +269,54 @@ void CheckBreakDynamiteHiddenBase(ObjectMaster* obj) {
 	origin(obj);
 }
 
+void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+	EntityData2* data2 = obj->Data2.Entity;
+
+	if (obj) {
+
+		if (MainCharObj2[0]->CharID != Characters_Tails)
+			return;
+
+		if (data->Action == 0 && data->Rotation.x == 3)
+		{
+			data->Rotation.x = 32;
+		} 
+		else  if (data->Action < 1 && GetCollidingPlayer(obj)) {
+			data->Rotation.x = 3;
+			data->Action = 1;
+		}
+	}
+}
+
+
+void CheckPrisonLaneDoor(ObjectMaster* obj) {
+
+	CheckAndOpenPrisonLaneDoor(obj);
+
+	ObjectFunc(origin, PrisonLaneDoor_t->Target());
+	origin(obj);
+}
+
+
+void CheckPrisonLaneDoor4(ObjectMaster* obj) {
+
+	CheckAndOpenPrisonLaneDoor(obj);
+
+	ObjectFunc(origin, PrisonLaneDoor4_t->Target());
+	origin(obj);
+}
+
+
 
 void Init_MilesActions() {
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
 	//MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
 	Dynamite_t = new Trampoline((int)Dynamite_Main, (int)Dynamite_Main + 0x5, CheckBreakDynamite);
 	DynamiteHiddenBase_t = new Trampoline((int)DynamiteHiddenBase_Main, (int)DynamiteHiddenBase_Main + 0x5, CheckBreakDynamiteHiddenBase);
+	PrisonLaneDoor_t = new Trampoline((int)PrisonLaneDoor, (int)PrisonLaneDoor + 0x6, CheckPrisonLaneDoor);
+	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 
@@ -274,7 +326,8 @@ void Init_MilesActions() {
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteData<1>((int*)0x776D20, 0x0);
 
-	WriteCall((void*)0x43D6CD, ForceMiles);
+	if (isMechRemoved)
+		WriteCall((void*)0x43D6CD, ForceMiles);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
 

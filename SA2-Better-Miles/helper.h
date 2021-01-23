@@ -24,6 +24,10 @@ struct EntityData2_
 
 ObjectFunc(Dynamite_Main, 0x6da880);
 ObjectFunc(DynamiteHiddenBase_Main, 0x714610);
+ObjectFunc(PrisonLaneDoor, 0x606400);
+/*ObjectFunc(PrisonLaneDoor2, 0x605D50);
+ObjectFunc(PrisonLaneDoor3, 0x608610);*/
+ObjectFunc(PrisonLaneDoor4, 0x606A10);
 FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
