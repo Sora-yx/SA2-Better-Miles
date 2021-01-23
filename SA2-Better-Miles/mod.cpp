@@ -46,7 +46,6 @@ extern "C" {
 		story->Type = 1;
 		story->Level = LevelIDs_GreenHill;
 		story->Character = Characters_Tails;*/
-
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {

@@ -45,7 +45,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 
     if (curAnim == 94 || curAnim >= Spin1 && curAnim <= Spin10)
     {
-        if ((double)a1->AnimInfo.field_10 >= 14.5) //Field10 should be the current frame of the anim. 
+        if ((double)a1->AnimInfo.field_10 >= 13.5) //Field10 should be the current frame of the anim. 
         {
             a1->AnimInfo.Next = 0; 
         }
