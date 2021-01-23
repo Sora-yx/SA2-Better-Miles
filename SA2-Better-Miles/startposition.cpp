@@ -113,9 +113,45 @@ LevelEndPosition MilesEndArray[] = {
 
 
 
+
+signed char GetCharacterLevel() {
+
+	for (int i = 0; i < 33; i++)
+	{
+		if (CurrentLevel == StageSelectLevels[i].Level)
+		{
+			return StageSelectLevels[i].Character;
+		}
+	}
+
+	return -1;
+}
+
+
+
+//Init the new animation list for Miles.
+void LoadCharacter_r() {
+
+	PDS_PERIPHERAL p1 = Controllers[0];
+
+
+	if (!TwoPlayerMode && CurrentLevel != LevelIDs_FinalHazard && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace) {
+
+		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
+			CurrentCharacter = Characters_Tails;
+	}
+
+	LoadCharacters();
+}
+
+
 void Init_StartEndPos() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
+
 	if (!randoMod) {
-		WriteData((StartPosition*)0x1747be8, MilesStartArray);
+		WriteData((StartPosition**)0x43d955, MilesStartArray);
+		WriteCall((void*)0x439b13, LoadCharacter_r);
+		WriteCall((void*)0x43cada, LoadCharacter_r);
 	}
 }
+

@@ -330,8 +330,4 @@ void Init_MilesActions() {
 		WriteCall((void*)0x43D6CD, ForceMiles);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
-
-	//WriteJump(reinterpret_cast<void*>(0x6da8dc), CheckBreakDynamite);
-	//WriteJump(reinterpret_cast<void*>(0x776d1e), CheckGravitySwitch);
-	//WriteData<1>((int*)0x776d1e, )
 }

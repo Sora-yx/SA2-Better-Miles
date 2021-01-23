@@ -225,42 +225,6 @@ AnimationInfo TailsAnimationList_R[] = {
 };
 
 
-
-signed char GetCharacterLevel() {
-
-	for (int i = 0; i < 33; i++)
-	{
-		if (CurrentLevel == StageSelectLevels[i].Level)
-		{
-			return StageSelectLevels[i].Character;
-		}
-	}
-
-	return -1;
-}
-
-//Init the new animation list for Miles.
-void LoadCharacterAndNewAnimation() {
-
-	PDS_PERIPHERAL p1 = Controllers[0];
-
-
-	if (!TwoPlayerMode && CurrentLevel != LevelIDs_FinalHazard && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace) {
-
-		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
-			CurrentCharacter = Characters_Tails;
-	}
-
-	LoadCharacters();
-
-
-	if (MainCharObj2[0]->CharID == Characters_Tails) {
-		MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R;
-	}
-}
-
-
 void Init_NewAnimation() {
-	WriteCall((void*)0x439b13, LoadCharacterAndNewAnimation);
-	WriteCall((void*)0x43cada, LoadCharacterAndNewAnimation);
+	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
 }

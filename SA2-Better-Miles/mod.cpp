@@ -41,10 +41,10 @@ extern "C" {
 
 		BetterMiles_Init();
 
-		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
+		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_PrisonLane;
-		story->Character = Characters_Tails;*/
+		story->Level = LevelIDs_MetalHarbor;
+		story->Character = Characters_Tails;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
