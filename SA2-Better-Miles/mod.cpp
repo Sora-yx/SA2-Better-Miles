@@ -3,13 +3,14 @@
 bool flySoundEffect = true;
 bool isInfiniteFly = false;
 bool isCustomAnim = true;
+bool isMechRemoved = false;
+bool isMilesAdventure = false;
 HelperFunctions HelperFunctionsGlobal;
 
 
 extern "C" {
 
 
-	StartPosition startMiles = { LevelIDs_FinalRush, 0x4000, 0x4000, 0x4000, { -9.5f, 800, -526.1438f }, { -9.5f, 800, -526.1438f }, { 8.7f, 800, -526.1438f } };
 
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
@@ -17,6 +18,8 @@ extern "C" {
 		isInfiniteFly = config->getBool("General", "isInfiniteFly", false);
 		flySoundEffect = config->getBool("General", "flySoundEffect", true);
 		isCustomAnim = config->getBool("General", "isCustomAnim", true);
+		isMechRemoved = config->getBool("General", "isMechAllowed", false);
+		isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
 		delete config;
 
 		HelperFunctionsGlobal = helperFunctions;
@@ -33,31 +36,17 @@ extern "C" {
 		BetterMiles_Init();
 
 
-		/*for (int i = 0; i < SonicStartArray_Length; i++) {
-			helperFunctions.RegisterStartPosition(Characters_Tails, SonicStartArray[i]);
-		}*/
-
-		for (int i = 0; i < SonicEndArray_Length; i++) {
-			helperFunctions.RegisterEndPosition(Characters_Tails, SonicEndArray[i]);
-		}
-
-		for (int i = 0; i < MechTailsStartArray_Length; i++) {
-			helperFunctions.RegisterStartPosition(Characters_Tails, MechTailsStartArray[i]);
-		}
-
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_HiddenBase;
+		story->Level = LevelIDs_GreenHill;
 		story->Character = Characters_Tails;
+
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
 
 		EntityData1* data1 = MainCharObj1[0];
 		CharObj2Base* co2 = MainCharObj2[0];
-
-		if (GameState == 16)
-			co2->MechHP = 12.0;
 
 		/*if (Controllers[0].press & Buttons_Y)
 			PlaySoundProbably(8193, 0, 0, 0);*/

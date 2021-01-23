@@ -48,7 +48,7 @@ void Init_MilesActions();
 static Buttons JumpButtons = Buttons_A;
 static Buttons AttackButtons = Buttons_X;
 
-void voices_Init();
+void voicesFixes_Init();
 
 
 enum MilesState {

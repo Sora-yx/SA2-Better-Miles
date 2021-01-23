@@ -57,18 +57,6 @@ void CallVibeThing(int a1, signed int a2, int a3, signed int a4)
 }
 
 
-signed char GetCharacterLevel() {
-
-	for (int i = 0; i < 33; i++)
-	{
-		if (CurrentLevel == StageSelectLevels[i].Level)
-		{
-			return StageSelectLevels[i].Character;
-		}
-	}
-
-	return -1;
-}
 
 
 

@@ -228,8 +228,6 @@ void BetterMiles_Init() {
 	Init_MilesActions();
 	MilesFly_Init();
 
-	//WriteData<5>((int*)0x751c6e, 0x90);	
-	//WriteData<4>((int*)0x74e175, 0x90);
 
 	//Custom anim + new moves
 	Init_NewAnimation();
@@ -239,11 +237,10 @@ void BetterMiles_Init() {
 		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckVictoryPose);
 	}
 
-	//WriteJump(reinterpret_cast<void*>(0x751c67), AddStatueAttack);
 
-	WriteData<1>((int*)0x472C99, 0x17); //remove miles check shit
-
+	//WriteData<1>((int*)0x472C99, 0x17); //remove miles check shit
+	initStartPos();
 
 	//Audio fix
-	voices_Init();
+	voicesFixes_Init();
 }

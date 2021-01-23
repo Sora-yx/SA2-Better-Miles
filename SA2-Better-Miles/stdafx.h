@@ -13,3 +13,4 @@
 #include "abilities.h"
 #include "IniFile.hpp"
 #include "AnimationFile.h"
+#include "StartPos.h"
