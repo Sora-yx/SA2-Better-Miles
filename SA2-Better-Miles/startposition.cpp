@@ -113,7 +113,7 @@ LevelEndPosition MilesEndArray[] = {
 
 
 
-void initStartPos() {
+void Init_StartEndPos() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
 	if (!randoMod) {
 		WriteData((StartPosition*)0x1747be8, MilesStartArray);

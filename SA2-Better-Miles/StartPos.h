@@ -1,3 +1,3 @@
 #pragma once
 
-void initStartPos();
+void Init_StartEndPos();

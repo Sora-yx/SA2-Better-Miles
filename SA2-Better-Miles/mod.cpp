@@ -1,25 +1,31 @@
 #include "stdafx.h"
 
-bool flySoundEffect = true;
+
 bool isInfiniteFly = false;
 bool isCustomAnim = true;
 bool isMechRemoved = false;
 bool isMilesAdventure = false;
+
+bool flySoundEffect = true;
+bool jumpVoice = false;
+bool flyVoice = false;
 HelperFunctions HelperFunctionsGlobal;
 
 
 extern "C" {
 
-
-
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
 		isInfiniteFly = config->getBool("General", "isInfiniteFly", false);
-		flySoundEffect = config->getBool("General", "flySoundEffect", true);
 		isCustomAnim = config->getBool("General", "isCustomAnim", true);
 		isMechRemoved = config->getBool("General", "isMechAllowed", false);
 		isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
+
+		flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
+		jumpVoice = config->getBool("Audio", "jumpVoice", false);
+		flyVoice = config->getBool("Audio", "flyVoice", false);
+
 		delete config;
 
 		HelperFunctionsGlobal = helperFunctions;
@@ -36,10 +42,10 @@ extern "C" {
 		BetterMiles_Init();
 
 
-		StoryEntry* story = (StoryEntry*)0x173A5E0;
+		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
 		story->Level = LevelIDs_GreenHill;
-		story->Character = Characters_Tails;
+		story->Character = Characters_Tails;*/
 
 	}
 

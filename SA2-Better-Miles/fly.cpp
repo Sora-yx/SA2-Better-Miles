@@ -8,7 +8,10 @@ static int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) 
 	a1->Status &= 0xDAFFu;
 	a2->AnimInfo.Current = FlyingAnim;
 	a3->field_1BC[418] |= 1u; //idk
-	return PlayVoice(2, 1629);
+	if (flyVoice)
+		return PlayVoice(2, 1629);
+
+	return 1;
 }
 
 int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
@@ -89,7 +92,7 @@ void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2) {
 }
 
 
-void MilesFly_Init() {
+void Init_MilesFly() {
 
 	WriteJump((void*)0x752DB0, Tails_FlyStartASM); 	//Remove the altitude nerf.
 	MilesFlySpeedValue = flyCustomSpeedValue; //asign a new value for horizontal fly speed.

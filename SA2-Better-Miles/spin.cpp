@@ -106,7 +106,7 @@ void spinOnFrames(CharObj2Base* co2, EntityData1* data1) {
     return;
 }
 
-void Miles_SpinInit() {
+void Init_MilesSpin() {
     WriteData<5>((void*)0x752567, 0x90); //Remove Tail Attack thing
     WriteData<3>((int*)0x751e56, 0x90);
     WriteData<11>((int*)0x74ed0a, 0x90);

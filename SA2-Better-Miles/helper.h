@@ -3,6 +3,10 @@
 extern HelperFunctions HelperFunctionsGlobal;
 extern AnimationInfo TailsAnimationList_R[];
 extern bool isCustomAnim;
+extern bool isMechRemoved;
+extern bool isMilesAdventure;
+extern bool jumpVoice;
+extern bool flyVoice;
 
 struct EntityData2_
 {
@@ -48,7 +52,7 @@ void Init_MilesActions();
 static Buttons JumpButtons = Buttons_A;
 static Buttons AttackButtons = Buttons_X;
 
-void voicesFixes_Init();
+void Init_VoicesFixes();
 
 
 enum MilesState {

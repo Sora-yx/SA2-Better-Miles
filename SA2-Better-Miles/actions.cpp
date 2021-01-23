@@ -57,9 +57,6 @@ void CallVibeThing(int a1, signed int a2, int a3, signed int a4)
 }
 
 
-
-
-
 bool isMilesAttacking() {
 
 	if (MainCharObj2[0]->CharID != Characters_Tails)

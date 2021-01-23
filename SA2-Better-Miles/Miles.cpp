@@ -226,21 +226,16 @@ void BetterMiles_Init() {
 	PhysicsArray[Characters_Tails].GroundAccel = 0.14;
 
 	Init_MilesActions();
-	MilesFly_Init();
-
+	Init_MilesFly();
 
 	//Custom anim + new moves
 	Init_NewAnimation();
 
 	if (isCustomAnim) {
-		Miles_SpinInit();
+		Init_MilesSpin();
 		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckVictoryPose);
 	}
 
-
-	//WriteData<1>((int*)0x472C99, 0x17); //remove miles check shit
-	initStartPos();
-
-	//Audio fix
-	voicesFixes_Init();
+	Init_StartEndPos();
+	Init_VoicesFixes();
 }

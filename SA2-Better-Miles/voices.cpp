@@ -5,7 +5,7 @@ DataArray(int, TailsRankVoices, 0x173B7E4, 5);
 DataPointer(char, CurrentLevelRank, 0x174B001);
 
 char realChar = 0;
-void FixCamEndPos(int num) {
+void FixEndCamPosAndVoice(int num) {
 
     if (CurrentLevel == LevelIDs_Route101280)
         return;
@@ -13,8 +13,9 @@ void FixCamEndPos(int num) {
     realChar = MainCharObj2[0]->CharID;
 
    if (MainCharObj2[0]->CharID == Characters_Tails) {
-       MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it think we are playing Rouge so it give a good camera for victory pose.
-    }
+       PlayVoice(2, num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703); //"I did it" 
+       MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it think we are playing Rouge so it gives a good camera for victory pose.
+   }
 
    PlayWinnerVoiceProbably(num);
 }
@@ -38,7 +39,7 @@ static void __declspec(naked) FixCamEndPosASM(int pnum)
         push esi // pnum
 
         // Call your __cdecl function here:
-        call FixCamEndPos
+        call FixEndCamPosAndVoice
 
         pop esi // pnum
         retn
@@ -58,18 +59,20 @@ __declspec(naked) void PlayRankVoice()
     }
 }
 
-void voicesFixes_Init() {
+void Init_VoicesFixes() {
 
     HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
     HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
 
-    if (charaMod || charaModPlus)
-        return;
-
-    WriteJump((void*)0x44FC5E, PlayRankVoice);
+    if (!charaMod && !charaModPlus) {
+        WriteJump((void*)0x44FC5E, PlayRankVoice);
+    }
 
     WriteCall((void*)0x44f864, FixCamEndPosASM);
     WriteCall((void*)0x450816, FixCamEndPosASM);
     WriteCall((void*)0x451017, FixCamEndPosASM);
     WriteCall((void*)0x4510af, FixCamEndPosASM);
+
+    if (!jumpVoice)
+        WriteData<5>((void*)0x751C90, 0x90); //remove tails voice when jumping
 }
