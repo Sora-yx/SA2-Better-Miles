@@ -40,8 +40,8 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_GreenHill;
-		story->Character = Characters_Sonic;
+		story->Level = LevelIDs_SkyRail;
+		story->Character = Characters_Tails;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
@@ -49,8 +49,8 @@ extern "C" {
 		EntityData1* data1 = MainCharObj1[0];
 		CharObj2Base* co2 = MainCharObj2[0];
 
-		/*if (Controllers[0].press & Buttons_Y)
-			data1->Position = { -1970.0, -1390.0, -6940.0 };*/
+		if (Controllers[0].press & Buttons_Y)
+			data1->Position = { -1970.0, -1390.0, -6940.0 };
 	}
 
 

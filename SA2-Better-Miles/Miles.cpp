@@ -99,14 +99,20 @@ __declspec(naked) void GoToAnimatedTailAnimation()
 }
 
 
+int ActionArray[7] = { Jumping, 24, ObjectControl, Pulley, VictoryPose };
+
 //Rework the condition to add the victory pose
 static const void* const loc_7512F2 = (void*)0x7512F2; 
 __declspec(naked) void  CheckVictoryPose() {
 
 
-	if (MainCharObj1[0]->Action != 24 || MainCharObj1[0]->Action != VictoryPose || MainCharObj1[0]->Action != ObjectControl || MainCharObj1[0]->Action != Pulley)
+	for (int i = 0; i < LengthOfArray(ActionArray); i++)
 	{
-		_asm jmp loc_7512F2
+		if (MainCharObj1[0]->Action != ActionArray[i])
+		{
+			_asm jmp loc_7512F2
+			break;
+		}
 	}
 }
 
@@ -203,7 +209,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case VictoryPose:
 		co2->AnimInfo.Current = VictoryAnim;
-		GoToAnimatedTailAnimation();
+		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	case Rolling:
 		Miles_DoCollisionAttackStuff(data1);

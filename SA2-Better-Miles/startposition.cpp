@@ -258,7 +258,6 @@ static inline void SetVictoryStuffASM(int pnum)
 	{
 		mov esi, [pnum]
 		call SetEndPosition
-		retn
 	}
 }
 
