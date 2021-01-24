@@ -184,6 +184,10 @@ void Tails_Main_r(ObjectMaster* obj)
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
+	case 66:
+		if (CurrentLevel == LevelIDs_FinalHazard)
+			data1->Action = 10;
+		break;
 	case Grinding:
 		DoGrindThing(data1, data2, co2, co2Miles);
 		PlayGrindAnimation(data1, co2);
@@ -241,6 +245,24 @@ void LoadCharacter_r() {
 	LoadCharacters();
 }
 
+void Test(int toto) {
+
+	DeleteObject_(MainCharacter[0]);
+	LoadTails(0);
+	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
+	//co2Miles->base.AnimInfo.Animations = SuperSonicAnimList;
+	co2Miles->base.Upgrades = Upgrades_SuperSonic;
+	MainCharacter[0]->SomethingSub = Super_Something;
+	LastBossPlayerManager_Load();
+	if (!Super_ManTex_ptr)
+	{
+		LoadTextureList("SSONEFFTEX", &SSONEFFTEX_TEXLIST);
+		Super_ManTex_ptr = AllocateObjectMaster((void(__cdecl*)(ObjectMaster*))nullsub_1, 0, "ManTex");
+		Super_ManTex_ptr->DeleteSub = ManTex_Delete;
+	}
+	InitPlayer(toto);
+}
+
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
@@ -270,4 +292,7 @@ void BetterMiles_Init() {
 
 	Init_StartEndPos();
 	Init_VoicesFixes();
+
+	WriteCall((void*)0x498A9F, Test);
+	WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura
 }
