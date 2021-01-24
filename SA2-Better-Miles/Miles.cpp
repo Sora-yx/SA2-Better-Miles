@@ -91,17 +91,10 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 }
 
 
-//Jump to a specific address where the game will call the function to animate Miles's tails
-static const void* const loc_74D34C = (void*)0x74D34C;
-__declspec(naked) void GoToAnimatedTailAnimation()
-{
-	__asm jmp loc_74D34C
-}
 
+int ActionArray[5] = { Jumping, 24, ObjectControl, Pulley, VictoryPose };
 
-int ActionArray[7] = { Jumping, 24, ObjectControl, Pulley, VictoryPose };
-
-//Rework the condition to add the victory pose
+//Edit the function which checks where it needs to animate Miles's tails to add more actions.
 static const void* const loc_7512F2 = (void*)0x7512F2; 
 __declspec(naked) void  CheckVictoryPose() {
 

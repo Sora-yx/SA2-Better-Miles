@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 StartPosition MilesStartArray[] = {
 	{ LevelIDs_BasicTest, 0, 0, 0, { 0 }, { 0 }, { 0 } },
 	{ LevelIDs_GreenForest, 0x4000, 0x4000, 0x4000, { 1.61f, 40, -416 }, { 15, 40, -416 }, { -15, 40, -416 } },
@@ -72,7 +71,7 @@ StartPosition MilesStartArray[] = {
 	{ LevelIDs_Invalid }
 };
 
-StartPosition MilesEndArrayM2M3[] = { 
+LevelEndPosition CharacterEndArrayM2M3[] = { 
 	{ LevelIDs_GreenForest, 0x8000, 0x8000, 0, { 5858, -1812, 7541 }, { 6890, -1610, 7542 } },
 	{ LevelIDs_WhiteJungle, 0xC000, 0xB000, 0, { 5040, -2220, -1550 }, { 13280, -3157, -7370 } },
 	{ LevelIDs_PumpkinHill, 0x8000, 0xC000, 0, { 530, -986, -770 }, { -13, 34.8f, 1275 } },
@@ -109,7 +108,7 @@ StartPosition MilesEndArrayM2M3[] = {
 	{ LevelIDs_Invalid }
 };
 
-StartPosition MilesEndArray[] = {
+StartPosition CharacterEndArray[] = {
 	{ LevelIDs_GreenForest, 0x8000u, 0x8000u, 0x8000u, { 10935, -1854, 11056 }, { 10935, -1854, 11076 }, { 10935, -1854, 11066 } },
 	{ LevelIDs_WhiteJungle, 0xC000u, 0xC000u, 0xC000u, { 13166, -3599, -5518 }, { 9135, -3154, -4930 }, { 9135, -3154, -4930 } },
 	{ LevelIDs_PumpkinHill, 0xD000u, 0xD000u, 0xD000u, { 199, -1361, -1035 }, { 188.63f, -1361, -1045 }, { 208.3f, -1361, -1021.5f } },
@@ -173,9 +172,6 @@ StartPosition MilesEndArray[] = {
 	{ LevelIDs_EggGolemE, 0, 0, 0, { 0, 200, 220 }, { 0, 200, 220 }, { 0, 200, 220 } },
 };
 
-
-
-
 static const void* const loc_43DF30 = (void*)0x43DF30;
 char PlayVictoryVoice_Original(int playerNum)
 {
@@ -190,92 +186,50 @@ char PlayVictoryVoice_Original(int playerNum)
 }
 
 
-char PlayVictoryVoice_r(int playerNum)
-{
-	int num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703;
-
-	if (MainCharObj2[0]->CharID == Characters_Tails)
-	{
-		PlayVoice(2, num); //"I did it" 
-	}
-
-	return PlayVictoryVoice_Original(playerNum);
-}
-
-char PlayVictoryVoiceASM(int playerNum)
-{
-	int result;
-	__asm
-	{
-		mov eax, playerNum
-		call PlayVictoryVoice_r
-		mov result, eax
-
-	}
-	return result;
-}
 
 
-static inline void SetEndPosition(int pnum) {
+static inline void SetEndPosition() {
 
-
-	EntityData1* data = MainCharObj1[0];
 	if (MainCharObj2[0]->CharID == Characters_Tails) {
-
-		if (MissionNum == 1 || MissionNum == 2) {
-			for (int i = 0; i < LengthOfArray(MilesEndArrayM2M3); i++) {
-
-				if (CurrentLevel == MilesEndArrayM2M3[i].Level) {
-					data->Position = MilesEndArrayM2M3[i].Position1P;
-					data->Rotation.y = MilesEndArrayM2M3[i].Rotation1P;
-					break;
-				}
-			}
-		}
-		else {
-			for (int i = 0; i < LengthOfArray(MilesEndArray); i++) {
-
-				if (CurrentLevel == MilesEndArray[i].Level) {
-					data->Position = MilesEndArray[i].Position1P;
-					data->Rotation.y = MilesEndArray[i].Rotation1P;
-					break;
-				}
-			}
-
-		}
-
-		MainCharObj2[0]->CharID = Characters_Rouge;
+		int num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703;
+		PlayVoice(2, num); //"I did it" 
+		MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it thinks we are playing rouge, so we can get good camera and good ending position.
 	}
-
-	PlayWinnerVoiceProbably(pnum); //Actually do more than just playing the victory voice
 	return;
 }
 
 
-static inline void SetVictoryStuffASM(int pnum)
+
+static void __declspec(naked) PlayWinnerVoiceProbablyASM()
 {
 	__asm
 	{
-		mov esi, [pnum]
 		call SetEndPosition
+		push esi // pnum
+
+		// Call your __cdecl function here:
+		call PlayWinnerVoiceProbablyPtr
+
+		pop esi // pnum
+		retn
 	}
 }
+
+
 
 void Init_StartEndPos() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
 
 	if (!randoMod) {
 		WriteData((StartPosition**)0x43d955, MilesStartArray);
-
-		//Fix voice not playing for Tails
-		WriteCall((void*)0x43E9D4, PlayVictoryVoiceASM);
-		WriteCall((void*)0x43ECE1, PlayVictoryVoiceASM);
+		WriteData((StartPosition**)0x43df89, CharacterEndArray); //Change Rouge End Array with a more complete one (used to trick the game)		
+		WriteData((LevelEndPosition**)0x43ddfb, CharacterEndArrayM2M3); //Same with M2 and M3
 
 		//Hack the victory function to fix Character and Camera position
-		WriteCall((void*)0x44f864, SetVictoryStuffASM);
-		WriteCall((void*)0x450816, SetVictoryStuffASM);
-		WriteCall((void*)0x451017, SetVictoryStuffASM);
-		WriteCall((void*)0x4510af, SetVictoryStuffASM);
+		WriteCall((void*)0x44f864, PlayWinnerVoiceProbablyASM);
+		WriteCall((void*)0x450816, PlayWinnerVoiceProbablyASM);
+		WriteCall((void*)0x451017, PlayWinnerVoiceProbablyASM);
+		WriteCall((void*)0x4510af, PlayWinnerVoiceProbablyASM);
 	}
 }
 

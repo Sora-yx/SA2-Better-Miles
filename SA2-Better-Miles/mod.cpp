@@ -40,7 +40,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_SkyRail;
+		story->Level = LevelIDs_GreenHill;
 		story->Character = Characters_Tails;
 	}
 
