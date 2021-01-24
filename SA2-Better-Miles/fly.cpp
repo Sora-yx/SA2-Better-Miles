@@ -8,10 +8,7 @@ static int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) 
 	a1->Status &= 0xDAFFu;
 	a2->AnimInfo.Current = FlyingAnim;
 	a3->field_1BC[418] |= 1u; //idk
-	if (flyVoice)
-		return PlayVoice(2, 1629);
-
-	return 1;
+	return PlayVoice(2, 1629);
 }
 
 int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)

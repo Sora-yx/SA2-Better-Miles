@@ -8,7 +8,6 @@ bool isMilesAdventure = false;
 
 bool flySoundEffect = true;
 bool jumpVoice = false;
-bool flyVoice = false;
 HelperFunctions HelperFunctionsGlobal;
 
 
@@ -24,8 +23,6 @@ extern "C" {
 
 		flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
 		jumpVoice = config->getBool("Audio", "jumpVoice", false);
-		flyVoice = config->getBool("Audio", "flyVoice", false);
-
 		delete config;
 
 		HelperFunctionsGlobal = helperFunctions;
@@ -43,8 +40,8 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_MetalHarbor;
-		story->Character = Characters_Tails;
+		story->Level = LevelIDs_GreenHill;
+		story->Character = Characters_Sonic;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
@@ -53,8 +50,7 @@ extern "C" {
 		CharObj2Base* co2 = MainCharObj2[0];
 
 		/*if (Controllers[0].press & Buttons_Y)
-			PlaySoundProbably(8193, 0, 0, 0);*/
-
+			data1->Position = { -1970.0, -1390.0, -6940.0 };*/
 	}
 
 

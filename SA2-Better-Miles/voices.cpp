@@ -1,78 +1,68 @@
 #include "stdafx.h"
 
-static const void* const PlayWinnerVoicePtr = (void*)0x43ECA0;
-DataArray(int, TailsRankVoices, 0x173B7E4, 5);
-DataPointer(char, CurrentLevelRank, 0x174B001);
 
 char realChar = 0;
-void FixEndCamPosAndVoice(int num) {
-
-    if (CurrentLevel == LevelIDs_Route101280)
-        return;
-
-    realChar = MainCharObj2[0]->CharID;
-
-   if (MainCharObj2[0]->CharID == Characters_Tails) {
-       PlayVoice(2, num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703); //"I did it" 
-       MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it think we are playing Rouge so it gives a good camera for victory pose.
-   }
-
-   PlayWinnerVoiceProbably(num);
-}
-
-void FixRankVoice(int num) {
-
-    if (CurrentLevel == LevelIDs_Route101280)
-        return;
-
-    if (realChar == Characters_Tails)
-        num = TailsRankVoices[CurrentLevelRank];
-
-    PlayVoice(2, num);
-}
-
-
-static void __declspec(naked) FixCamEndPosASM(int pnum)
+void PlayRankVoice_i(int id)
 {
-    __asm
-    {
-        push esi // pnum
-
-        // Call your __cdecl function here:
-        call FixEndCamPosAndVoice
-
-        pop esi // pnum
-        retn
-    }
+	int v23 = -1;
+	switch (id)
+	{
+	case Characters_Sonic:
+	case Characters_SuperSonic:
+		v23 = SonicRankVoices[CurrentLevelRank];
+		break;
+	case Characters_Shadow:
+	case Characters_SuperShadow:
+		v23 = ShadowRankVoices[CurrentLevelRank];
+		break;
+	case Characters_Knuckles:
+		v23 = KnucklesRankVoices[CurrentLevelRank];
+		break;
+	case Characters_Rouge:
+		v23 = RougeRankVoices[CurrentLevelRank];
+		break;
+	case Characters_Tails:
+	case Characters_MechTails:
+		v23 = TailsRankVoices[CurrentLevelRank];
+		break;
+	case Characters_Eggman:
+	case Characters_MechEggman:
+		v23 = EggmanRankVoices[CurrentLevelRank];
+		break;
+	}
+	if (v23 != -1)
+	{
+		PlayVoice(2, v23);
+	}
 }
-
 
 const void* const loc_44FD08 = (void*)0x44FD08;
 __declspec(naked) void PlayRankVoice()
 {
-    __asm
-    {
-        push eax
-        call FixRankVoice
-        add esp, 4
-        jmp loc_44FD08
-    }
+	__asm
+	{
+		push eax
+		call PlayRankVoice_i
+		add esp, 4
+		jmp loc_44FD08
+	}
 }
+
 
 void Init_VoicesFixes() {
 
-    HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
-    HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
+	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
+	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
 
-    if (!charaMod && !charaModPlus) {
-        WriteJump((void*)0x44FC5E, PlayRankVoice);
-    }
+	if (!charaMod && !charaModPlus) {
+		WriteJump((void*)0x44FC5E, PlayRankVoice);
+	}
 
-    WriteCall((void*)0x44f864, FixCamEndPosASM);
-    WriteCall((void*)0x450816, FixCamEndPosASM);
-    WriteCall((void*)0x451017, FixCamEndPosASM);
-    WriteCall((void*)0x4510af, FixCamEndPosASM);
+	/*WriteCall((void*)0x44f864, FixCamEndPosASM);
+	WriteCall((void*)0x450816, FixCamEndPosASM);
+	WriteCall((void*)0x451017, FixCamEndPosASM);
+	WriteCall((void*)0x4510af, FixCamEndPosASM);*/
 
-    if (!jumpVoice)
-        WriteData<5>((void*)0x751C90, 0x90); //remove tails voice when jumping
+	if (!jumpVoice)
+		WriteData<5>((void*)0x751C90, 0x90); //remove tails voice when jumping
 }

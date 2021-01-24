@@ -72,9 +72,7 @@ StartPosition MilesStartArray[] = {
 	{ LevelIDs_Invalid }
 };
 
-
-
-LevelEndPosition MilesEndArray[] = {
+StartPosition MilesEndArrayM2M3[] = { 
 	{ LevelIDs_GreenForest, 0x8000, 0x8000, 0, { 5858, -1812, 7541 }, { 6890, -1610, 7542 } },
 	{ LevelIDs_WhiteJungle, 0xC000, 0xB000, 0, { 5040, -2220, -1550 }, { 13280, -3157, -7370 } },
 	{ LevelIDs_PumpkinHill, 0x8000, 0xC000, 0, { 530, -986, -770 }, { -13, 34.8f, 1275 } },
@@ -111,47 +109,174 @@ LevelEndPosition MilesEndArray[] = {
 	{ LevelIDs_Invalid }
 };
 
+StartPosition MilesEndArray[] = {
+	{ LevelIDs_GreenForest, 0x8000u, 0x8000u, 0x8000u, { 10935, -1854, 11056 }, { 10935, -1854, 11076 }, { 10935, -1854, 11066 } },
+	{ LevelIDs_WhiteJungle, 0xC000u, 0xC000u, 0xC000u, { 13166, -3599, -5518 }, { 9135, -3154, -4930 }, { 9135, -3154, -4930 } },
+	{ LevelIDs_PumpkinHill, 0xD000u, 0xD000u, 0xD000u, { 199, -1361, -1035 }, { 188.63f, -1361, -1045 }, { 208.3f, -1361, -1021.5f } },
+	{ LevelIDs_SkyRail, 0x4000, 0x4000, 0x4000, { -1343.7f, -4928, 10098 }, { -1333.7f, -4928, 10098 }, { -1353.7f, -4928, 10098 } },
+	{ LevelIDs_AquaticMine, 0x4000, 0, 0, { 0, 130, -340 }, { 10, 130, -200 }, { -10, 130, -200 } },
+	{ LevelIDs_SecurityHall, 0xA000u, 0x6000, 0xA000u, { 405, -933, 410 }, { 217, -933, 410 }, { 217, -933, 410 } },
+	{ LevelIDs_PrisonLane, 0xC000u, 0xC000u, 0xC000u, { -4440, 940, -1178 }, { -4440, 940, -1178 }, { -4440, 940, -1178 } },
+	{ LevelIDs_MetalHarbor, 0x6000, 0, 0, { 8777, -170, -10240 }, { 8854, -170, -10241 }, { 8854, -170, -10281 } },
+	{ LevelIDs_IronGate, 0, 0, 0, { 6150, -1521, -1230 }, { 6150, -1521, -1230 }, { 6150, -1521, -1230 } },
+	{ LevelIDs_WeaponsBed, 0, 0, 0, { 4251, -220, -10138 }, { 4231, -220, -10138 }, { 4281, -220, -10138 } },
+	{ LevelIDs_CityEscape, 0x4000, 0x8000u, 0x8000u, { 3955, -22175, 16130 }, { 6450, -15915, 9070 }, { 6450, -15915, 9070 } },
+	{ LevelIDs_RadicalHighway, 0xC000u, 0xC000u, 0xC000u, { -9970, -6999, -18430 }, { -9970, -6999, -18350 }, { -9970, -6999, -18350 } },
+	{ LevelIDs_WeaponsBed2P, 0x4000, 0x4000, 0x4000, { 140, -170, 20 }, { 140, -170, 20 }, { 140, -170, 20 } },
+	{ LevelIDs_WildCanyon, 0x4000, 0x4000, 0x4000, { 200, 856, -140 }, { 220, 856, -140 }, { 180, 856, -140 } },
+	{ LevelIDs_MissionStreet, 0xC000u, 0xC000u, 0xC000u, { 7170, 598, -6913 }, { 7170, 598, -6913 }, { 7170, 598, -6913 } },
+	{ LevelIDs_DryLagoon, 0x4000, 0x4000, 0x4000, { 200, 15, -140 }, { 200, 15, -140 }, { 200, 15, -140 } },
+	{ LevelIDs_SonicVsShadow1, 0x6C00, 0x6C00, 0x6C00, { 10, -42, 0 }, { 10, -42, 0 }, { 10, -42, 0 } },
+	{ LevelIDs_TailsVsEggman1, 0x4000, 0x4000, 0x4000, { 140, -170, 20 }, { 140, -170, 20 }, { 140, -170, 20 } },
+	{ LevelIDs_SandOcean, 0x8000u, 0x8000u, 0x8000u, { 2895, 155, -7185 }, { 2895, 155, -7185 }, { 2895, 155, -7185 } },
+	{ LevelIDs_CrazyGadget, 0xC000u, 0xC000u, 0xC000u, { -8470, -1097, -2904 }, { -8470, -1097, -2904 }, { -8470, -1097, -2904 } },
+	{ LevelIDs_HiddenBase, 0x4000, 0x4000, 0x4000, { -3035, 1280, -5400 }, { -3035, 1280, -5400 }, { -3035, 1280, -5400 } },
+	{ LevelIDs_EternalEngine, 0xC000u, 0xC000u, 0xC000u, { 207, -1826, -9150 }, { 207, -1826, -9150 }, { 207, -1826, -9150 } },
+	{ LevelIDs_DeathChamber, 0x2000, 0x2000, 0x2000, { 830, 20, 830 }, { 830, 20, 830 }, { 830, 20, 830 } },
+	{ LevelIDs_EggQuarters, 0x2000, 0xA000u, 0xA000u, { 980, -30, 980 }, { -820, 20, 820 }, { -820, 20, 820 } },
+	{ LevelIDs_LostColony, 0, 0, 0, { 4710, 1552, -2400 }, { 4710, 1552, -2400 }, { 4710, 1552, -2400 } },
+	{ LevelIDs_PyramidCave, 0x4000, 0x4000, 0x4000, { 940, -4060, -22190 }, { 940, -4060, -22190 }, { 940, -4060, -22190 } },
+	{ LevelIDs_TailsVsEggman2, 0x4000, 0x4000, 0x4000, { 0, -50, -181.5f }, { 0, -50, -181.5f }, { 0, -50, -181.5f } },
+	{ LevelIDs_FinalRush, 0, 0x4000, 0x4000, { 2530, -26495.5f, 7465 }, { 2531, -20965, 11350 }, { 2531, -20965, 11350 } },
+	{ LevelIDs_GreenHill, 0xC000u, 0xC000u, 0xC000u, { -1970, -1390, -6940 }, { -1970, -1390, -6940 }, { -1970, -1390, -6910 } },
+	{ LevelIDs_MeteorHerd, 0x4000, 0x4000, 0x4000, { 0, -500, -1025 }, { 25, -500, -1025 }, { -25, -500, -1025 } },
+	{ LevelIDs_KnucklesVsRouge, 0, 0, 0, { 0, -340, 10 }, { 0, -340, 10 }, { 0, -340, 10 } },
+	{ LevelIDs_CannonsCoreS, 0x1000, 0x1000, 0x1000, { -1600, -5755, -9565 }, { -308, 0, 0 }, { -308, 0, 0 } },
+	{ LevelIDs_CannonsCoreE, 0xC000u, 0xC000u, 0xC000u, { 570, -2630, -3450 }, { 570, -2630, -3450 }, { 570, -2630, -3450 } },
+	{ LevelIDs_CannonsCoreT, 0xC000, 0xC000, 0xC000, { 0, 670, 0 }, { 0, 670, 0 }, { 0, 670, 0 } },
+	{ LevelIDs_CannonsCoreR, 0x8000u, 0x8000u, 0x8000u, { 120, 20, 0 }, { 120, 20, 0 }, { 120, 20, 0 } },
+	{ LevelIDs_CannonsCoreK, 0, 0, 0, { -435, -175, -1735 }, { -435, -175, 1735 }, { -435, -175, 1735 } },
+	{ LevelIDs_MissionStreet2P, 0xC000u, 0xC000u, 0xC000u, { 0, 0, -25 }, { 0, 0, -25 }, { 0, 0, -25 } },
+	{ LevelIDs_FinalChase, 0, 0xC000u, 0xC000u, { 122, -9960, 7627 }, { 3440, -6812, 17730 }, { 3440, -6812, 17730 } },
+	{ LevelIDs_WildCanyon2P, 0x4000, 0xF000u, 0xF000u, { 200, 856, -140 }, { -359, 927, -44 }, { -359, 927, -44 } },
+	{ LevelIDs_SonicVsShadow2, 0x4000, 0x4000, 0x4000, { -292, 0, 0 }, { -292, 0, 0 }, { -292, 0, 0 } },
+	{ LevelIDs_CosmicWall, 0x8000u, 0x8000u, 0x8000u, { 3550, -1600, 29690 }, { 3550, -1600, 29690 }, { 3550, -1600, 29690 } },
+	{ LevelIDs_MadSpace, 0xF000u, 0xF000u, 0xF000u, { 0, 620, 0 }, { 0, 620, 5 }, { 0, 620, 5 } },
+	{ LevelIDs_SandOcean2P, 0x4000, 0x4000, 0x4000, { 17, 30, -150 }, { 17, 30, -150 }, { 17, 30, -150 } },
+	{ LevelIDs_DryLagoon2P, 0x4000, 0x4000, 0x4000, { 200, 210, 1350 }, { 200, 210, 1350 }, { 200, 210, 1350 } },
+	{ LevelIDs_PyramidRace, 0, 0, 0, { 0 }, { 0, 0, -2020 }, { 0, 0, -2020 } },
+	{ LevelIDs_HiddenBase2P, 0, 0x4000, 0x4000, { 0, 0, 30 }, { -20, 0, 25 }, { -20, 0, 25 } },
+	{ LevelIDs_PoolQuest, 0, 0, 0, { 0, 130, -200 }, { 10, 130, -200 }, { -10, 130, -200 } },
+	{ LevelIDs_PlanetQuest, 0, 0, 0, { 0, 620, 0 }, { -432, 1640.5f, -560 }, { -432, 1640.5f, -560 } },
+	{ LevelIDs_DeckRace, 0xC000u, 0xC000u, 0xC000u, { 0 }, { 0, -170, -475 }, { 0, -170, -475 } },
+	{ LevelIDs_DowntownRace, 0xC000u, 0xC000u, 0xC000u, { -1540, -6060, 8800 }, { -1540, -6060, 8800 }, { -1540, -6060, 8770 } },
+	{ LevelIDs_GrindRace, 0x8000u, 0x8000u, 0x8000u, { 13990, -35280, 10050 }, { 13990, -35280, 10050 }, { 13990, -35280, 10050 } },
+	{ LevelIDs_LostColony2P, 0, 0, 0x2000, { -150, 0, 0 }, { -150, 0, 0 }, { -280, 0, -170 } },
+	{ LevelIDs_EternalEngine2P, 0x6000, 0x6000, 0x6000, { 0, -50, -120 }, { 0, -50, -120 }, { 0, -50, 120 } },
+	{ LevelIDs_MetalHarbor2P, 0, 0x8000u, 0x8000u, { 8854, -31, -10370 }, { 4913, -31, -10370 }, { 4913, -31, -10370 } },
+	{ LevelIDs_IronGate2P, 0, 0xC000u, 0xC000u, { 0 }, { -30, -10, -20 }, { -30, -10, -20 } },
+	{ LevelIDs_DeathChamber2P, 0x2000, 0x2000, 0x2000, { 830, 20, 830 }, { 830, 20, 830 }, { 830, 20, 830 } },
+	{ LevelIDs_KingBoomBoo, 0x1800, 0x1800, 0x1800, { 374, -40, -120 }, { 374, -40, -120 }, { 374, -40, -120 } },
+	{ LevelIDs_EggGolemS, 0, 0, 0, { 0, 200, 220 }, { 0, 200, 220 }, { 0, 200, 220 } },
+	{ LevelIDs_Biolizard, 0, 0, 0, { -265, 10, 0 }, { -265, 10, 0 }, { -265, 10, 0 } },
+	{ LevelIDs_FinalHazard, 0, 0, 0, { 0, 0, -1000 }, { 0, 0, -1000 }, { 0, 0, -1000 } },
+	{ LevelIDs_EggGolemE, 0, 0, 0, { 0, 200, 220 }, { 0, 200, 220 }, { 0, 200, 220 } },
+};
 
 
 
-signed char GetCharacterLevel() {
 
-	for (int i = 0; i < 33; i++)
+static const void* const loc_43DF30 = (void*)0x43DF30;
+char PlayVictoryVoice_Original(int playerNum)
+{
+	int result;
+	__asm
 	{
-		if (CurrentLevel == StageSelectLevels[i].Level)
-		{
-			return StageSelectLevels[i].Character;
+		mov eax, playerNum
+		call loc_43DF30
+		mov result, eax
+	}
+	return result;
+}
+
+
+char PlayVictoryVoice_r(int playerNum)
+{
+	int num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703;
+
+	if (MainCharObj2[0]->CharID == Characters_Tails)
+	{
+		PlayVoice(2, num); //"I did it" 
+	}
+
+	return PlayVictoryVoice_Original(playerNum);
+}
+
+char PlayVictoryVoiceASM(int playerNum)
+{
+	int result;
+	__asm
+	{
+		mov eax, playerNum
+		call PlayVictoryVoice_r
+		mov result, eax
+
+	}
+	return result;
+}
+
+
+static inline void SetEndPosition(int pnum) {
+
+
+	EntityData1* data = MainCharObj1[0];
+	if (MainCharObj2[0]->CharID == Characters_Tails) {
+
+		if (MissionNum == 1 || MissionNum == 2) {
+			for (int i = 0; i < LengthOfArray(MilesEndArrayM2M3); i++) {
+
+				if (CurrentLevel == MilesEndArrayM2M3[i].Level) {
+					data->Position = MilesEndArrayM2M3[i].Position1P;
+					data->Rotation.y = MilesEndArrayM2M3[i].Rotation1P;
+					break;
+				}
+			}
 		}
+		else {
+			for (int i = 0; i < LengthOfArray(MilesEndArray); i++) {
+
+				if (CurrentLevel == MilesEndArray[i].Level) {
+					data->Position = MilesEndArray[i].Position1P;
+					data->Rotation.y = MilesEndArray[i].Rotation1P;
+					break;
+				}
+			}
+
+		}
+
+		MainCharObj2[0]->CharID = Characters_Rouge;
 	}
 
-	return -1;
+	PlayWinnerVoiceProbably(pnum); //Actually do more than just playing the victory voice
+	return;
 }
 
 
-
-//Init the new animation list for Miles.
-void LoadCharacter_r() {
-
-	PDS_PERIPHERAL p1 = Controllers[0];
-
-
-	if (!TwoPlayerMode && CurrentLevel != LevelIDs_FinalHazard && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace) {
-
-		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
-			CurrentCharacter = Characters_Tails;
+static inline void SetVictoryStuffASM(int pnum)
+{
+	__asm
+	{
+		mov esi, [pnum]
+		call SetEndPosition
+		retn
 	}
-
-	LoadCharacters();
 }
-
 
 void Init_StartEndPos() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
 
 	if (!randoMod) {
 		WriteData((StartPosition**)0x43d955, MilesStartArray);
-		WriteCall((void*)0x439b13, LoadCharacter_r);
-		WriteCall((void*)0x43cada, LoadCharacter_r);
+
+		//Fix voice not playing for Tails
+		WriteCall((void*)0x43E9D4, PlayVictoryVoiceASM);
+		WriteCall((void*)0x43ECE1, PlayVictoryVoiceASM);
+
+		//Hack the victory function to fix Character and Camera position
+		WriteCall((void*)0x44f864, SetVictoryStuffASM);
+		WriteCall((void*)0x450816, SetVictoryStuffASM);
+		WriteCall((void*)0x451017, SetVictoryStuffASM);
+		WriteCall((void*)0x4510af, SetVictoryStuffASM);
 	}
 }
 

@@ -172,7 +172,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		if (!isCustomAnim)
 			return;
 
-		if (TimerStopped != 0 && (TimerSeconds > 0 || TimerMinutes > 0)) { //Check if the level is finished
+		if (TimerStopped != 0) { //Check if the level is finished
 			co2->field_28 = VictoryAnim;
 			co2->AnimInfo.Next = VictoryAnim;
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
@@ -214,9 +214,42 @@ void Tails_Main_r(ObjectMaster* obj)
 	MilesFly(data1, co2, data2);
 }
 
+
+signed char GetCharacterLevel() {
+
+	for (int i = 0; i < 33; i++)
+	{
+		if (CurrentLevel == StageSelectLevels[i].Level)
+		{
+			return StageSelectLevels[i].Character;
+		}
+	}
+
+	return -1;
+}
+
+
+void LoadCharacter_r() {
+
+	PDS_PERIPHERAL p1 = Controllers[0];
+
+	if (!TwoPlayerMode && CurrentLevel != LevelIDs_FinalHazard && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace) {
+
+		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
+			CurrentCharacter = Characters_Tails;
+	}
+
+	LoadCharacters();
+}
+
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
+
+	if (isMilesAdventure || isMechRemoved) {
+		WriteCall((void*)0x439b13, LoadCharacter_r);
+		WriteCall((void*)0x43cada, LoadCharacter_r);
+	}
 
 	//Improve physic
 	PhysicsArray[Characters_Tails].AirAccel = 0.050;

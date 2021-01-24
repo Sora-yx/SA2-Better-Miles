@@ -6,7 +6,7 @@ extern bool isCustomAnim;
 extern bool isMechRemoved;
 extern bool isMilesAdventure;
 extern bool jumpVoice;
-extern bool flyVoice;
+extern char realChar;
 
 struct EntityData2_
 {
@@ -57,6 +57,13 @@ static Buttons JumpButtons = Buttons_A;
 static Buttons AttackButtons = Buttons_X;
 
 void Init_VoicesFixes();
+DataArray(int, SonicRankVoices, 0x173B7D0, 5);
+DataArray(int, TailsRankVoices, 0x173B7E4, 5);
+DataArray(int, KnucklesRankVoices, 0x173B7F8, 5);
+DataArray(int, EggmanRankVoices, 0x173B80C, 5);
+DataArray(int, ShadowRankVoices, 0x173B820, 5);
+DataArray(int, RougeRankVoices, 0x173B834, 5);
+DataPointer(char, CurrentLevelRank, 0x174B001);
 
 
 enum MilesState {
