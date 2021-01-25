@@ -222,6 +222,9 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 213, 208, 9, 15, 0.0625f, 0.2f },
 	{ 214, 208, 4, 15, 0.0625f, 0.35f },
 	{ 215, 208, 4, 15, 0.0625f, 0.35f },
+	//Super Sonic Imported anim (intro + victory pose)
+	{ 216, 208, 4, 87, 1, 0.5f }, 
+	{ 217, 208, 6, 101, 1, 0.5f },
 };
 
 

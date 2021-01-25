@@ -309,6 +309,25 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 }
 
 
+void LoadSuperFormFinalBattle() {
+
+	if (MainCharacter[1])
+		DeleteObject_(MainCharacter[1]);
+
+	LoadSuperShadow(); //In order to have the animations working properly, Shadow needs to be called first.
+	InitPlayer(1);
+
+	if (MainCharacter[0])
+		DeleteObject_(MainCharacter[0]);
+
+	LoadTails(0);
+	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
+	co2Miles->base.Upgrades = Upgrades_SuperSonic;
+	MainCharacter[0]->SomethingSub = Super_Something;
+	LastBossPlayerManager_Load();
+	InitPlayer(0);
+	return;
+}
 
 void Init_MilesActions() {
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
@@ -330,4 +349,9 @@ void Init_MilesActions() {
 		WriteCall((void*)0x43D6CD, ForceMiles);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
+
+	//FinalHazard Stuff
+	WriteCall((void*)0x498a98, LoadSuperFormFinalBattle); //hook "LoadSuperSonic"
+	WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely	
+	WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling  super shadow and stuff since we will manually do it.
 }

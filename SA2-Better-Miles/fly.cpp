@@ -37,8 +37,8 @@ void Tails_CheckGetAltitude(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 			if (!isInfiniteFly)
 				TailsFlightTime += 0.0043333338;
 
-			if (CurrentLevel == LevelIDs_FinalHazard && a1->Speed.y < 2.7)
-				a1->Speed.y += 0.06;
+			if ((a1->Upgrades & Upgrades_SuperSonic) && a1->Speed.y < 2.7)
+				a1->Speed.y += 0.3;
 			else if (a1->Speed.y < 1.2)
 				a1->Speed.y += 0.03;
 		}

@@ -190,11 +190,25 @@ char PlayVictoryVoice_Original(int playerNum)
 
 static inline void SetEndPosition() {
 
+	if (CurrentLevel == LevelIDs_Route101280)
+		return;
+
 	if (MainCharObj2[0]->CharID == Characters_Tails) {
-		int num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703;
-		PlayVoice(2, num); //"I did it" 
-		MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it thinks we are playing rouge, so we can get good camera and good ending position.
+
+		int num = -1;
+	
+		if (CurrentLevel == LevelIDs_FinalHazard) {
+			num = TailsRankVoices[4];
+			MainCharObj2[0]->CharID = Characters_SuperSonic;
+			PlayVoice(2, num); //"I did it Sonic" 
+		}
+		else {
+			num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703;
+			MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it thinks we are playing rouge, so we can get good camera and good ending position.
+			PlayVoice(2, num); //"I did it" 
+		}
 	}
+
 	return;
 }
 
