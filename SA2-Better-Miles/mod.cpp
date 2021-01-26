@@ -48,6 +48,7 @@ extern "C" {
 
 		EntityData1* data1 = MainCharObj1[0];
 		CharObj2Base* co2 = MainCharObj2[0];
+
 	}
 
 

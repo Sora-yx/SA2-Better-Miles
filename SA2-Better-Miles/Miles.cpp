@@ -92,7 +92,7 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 
 
 
-int ActionArray[5] = { Jumping, 24, ObjectControl, Pulley, VictoryPose };
+int ActionArray[6] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
 
 //Edit the function which checks where it needs to animate Miles's tails to add more actions.
 static const void* const loc_7512F2 = (void*)0x7512F2; 
@@ -155,8 +155,6 @@ void Tails_Main_r(ObjectMaster* obj)
 	{
 	case Standing:
 	case Running:
-
-
 		if (co2->Speed.x < 1.3) {
 			Miles_CheckSpinAttack(data1, co2);
 		}
@@ -172,21 +170,33 @@ void Tails_Main_r(ObjectMaster* obj)
 			return;
 
 		if (TimerStopped != 0) { //Check if the level is finished
-			co2->field_28 = VictoryAnim;
-			co2->AnimInfo.Next = VictoryAnim;
+			if (isSuperForm()) {
+				co2->field_28 = VictorySuperForm;
+				co2->AnimInfo.Next = VictorySuperForm;
+			}
+			else {
+				co2->field_28 = VictoryAnim;
+				co2->AnimInfo.Next = VictoryAnim;
+			}
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
 		}
 		break;
 	case Pulley:
 		Tails_Jump(co2, data1);
 		break;
+	case Flying:
+		if (isSuperForm() && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
+		{
+			co2->AnimInfo.Next = 15;
+		}
+		break;
 	case Spinning:
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
 	case 66:
-		if (CurrentLevel == LevelIDs_FinalHazard)
-			data1->Action = 10;
+		FixAnimationFinalBossOnFrames(co2, data1);
+		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	case Grinding:
 		DoGrindThing(data1, data2, co2, co2Miles);
@@ -205,7 +215,10 @@ void Tails_Main_r(ObjectMaster* obj)
 		CheckTrick(data1, co2, data2, co2Miles);
 		break;
 	case VictoryPose:
-		co2->AnimInfo.Current = VictoryAnim;
+		if (isSuperForm())
+			co2->AnimInfo.Current = VictorySuperForm;
+		else
+			co2->AnimInfo.Current = VictoryAnim;
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	case Rolling:
@@ -213,6 +226,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		Miles_UnrollCheckInput(data1, co2);
 		break;
 	}
+
 
 	MilesFly(data1, co2, data2);
 }

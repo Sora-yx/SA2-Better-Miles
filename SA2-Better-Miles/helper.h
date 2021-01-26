@@ -22,6 +22,10 @@ struct EntityData2_
 	float SomeMultiplier;
 };
 
+void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
+bool isRando();
+bool isCharaSelect();
+
 ObjectFunc(Dynamite_Main, 0x6da880);
 ObjectFunc(DynamiteHiddenBase_Main, 0x714610);
 ObjectFunc(PrisonLaneDoor, 0x606400);
@@ -35,7 +39,6 @@ FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
 void CallVibeThing(int a1, signed int a2, int a3, signed int a4);
 FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
-
 
 FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
 FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x7271D0);
@@ -81,7 +84,6 @@ enum MilesState {
 	Rolling
 };
 
-
 enum MilesAnimation {
 	FlyingAnim = 90,
 	TailAttackAnim = 94,
@@ -97,7 +99,7 @@ enum MilesAnimation {
 	Spin8,
 	Spin9,
 	Spin10,
-	RollAnim
+	RollAnim,
+	SwapAnim = 216,
+	VictorySuperForm
 };
-
-

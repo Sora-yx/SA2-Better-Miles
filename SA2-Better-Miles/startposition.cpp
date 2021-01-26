@@ -71,7 +71,7 @@ StartPosition MilesStartArray[] = {
 	{ LevelIDs_Invalid }
 };
 
-LevelEndPosition CharacterEndArrayM2M3[] = { 
+LevelEndPosition CharacterEndArrayM2M3[] = {
 	{ LevelIDs_GreenForest, 0x8000, 0x8000, 0, { 5858, -1812, 7541 }, { 6890, -1610, 7542 } },
 	{ LevelIDs_WhiteJungle, 0xC000, 0xB000, 0, { 5040, -2220, -1550 }, { 13280, -3157, -7370 } },
 	{ LevelIDs_PumpkinHill, 0x8000, 0xC000, 0, { 530, -986, -770 }, { -13, 34.8f, 1275 } },
@@ -186,8 +186,6 @@ char PlayVictoryVoice_Original(int playerNum)
 }
 
 
-
-
 static inline void SetEndPosition() {
 
 	if (CurrentLevel == LevelIDs_Route101280)
@@ -196,7 +194,7 @@ static inline void SetEndPosition() {
 	if (MainCharObj2[0]->CharID == Characters_Tails) {
 
 		int num = -1;
-	
+
 		if (CurrentLevel == LevelIDs_FinalHazard) {
 			num = TailsRankVoices[4];
 			MainCharObj2[0]->CharID = Characters_SuperSonic;
@@ -211,7 +209,6 @@ static inline void SetEndPosition() {
 
 	return;
 }
-
 
 
 static void __declspec(naked) PlayWinnerVoiceProbablyASM()
@@ -230,20 +227,19 @@ static void __declspec(naked) PlayWinnerVoiceProbablyASM()
 }
 
 
-
 void Init_StartEndPos() {
-	HMODULE randoMod = GetModuleHandle(L"Rando");
 
-	if (!randoMod) {
-		WriteData((StartPosition**)0x43d955, MilesStartArray);
-		WriteData((StartPosition**)0x43df89, CharacterEndArray); //Change Rouge End Array with a more complete one (used to trick the game)		
-		WriteData((LevelEndPosition**)0x43ddfb, CharacterEndArrayM2M3); //Same with M2 and M3
+	if (isRando() || isCharaSelect())
+		return;
 
-		//Hack the victory function to fix Character and Camera position
-		WriteCall((void*)0x44f864, PlayWinnerVoiceProbablyASM);
-		WriteCall((void*)0x450816, PlayWinnerVoiceProbablyASM);
-		WriteCall((void*)0x451017, PlayWinnerVoiceProbablyASM);
-		WriteCall((void*)0x4510af, PlayWinnerVoiceProbablyASM);
-	}
+	WriteData((StartPosition**)0x43d955, MilesStartArray);
+	WriteData((StartPosition**)0x43df89, CharacterEndArray); //Change Rouge End Array with a more complete one (used to trick the game)		
+	WriteData((LevelEndPosition**)0x43ddfb, CharacterEndArrayM2M3); //Same with M2 and M3
+
+	//Hack the victory function to fix Character and Camera position
+	WriteCall((void*)0x44f864, PlayWinnerVoiceProbablyASM);
+	WriteCall((void*)0x450816, PlayWinnerVoiceProbablyASM);
+	WriteCall((void*)0x451017, PlayWinnerVoiceProbablyASM);
+	WriteCall((void*)0x4510af, PlayWinnerVoiceProbablyASM);
 }
 

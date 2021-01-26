@@ -51,17 +51,8 @@ __declspec(naked) void PlayRankVoice()
 
 void Init_VoicesFixes() {
 
-	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
-	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
-
-	if (!charaMod && !charaModPlus) {
+	if (!isCharaSelect())
 		WriteJump((void*)0x44FC5E, PlayRankVoice);
-	}
-
-	/*WriteCall((void*)0x44f864, FixCamEndPosASM);
-	WriteCall((void*)0x450816, FixCamEndPosASM);
-	WriteCall((void*)0x451017, FixCamEndPosASM);
-	WriteCall((void*)0x4510af, FixCamEndPosASM);*/
 
 	if (!jumpVoice)
 		WriteData<5>((void*)0x751C90, 0x90); //remove tails voice when jumping

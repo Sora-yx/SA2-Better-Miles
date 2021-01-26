@@ -10,6 +10,8 @@ void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2);
 static const void* const Tails_FlyStartPtr = (void*)0x752DB0;
 DataPointer(double, MilesFlySpeedValue, 0x9065a8);
 
+DataPointer(WORD, word_170ACEE, 0x170ACEE);
+
 
 
 void Init_MilesSpin();
@@ -30,3 +32,4 @@ signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* 
 void DoHangGrinding(EntityData1* data, CharObj2Base* co2);
 void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2);
 
+bool isSuperForm();

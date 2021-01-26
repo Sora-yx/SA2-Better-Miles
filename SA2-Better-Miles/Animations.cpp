@@ -228,6 +228,34 @@ AnimationInfo TailsAnimationList_R[] = {
 };
 
 
+
+void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1) {
+
+	if (CurrentLevel == LevelIDs_FinalHazard && data1->NextAction == 0) {
+
+		if (co2->AnimInfo.Next == 100 || co2->AnimInfo.Current == 100)
+		{
+			if (!isCustomAnim)
+				co2->AnimInfo.Next = 66;
+			else
+				co2->AnimInfo.Next = 216;
+		}
+		else if (co2->AnimInfo.Current == 216)
+		{
+			if (!data1->Status & Status_DisableControl) {
+				data1->Action = 59;
+				co2->AnimInfo.Next = 15;
+			}
+		}
+		else {
+			data1->Action = 59;
+			co2->AnimInfo.Next = 15;
+		}
+	}
+}
+
+
+
 void Init_NewAnimation() {
 	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
 }

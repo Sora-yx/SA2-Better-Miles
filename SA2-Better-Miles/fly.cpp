@@ -3,6 +3,7 @@
 float TailsFlightTime = 0.0000000000; //fatigue
 double flyCustomSpeedValue = 0.11; //used to improve Miles flight speed
 
+
 static int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
 	a1->Action = Flying;
 	a1->Status &= 0xDAFFu;
@@ -34,17 +35,16 @@ void Tails_CheckGetAltitude(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 	if (Controllers[a1->PlayerNum].on & Buttons_A) {
 		if (TailsFlightTime < 1.0) {
 
-			if (!isInfiniteFly)
+			if (!isInfiniteFly && !isSuperForm())
 				TailsFlightTime += 0.0043333338;
 
-			if ((a1->Upgrades & Upgrades_SuperSonic) && a1->Speed.y < 2.7)
-				a1->Speed.y += 0.3;
+			if (isSuperForm() && a1->Speed.y < 4.0)
+				a1->Speed.y += 0.20;
 			else if (a1->Speed.y < 1.2)
 				a1->Speed.y += 0.03;
 		}
 	}
 }
-
 
 void Miles_CheckLoseAltitude(CharObj2Base* a1, EntityData1* a2) {
 	if (a2->Action != Flying || Controllers[a1->PlayerNum].on & Buttons_A || Controllers[a1->PlayerNum].press & Buttons_A || TailsFlightTime >= 1.0)
@@ -52,7 +52,9 @@ void Miles_CheckLoseAltitude(CharObj2Base* a1, EntityData1* a2) {
 
 	if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
 	{
-		if (a1->Speed.y > -9.0)
+		if (isSuperForm() && a1->Speed.y > -9.0)
+			a1->Speed.y -= 0.20;
+		else if (a1->Speed.y > -9.0)
 			a1->Speed.y -= 0.14;
 	}
 }
@@ -76,12 +78,11 @@ void Tails_Fatigue(EntityData1* data1, CharObj2Base* co2) {
 	}
 }
 
-
 void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2) {
 
     if (data1->Action == Flying && TailsFlightTime < 1.0) {
-        Tails_CheckGetAltitude(co2, data1, data2);
-        Miles_CheckLoseAltitude(co2, data1);
+       Tails_CheckGetAltitude(co2, data1, data2);
+       Miles_CheckLoseAltitude(co2, data1);
     }
 
     if (!isInfiniteFly) {
@@ -89,7 +90,6 @@ void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2) {
         Tails_Fatigue(data1, co2);
     }
 }
-
 
 void Init_MilesFly() {
 
