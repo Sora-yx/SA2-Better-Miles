@@ -7,7 +7,9 @@ Trampoline* DynamiteHiddenBase_t;
 Trampoline* PrisonLaneDoor_t;
 Trampoline* PrisonLaneDoor4_t;
 Trampoline* SuperAura_t;
+Trampoline* DoorCCThing_t;
 
+ObjectFunc(DoorCCThing, 0x79AFB0);
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
 inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
@@ -308,25 +310,6 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 }
 
 
-void LoadSuperFormFinalBattle() {
-
-	if (MainCharacter[1])
-		DeleteObject_(MainCharacter[1]);
-
-	LoadSuperShadow(); //In order to have the animations working properly, Shadow needs to be called first.
-	InitPlayer(1);
-
-	if (MainCharacter[0])
-		DeleteObject_(MainCharacter[0]);
-
-	LoadTails(0);
-	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
-	MainCharacter[0]->SomethingSub = Super_Something;
-	co2Miles->base.Upgrades = Upgrades_SuperSonic;
-	LastBossPlayerManager_Load();
-	InitPlayer(0);
-	return;
-}
 
 bool isRando() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
@@ -370,6 +353,45 @@ void Super_Aura_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
+
+void LoadSuperFormFinalBattle() {
+
+	if (MainCharacter[1])
+		DeleteObject_(MainCharacter[1]);
+
+	LoadSuperShadow();
+	InitPlayer(1);
+
+	if (MainCharacter[0])
+		DeleteObject_(MainCharacter[0]);
+
+	LoadTails(0);
+	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
+	MainCharacter[0]->SomethingSub = Super_Something;
+	co2Miles->base.Upgrades = Upgrades_SuperSonic;
+	LastBossPlayerManager_Load();
+	InitPlayer(0);
+	return;
+}
+
+void DoorCCThing_r(ObjectMaster* obj) {
+
+	if (isMilesAttacking() && GetCollidingPlayer(obj))
+		AwardWin(0);
+
+	ObjectFunc(origin, DoorCCThing_t->Target());
+	origin(obj);
+}
+
+static const void* const loc_79B42A = (void*)0x79B42A;
+__declspec(naked) void  CheckBreakCCDoor() {
+	if (isMilesAttacking())
+	{
+		_asm jmp loc_79B42A
+	}
+}
+
+
 void Init_MilesActions() {
 
 	if (isMechRemoved)
@@ -386,6 +408,7 @@ void Init_MilesActions() {
 	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
 
 	SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
+	DoorCCThing_t = new Trampoline((int)DoorCCThing, (int)DoorCCThing + 0x7, DoorCCThing_r);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	
@@ -396,23 +419,11 @@ void Init_MilesActions() {
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
 
 	//FinalHazard Stuff
-	if (isMilesAdventure) {
-		WriteCall((void*)0x498a98, LoadSuperFormFinalBattle); //hook "LoadSuperSonic"
-	
-		WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling super shadow and stuff since we will manually do it.
-	}
+	WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling super shadow and stuff since we will manually do it.
+	WriteCall((void*)0x498a98, LoadSuperFormFinalBattle); //hook "LoadSuperSonic"
 	WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely	
+	WriteData<7>((int*)0x49cfc3, 0x90); //Remove super aura math thing for Tails.
 
-	/*WriteData<1>((int*)0x49cf97, 0x1);
-	WriteData<1>((int*)0x49cfd0, 0x76);*/
-
-	/*WriteData<4>((int*)0x49cfb9, 0x90);
-	WriteData<3>((int*)0x49cfab, 0x90);
-	WriteData<5>((int*)0x49cfb1, 0x90);*/
-
-	//WriteData<7>((int*)0x49cfa0, 0x90);
-	WriteData<7>((int*)0x49cfc3, 0x90);
-
-
-	//WriteData<81>((int*)0x49cf94, 0x90); //WINNER ANIMATE AURA
+	//CC Door
+	//WriteJump(reinterpret_cast<void*>(0x79b424), CheckBreakCCDoor);
 }

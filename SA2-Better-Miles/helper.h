@@ -7,6 +7,7 @@ extern bool isMechRemoved;
 extern bool isMilesAdventure;
 extern bool jumpVoice;
 extern char realChar;
+void init_RankScore();
 
 struct EntityData2_
 {
@@ -44,6 +45,7 @@ FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, Cha
 FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x7271D0);
 FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x46D6D0);
 FunctionPointer(int, calcHandGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
+FunctionPointer(int, sub_447580, (NJS_OBJECT* v), 0x447580);
 
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);

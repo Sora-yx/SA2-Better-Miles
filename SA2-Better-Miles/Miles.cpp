@@ -268,6 +268,7 @@ void BetterMiles_Init() {
 	if (isMilesAdventure || isMechRemoved) {
 		WriteCall((void*)0x439b13, LoadCharacter_r);
 		WriteCall((void*)0x43cada, LoadCharacter_r);
+		init_RankScore();
 	}
 
 	//Improve physic

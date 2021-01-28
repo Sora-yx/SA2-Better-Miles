@@ -147,6 +147,7 @@
     <ClCompile Include="animations.cpp" />
     <ClCompile Include="miles.cpp" />
     <ClCompile Include="grind.cpp" />
+    <ClCompile Include="ranks.cpp" />
     <ClCompile Include="roll.cpp" />
     <ClCompile Include="spin.cpp" />
     <ClCompile Include="fly.cpp" />
