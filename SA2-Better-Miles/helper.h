@@ -23,6 +23,21 @@ struct EntityData2_
 	float SomeMultiplier;
 };
 
+struct CollisionInfo_
+{
+	__int16 char0;
+	__int16 field_2;
+	uint16_t word4;
+	uint16_t Count;
+	float field_8;
+	CollisionData* CollisionArray;
+	uint8_t f10[140];
+	ObjectMaster* Object;
+	__int16 field_A0;
+	__int16 field_A2;
+	CollisionInfo* CollidingObject;
+};
+
 void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
 bool isRando();
 bool isCharaSelect();

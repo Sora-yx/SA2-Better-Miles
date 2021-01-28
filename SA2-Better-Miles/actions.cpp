@@ -8,8 +8,10 @@ Trampoline* PrisonLaneDoor_t;
 Trampoline* PrisonLaneDoor4_t;
 Trampoline* SuperAura_t;
 Trampoline* DoorCCThing_t;
+Trampoline* HiddenBaseDoor_t;
 
 ObjectFunc(DoorCCThing, 0x79AFB0);
+ObjectFunc(DoorHB, 0x715560);
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
 inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
@@ -374,21 +376,40 @@ void LoadSuperFormFinalBattle() {
 	return;
 }
 
+
+
 void DoorCCThing_r(ObjectMaster* obj) {
 
-	if (isMilesAttacking() && GetCollidingPlayer(obj))
-		AwardWin(0);
+	EntityData1* data1 = obj->Data1.Entity;
+	CollisionInfo_* v3 = (CollisionInfo_*)data1->Collision;
+
+	if (GetCollidingPlayer(obj) && MainCharObj2[0]->CharID == Characters_Tails) {
+		if (isMilesAttacking()) {
+			if (v3->CollidingObject->Object->Data1.Entity->field_2 != 6)
+				v3->CollidingObject->Object->Data1.Entity->field_2 = 6;
+		}
+	}
+
 
 	ObjectFunc(origin, DoorCCThing_t->Target());
 	origin(obj);
 }
 
-static const void* const loc_79B42A = (void*)0x79B42A;
-__declspec(naked) void  CheckBreakCCDoor() {
-	if (isMilesAttacking())
-	{
-		_asm jmp loc_79B42A
+
+void DoorHB_r(ObjectMaster* obj) {
+
+	EntityData1* data1 = obj->Data1.Entity;
+	CollisionInfo_* v3 = (CollisionInfo_*)data1->Collision;
+
+	if (GetCollidingPlayer(obj) && MainCharObj2[0]->CharID == Characters_Tails) {
+		if (isMilesAttacking()) {
+			if (v3->CollidingObject->Object->Data1.Entity->field_2 != 6)
+				v3->CollidingObject->Object->Data1.Entity->field_2 = 6;
+		}
 	}
+
+	ObjectFunc(origin, HiddenBaseDoor_t->Target());
+	origin(obj);
 }
 
 
@@ -409,6 +430,7 @@ void Init_MilesActions() {
 
 	SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
 	DoorCCThing_t = new Trampoline((int)DoorCCThing, (int)DoorCCThing + 0x7, DoorCCThing_r);
+	HiddenBaseDoor_t = new Trampoline((int)DoorHB, (int)DoorHB + 0x7, DoorHB_r);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	

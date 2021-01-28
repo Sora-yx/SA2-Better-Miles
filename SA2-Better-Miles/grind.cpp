@@ -170,13 +170,13 @@ signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 	return result;
 }
 
-int v67 = 0;
+
 void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-
-	if (data1->NextAction != 0)
+	if (data1->NextAction != 0) {
 		return;
+	}
 
-	if ((data1->Status & 0x2000) == 0) {
+	if ((data1->Status & Status_OnPath) == 0) {
 		co2->AnimInfo.Next = 15;
 		data1->Action = 10; //SA2Action_LaunchJumpOrFalling
 		co2->AnimInfo.Current = 15; //Falling
@@ -189,22 +189,17 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		return;
 	}
 
-	if (((data1->Status & 0x4000) != 0 || Jump_Pressed[(char)co2->PlayerNum] == 0) || !sub_45B2C0(co2, co2->PlayerNum, data1) || sub_45B2C0(co2, co2->PlayerNum, data1) > 3) {
-
+	if (data1->Status & Status_DisableControl || !Jump_Pressed[co2->PlayerNum] || !sub_45B2C0(co2, co2->PlayerNum, data1) || sub_45B2C0(co2, co2->PlayerNum, data1) > 3) {
 		if (Tails_Jump(co2, data1)) {
 			data1->Status &= 0xDFFFu;
-		}	
-		else if (*(WORD*)&co2Miles->field_3BC[2] <= 120) {
-
-			if (Action_Held[co2->PlayerNum] != 0)
+		}
+		else if (*(WORD*)&co2Miles->field_1BC[420] <= 120) {
+			if (!Action_Held[co2->PlayerNum])
 			{
-				return;
+				co2->ActionWindowItems[co2->ActionWindowItemCount++ & 7] = 71;
 			}
-			co2->ActionWindowItems[co2->ActionWindowItemCount++ & 7] = 71;
-			return;
 		}
 		else {
-
 			if (co2->AnimInfo.Current == 211) { // anim rail lose balance left
 				data1->Rotation.y -= 0x4000;
 			}
@@ -212,14 +207,14 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 				data1->Rotation.y += 0x4000;
 			}
 
-			data2->field_2C = data1->Rotation.y;
+			data2->Forward.x = data1->Rotation.y;
 			if (co2->PhysData.RollEnd > co2->Speed.x) {
 				co2->Speed.x = co2->PhysData.RollEnd;
 			}
 
-			/*data1->Action = 10; //SA2Action_LaunchJumpOrFalling
+			data1->Action = 10; //SA2Action_LaunchJumpOrFalling
 			co2->AnimInfo.Current = 15; //Falling
-			data1->Status &= 0xDFFFu;*/
+			data1->Status &= 0xDFFFu;
 
 		}
 
@@ -246,9 +241,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		data1->Rotation.y = 12288.0 - njScalor(&co2->Speed) * 800.0 + data1->Rotation.y;
 		idk(co2);
 	}
-
 }
-
 
 //Math stuff that allow character to move on the rail
 static const void* const sub_46D040Ptr = (void*)0x46D040;

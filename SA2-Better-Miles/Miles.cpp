@@ -8,22 +8,19 @@ Trampoline* Miles_CheckNextActions_t = nullptr;
 
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
-signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
-
+signed int Miles_CheckNextActions_original(EntityData2_* data2, TailsCharObj2* tco2, CharObj2Base* co2, EntityData1* data)
+{
 	const auto MilesCheck_ptr = Miles_CheckNextActions_t->Target();
 
-	signed int result;
+	int result;
 
 	__asm
 	{
-		mov esi, a4 // a4
-		mov edi, a3 // a3
-		mov ebx, a2 // a2
-		mov eax, a1 // a1
-
-		// Call your __cdecl function here:
+		mov esi, [data]
+		mov edi, [co2]
+		mov ebx, [tco2]
+		mov ecx, [data]
 		call MilesCheck_ptr
-
 		mov result, eax
 	}
 

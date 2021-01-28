@@ -40,7 +40,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_CannonsCoreT;
+		story->Level = LevelIDs_HiddenBase;
 		story->Character = Characters_MechTails;
 	}
 
@@ -52,7 +52,6 @@ extern "C" {
 		if (Controllers[0].press & Buttons_Y) {
 			data1->Position = { -2039.673584, -1338,  -2235.960205 };
 		}
-
 	}
 
 
