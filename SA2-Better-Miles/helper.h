@@ -8,6 +8,7 @@ extern bool isMilesAdventure;
 extern bool jumpVoice;
 extern char realChar;
 void init_RankScore();
+void CheckAndSetBreakDoor();
 
 struct EntityData2_
 {

@@ -8,24 +8,28 @@ Trampoline* Miles_CheckNextActions_t = nullptr;
 
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
-signed int Miles_CheckNextActions_original(EntityData2_* data2, TailsCharObj2* tco2, CharObj2Base* co2, EntityData1* data)
-{
+signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+
 	const auto MilesCheck_ptr = Miles_CheckNextActions_t->Target();
 
-	int result;
+	signed int result;
 
 	__asm
 	{
-		mov esi, [data]
-		mov edi, [co2]
-		mov ebx, [tco2]
-		mov ecx, [data]
+		mov esi, a4 // a4
+		mov edi, a3 // a3
+		mov ebx, a2 // a2
+		mov eax, a1 // a1
+
+		// Call your __cdecl function here:
 		call MilesCheck_ptr
+
 		mov result, eax
 	}
 
 	return result;
 }
+
 
 
 signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
@@ -60,6 +64,10 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 		 a3->AnimInfo.Current = Spin1;
 		 Play3DSound_Pos(8200, &a4->Position, 0, 0, 0);
 		 return 1;
+	 case 102:
+		 MainCharObj1[0]->field_2 = 1;
+		 a4->NextAction = 0;
+		 return 0;
 	}
 
 	return Miles_CheckNextActions_original(a1, a2, a3, a4);
@@ -254,6 +262,8 @@ void LoadCharacter_r() {
 	}
 
 	LoadCharacters();
+	CheckAndSetBreakDoor();
+	return;
 }
 
 

@@ -18,7 +18,7 @@ extern "C" {
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
 		isInfiniteFly = config->getBool("General", "isInfiniteFly", false);
 		isCustomAnim = config->getBool("General", "isCustomAnim", true);
-		isMechRemoved = config->getBool("General", "isMechRemoved", false);
+		isMechRemoved = config->getBool("General", "isMechRemoved", true);
 		isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
 
 		flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
@@ -40,7 +40,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_HiddenBase;
+		story->Level = LevelIDs_CannonsCoreT;
 		story->Character = Characters_MechTails;
 	}
 
@@ -50,6 +50,7 @@ extern "C" {
 		CharObj2Base* co2 = MainCharObj2[0];
 
 		if (Controllers[0].press & Buttons_Y) {
+			//data1->Position = { -45.30157089, 944, -9151.813477 };
 			data1->Position = { -2039.673584, -1338,  -2235.960205 };
 		}
 	}

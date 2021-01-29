@@ -45,11 +45,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 
     if (curAnim == 94 || curAnim >= Spin1 && curAnim <= Spin10)
     {
-        if ((double)a1->AnimInfo.field_10 >= 13.5) //Field10 should be the current frame of the anim. 
-        {
-            a1->AnimInfo.Next = 0; 
-        }
-        else if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
+        if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
         {
             if (CallGetAnalog(a2, a1, 0, 0))
             {
@@ -90,11 +86,23 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
                 }
             }
         }
+        else {
+            a1->AnimInfo.Next = 0;
+            a2->Action = 0;
+        }
+    }
+    else {
+        if ((double)a1->AnimInfo.field_10 >= 5.5) //FAILSAFE
+        {
+            a1->AnimInfo.Next = 0;
+            a2->Action = 0;
+        }
     }
 }
 
 
 void spinOnFrames(CharObj2Base* co2, EntityData1* data1) {
+
     if (co2->AnimInfo.Current) {
         Miles_SpinAttack(co2, data1);
         Miles_DoCollisionAttackStuff(data1);

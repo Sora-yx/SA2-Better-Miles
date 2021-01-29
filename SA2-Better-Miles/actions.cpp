@@ -7,8 +7,6 @@ Trampoline* DynamiteHiddenBase_t;
 Trampoline* PrisonLaneDoor_t;
 Trampoline* PrisonLaneDoor4_t;
 Trampoline* SuperAura_t;
-Trampoline* DoorCCThing_t;
-Trampoline* HiddenBaseDoor_t;
 
 ObjectFunc(DoorCCThing, 0x79AFB0);
 ObjectFunc(DoorHB, 0x715560);
@@ -311,6 +309,34 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 	origin(obj);
 }
 
+void CheckAndSetBreakDoor() {
+
+	if (CurrentCharacter == Characters_Tails || MainCharObj2[0]->CharID == Characters_Tails) {
+		if (CurrentLevel == LevelIDs_HiddenBase) {
+			//Hidden base door Col Stuff
+			WriteData<1>((int*)0x715b58, 0x1);
+			WriteData<1>((int*)0x715aa8, 0x1);
+			WriteData<1>((int*)0x7158bf, 0x1);
+		}
+
+		if (CurrentLevel == LevelIDs_CannonsCoreT) {
+			//CC door col Stuff
+			WriteData<1>((int*)0x79b427, 0x1);
+			WriteData<1>((int*)0x79b959, 0x1);
+			WriteData<1>((int*)0x79be57, 0x1);
+		}
+	}
+	else { //restore original values
+		WriteData<1>((int*)0x715b58, 0x6);
+		WriteData<1>((int*)0x715aa8, 0x6);
+		WriteData<1>((int*)0x7158bf, 0x6);
+
+		WriteData<1>((int*)0x79b427, 0x6);
+		WriteData<1>((int*)0x79b959, 0x6);
+		WriteData<1>((int*)0x79be57, 0x6);
+	}
+
+}
 
 
 bool isRando() {
@@ -378,41 +404,6 @@ void LoadSuperFormFinalBattle() {
 
 
 
-void DoorCCThing_r(ObjectMaster* obj) {
-
-	EntityData1* data1 = obj->Data1.Entity;
-	CollisionInfo_* v3 = (CollisionInfo_*)data1->Collision;
-
-	if (GetCollidingPlayer(obj) && MainCharObj2[0]->CharID == Characters_Tails) {
-		if (isMilesAttacking()) {
-			if (v3->CollidingObject->Object->Data1.Entity->field_2 != 6)
-				v3->CollidingObject->Object->Data1.Entity->field_2 = 6;
-		}
-	}
-
-
-	ObjectFunc(origin, DoorCCThing_t->Target());
-	origin(obj);
-}
-
-
-void DoorHB_r(ObjectMaster* obj) {
-
-	EntityData1* data1 = obj->Data1.Entity;
-	CollisionInfo_* v3 = (CollisionInfo_*)data1->Collision;
-
-	if (GetCollidingPlayer(obj) && MainCharObj2[0]->CharID == Characters_Tails) {
-		if (isMilesAttacking()) {
-			if (v3->CollidingObject->Object->Data1.Entity->field_2 != 6)
-				v3->CollidingObject->Object->Data1.Entity->field_2 = 6;
-		}
-	}
-
-	ObjectFunc(origin, HiddenBaseDoor_t->Target());
-	origin(obj);
-}
-
-
 void Init_MilesActions() {
 
 	if (isMechRemoved)
@@ -429,8 +420,8 @@ void Init_MilesActions() {
 	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
 
 	SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
-	DoorCCThing_t = new Trampoline((int)DoorCCThing, (int)DoorCCThing + 0x7, DoorCCThing_r);
-	HiddenBaseDoor_t = new Trampoline((int)DoorHB, (int)DoorHB + 0x7, DoorHB_r);
+	//DoorCCThing_t = new Trampoline((int)DoorCCThing, (int)DoorCCThing + 0x7, DoorCCThing_r);
+	//HiddenBaseDoor_t = new Trampoline((int)DoorHB, (int)DoorHB + 0x7, DoorHB_r);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	
@@ -446,6 +437,6 @@ void Init_MilesActions() {
 	WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely	
 	WriteData<7>((int*)0x49cfc3, 0x90); //Remove super aura math thing for Tails.
 
-	//CC Door
-	//WriteJump(reinterpret_cast<void*>(0x79b424), CheckBreakCCDoor);
+	//EE Power suply
+	WriteData<5>((void*)0x7899e8, 0x90); //remove powersupply
 }
