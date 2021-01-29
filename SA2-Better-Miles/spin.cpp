@@ -87,8 +87,11 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
             }
         }
         else {
-            a1->AnimInfo.Next = 0;
-            a2->Action = 0;
+            if ((double)a1->AnimInfo.field_10 >= 5.5) //FAILSAFE
+            {
+                a1->AnimInfo.Next = 0;
+                a2->Action = 0;
+            }
         }
     }
     else {

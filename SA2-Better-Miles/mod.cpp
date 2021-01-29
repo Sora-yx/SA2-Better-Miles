@@ -40,7 +40,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_CannonsCoreT;
+		story->Level = LevelIDs_IronGate;
 		story->Character = Characters_MechTails;
 	}
 
@@ -54,7 +54,6 @@ extern "C" {
 			data1->Position = { -2039.673584, -1338,  -2235.960205 };
 		}
 	}
-
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };
 }

@@ -87,6 +87,11 @@ DataArray(int, ShadowRankVoices, 0x173B820, 5);
 DataArray(int, RougeRankVoices, 0x173B834, 5);
 DataPointer(char, CurrentLevelRank, 0x174B001);
 
+ObjectFunc(RocketIG, 0x6A10A0);
+ObjectFunc(DoorIG, 0x69D1D0);
+ObjectFunc(DoorIG2, 0x69F460);
+ObjectFunc(DoorCCThing, 0x79AFB0);
+ObjectFunc(DoorHB, 0x715560);
 
 enum MilesState {
 	Standing,

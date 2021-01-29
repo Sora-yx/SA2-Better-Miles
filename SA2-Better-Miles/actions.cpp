@@ -7,9 +7,10 @@ Trampoline* DynamiteHiddenBase_t;
 Trampoline* PrisonLaneDoor_t;
 Trampoline* PrisonLaneDoor4_t;
 Trampoline* SuperAura_t;
+Trampoline* DoorIG_t;
+Trampoline* DoorIG2_t;
+Trampoline* RocketIG_t;
 
-ObjectFunc(DoorCCThing, 0x79AFB0);
-ObjectFunc(DoorHB, 0x715560);
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
 inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
@@ -335,38 +336,53 @@ void CheckAndSetBreakDoor() {
 		WriteData<1>((int*)0x79b959, 0x6);
 		WriteData<1>((int*)0x79be57, 0x6);
 	}
+	return;
+}
 
+void CheckAndOpenIronGateDoor(ObjectMaster* obj) {
+
+	if (MainCharObj2[0]->CharID != Characters_Tails)
+		return;
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (GetCollidingPlayer(obj)) {	
+		data->NextAction = 15;
+	}
 }
 
 
-bool isRando() {
-	HMODULE randoMod = GetModuleHandle(L"Rando");
+void doorIG_r(ObjectMaster* obj) {
 
-	if (randoMod)
-		return true;
+	CheckAndOpenIronGateDoor(obj);
 
-	return false;
+	ObjectFunc(origin, DoorIG_t->Target());
+	origin(obj);
 }
 
-bool isCharaSelect() {
-	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
-	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
+void doorIG2_r(ObjectMaster* obj) {
 
-	if (charaMod || charaModPlus)
-		return true;
+	CheckAndOpenIronGateDoor(obj);
 
-	return false;
+	ObjectFunc(origin, DoorIG2_t->Target());
+	origin(obj);
 }
 
-bool isSuperForm() {
-	if (MainCharObj2[0]->CharID == Characters_Tails && MainCharObj2[0]->Upgrades & Upgrades_SuperSonic || CurrentLevel == LevelIDs_FinalHazard)
-	{
-		return true;
+void rocketIG_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (MainCharObj2[0]->CharID == Characters_Tails) {
+
+		if (GetCollidingPlayer(obj) && isMilesAttacking() && data->Action == 5)
+		{
+			data->Action = 6;
+		}
 	}
 
-	return false;
+	ObjectFunc(origin, RocketIG_t->Target());
+	origin(obj);
 }
-
 
 void Super_Aura_r(ObjectMaster* obj) {
 	
@@ -403,6 +419,33 @@ void LoadSuperFormFinalBattle() {
 }
 
 
+bool isRando() {
+	HMODULE randoMod = GetModuleHandle(L"Rando");
+
+	if (randoMod)
+		return true;
+
+	return false;
+}
+
+bool isCharaSelect() {
+	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
+	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
+
+	if (charaMod || charaModPlus)
+		return true;
+
+	return false;
+}
+
+bool isSuperForm() {
+	if (MainCharObj2[0]->CharID == Characters_Tails && MainCharObj2[0]->Upgrades & Upgrades_SuperSonic || CurrentLevel == LevelIDs_FinalHazard)
+	{
+		return true;
+	}
+
+	return false;
+}
 
 void Init_MilesActions() {
 
@@ -420,8 +463,11 @@ void Init_MilesActions() {
 	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
 
 	SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
-	//DoorCCThing_t = new Trampoline((int)DoorCCThing, (int)DoorCCThing + 0x7, DoorCCThing_r);
-	//HiddenBaseDoor_t = new Trampoline((int)DoorHB, (int)DoorHB + 0x7, DoorHB_r);
+	
+	DoorIG_t = new Trampoline((int)DoorIG, (int)DoorIG + 0x6, doorIG_r);
+	DoorIG2_t = new Trampoline((int)DoorIG2, (int)DoorIG2 + 0x6, doorIG2_r);
+	RocketIG_t = new Trampoline((int)RocketIG, (int)RocketIG + 0x6, rocketIG_r);
+
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	
