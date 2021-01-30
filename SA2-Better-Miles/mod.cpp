@@ -40,7 +40,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_IronGate;
+		story->Level = LevelIDs_WeaponsBed;
 		story->Character = Characters_MechTails;
 	}
 

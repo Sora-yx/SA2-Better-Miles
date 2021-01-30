@@ -9,7 +9,7 @@ int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharO
 void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2);
 static const void* const Tails_FlyStartPtr = (void*)0x752DB0;
 DataPointer(double, MilesFlySpeedValue, 0x9065a8);
-
+void Miles_UnrollCheckSpeed(EntityData1* data1, CharObj2Base* co2);
 DataPointer(WORD, word_170ACEE, 0x170ACEE);
 
 

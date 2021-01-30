@@ -35,6 +35,64 @@ signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 }
 
 
+static const void* const PGetAccelPtr = (void*)0x460860;
+static inline void PGetAcceleration(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
+{
+	__asm
+	{
+		push[data2] // a3
+		mov ebx, co2 // a2
+		mov eax, a1 // a1
+
+		// Call your __cdecl function here:
+		call PGetAccelPtr
+
+		add esp, 4 // a3
+	}
+}
+
+
+static const void* const sub_4616E0Ptr = (void*)0x4616E0;
+static inline void sub_4616E0(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+{
+	__asm
+	{
+		push[a3] // a3
+		push a2 // a2
+		mov eax, a1 // a1
+
+		// Call your __cdecl function here:
+		call sub_4616E0Ptr
+		add esp, 8 // a2
+	}
+}
+
+
+
+static const void* const sub_469050Ptr = (void*)0x469050;
+static inline void sub_469050(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+{
+	__asm
+	{
+		push[a3] // a3
+		mov ebx, a2 // a2
+		mov eax, a1 // a1
+
+		// Call your __cdecl function here:
+		call sub_469050Ptr
+		add esp, 4 // a2
+	}
+}
+
+
+void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
+	PGetAcceleration(a1, a3, a2);
+	sub_4616E0(a1, a2, a3);
+	sub_469050(a1, a2, a3);
+	return;
+}
+
+
 static const void* const VibeThingPtr = (void*)0x438E70;
 static void __declspec(naked) VibeThingASM(int a1, signed int a2, int a3, signed int a4)
 {

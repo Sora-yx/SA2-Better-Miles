@@ -42,9 +42,6 @@
     <ClCompile Include="roll.cpp">
       <Filter>Source Files\Character\abilities</Filter>
     </ClCompile>
-    <ClCompile Include="actions.cpp">
-      <Filter>Source Files\Character</Filter>
-    </ClCompile>
     <ClCompile Include="grind.cpp">
       <Filter>Source Files\Character\abilities</Filter>
     </ClCompile>
@@ -59,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="ranks.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="helper.cpp">
+      <Filter>Source Files\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

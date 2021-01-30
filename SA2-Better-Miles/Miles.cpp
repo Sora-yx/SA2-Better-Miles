@@ -164,7 +164,7 @@ void Tails_Main_r(ObjectMaster* obj)
 			Miles_CheckSpinAttack(data1, co2);
 		}
 		else {
-			//Miles_RollCheckInput(data1, co2);
+			Miles_RollCheckInput(data1, co2);
 		}
 		break;
 	case Jumping:
@@ -196,6 +196,8 @@ void Tails_Main_r(ObjectMaster* obj)
 		}
 		break;
 	case Spinning:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			break;
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
@@ -204,6 +206,8 @@ void Tails_Main_r(ObjectMaster* obj)
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	case Grinding:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			break;
 		DoGrindThing(data1, data2, co2, co2Miles);
 		PlayGrindAnimation(data1, co2);
 		MoveCharacterOnRail(data1, co2, data2);
@@ -219,16 +223,22 @@ void Tails_Main_r(ObjectMaster* obj)
 	case 73:
 		CheckTrick(data1, co2, data2, co2Miles);
 		break;
+	case 90:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			break;
+		sub_45B610(data1, data2, co2);
+		PlayerMoveStuff(data1, data2, co2);
+		//sub_474990(data1, data2, co2);
+		Miles_DoCollisionAttackStuff(data1);
+		Miles_UnrollCheckSpeed(data1, co2);
+		Miles_UnrollCheckInput(data1, co2);
+		break;
 	case VictoryPose:
 		if (isSuperForm())
 			co2->AnimInfo.Current = VictorySuperForm;
 		else
 			co2->AnimInfo.Current = VictoryAnim;
 		AnimateMilesTails(data1, co2, co2Miles);
-		break;
-	case Rolling:
-		Miles_DoCollisionAttackStuff(data1);
-		Miles_UnrollCheckInput(data1, co2);
 		break;
 	}
 
@@ -250,6 +260,8 @@ signed char GetCharacterLevel() {
 	return -1;
 }
 
+NJS_TEXNAME MilesDC_texname[25];
+NJS_TEXLIST MilesDC_texlist = { arrayptrandlengthT(MilesDC_texname, Uint32) };
 
 void LoadCharacter_r() {
 

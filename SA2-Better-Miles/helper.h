@@ -50,7 +50,11 @@ ObjectFunc(PrisonLaneDoor, 0x606400);
 ObjectFunc(PrisonLaneDoor3, 0x608610);*/
 ObjectFunc(PrisonLaneDoor4, 0x606A10);
 FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
-FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* data2), 0x45B610);
+FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x45B610);
+void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
+FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x474990);
+
+
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
