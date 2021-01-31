@@ -166,6 +166,11 @@ int CheckTailsJump(CharObj2Base* a1, EntityData1* a2)
 	return Tails_JumpStart(a1, a2);
 }
 
+void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
+	if (MainCharObj1[0]->Action != Rolling)
+		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
+}
+
 void Tails_Main_r(ObjectMaster* obj)
 {
 	ObjectFunc(origin, Tails_Main_t->Target());
@@ -189,6 +194,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		}
 		break;
 	case Jumping:
+		*(int*)&co2Miles->field_1BC[436] = 10000;
 		Miles_DoCollisionAttackStuff(data1);
 		break;
 	case ObjectControl:
@@ -243,6 +249,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		CheckTrick(data1, co2, data2, co2Miles);
 		break;
 	case Rolling:
+		*(int*)&co2Miles->field_1BC[436] = 10000;
 		RollPhysicControlMain(data1, data2, co2);	
 		Miles_DoCollisionAttackStuff(data1);
 		Miles_UnrollCheck(data1, 0, data2, co2);
@@ -279,7 +286,8 @@ void LoadCharacter_r() {
 
 	PDS_PERIPHERAL p1 = Controllers[0];
 
-	if (!TwoPlayerMode && CurrentLevel != LevelIDs_FinalHazard && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace) {
+	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace 
+		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
 
 		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
 			CurrentCharacter = Characters_Tails;
@@ -323,4 +331,8 @@ void BetterMiles_Init() {
 
 	Init_StartEndPos();
 	Init_VoicesFixes();
+
+	//Draw the tails depending on the action
+	WriteCall((void*)0x750B32, Miles_DrawTail);	
+	WriteCall((void*)0x750BB8, Miles_DrawTail);
 }

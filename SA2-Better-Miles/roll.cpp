@@ -1,5 +1,24 @@
 #include "stdafx.h"
 
+//Restore Miles Physic
+void RestorePhysic(CharObj2Base* co2) {
+	co2->PhysData.CollisionSize = PhysicsArray[0].CollisionSize;
+	co2->PhysData.RippleSize = PhysicsArray[0].RippleSize;
+	co2->PhysData.FloorGrip = PhysicsArray[0].FloorGrip;
+	co2->PhysData.YOff = PhysicsArray[0].YOff;
+	return;
+}
+
+//Apply Somersault physic/collision to Tails
+void SetPhysicRoll(CharObj2Base* co2, EntityData1* v1) {
+	co2->PhysData.CollisionSize = PhysicsArray[0].CollisionSize * 0.4000000059604645;
+	co2->PhysData.RippleSize = PhysicsArray[0].RippleSize * 0.4000000059604645;
+	co2->PhysData.FloorGrip = PhysicsArray[0].FloorGrip * 0.4000000059604645;
+	co2->PhysData.YOff = PhysicsArray[0].YOff * 0.4000000059604645;
+	v1->Collision->CollisionArray->push &= ~0x4000u;
+	return;
+}
+
 
 static const void* const SlowDownThingPtr = (void*)0x45F840;
 static inline float SlowDownThing(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
@@ -17,23 +36,6 @@ static inline float SlowDownThing(EntityData1* a1, EntityData2_* a2, CharObj2Bas
 	return result;
 }
 
-void RestorePhysic(CharObj2Base* co2) {
-	co2->PhysData.CollisionSize = PhysicsArray[0].CollisionSize;
-	co2->PhysData.RippleSize = PhysicsArray[0].RippleSize;
-	co2->PhysData.FloorGrip = PhysicsArray[0].FloorGrip;
-	co2->PhysData.YOff = PhysicsArray[0].YOff;
-	return;
-}
-
-void SetPhysicRoll(CharObj2Base* co2, EntityData1* v1) {
-	co2->PhysData.CollisionSize = PhysicsArray[0].CollisionSize * 0.4000000059604645;
-	co2->PhysData.RippleSize = PhysicsArray[0].RippleSize * 0.4000000059604645;
-	co2->PhysData.FloorGrip = PhysicsArray[0].FloorGrip * 0.4000000059604645;
-	co2->PhysData.YOff = PhysicsArray[0].YOff * 0.4000000059604645;
-	v1->Collision->CollisionArray->push &= ~0x4000u;
-	return;
-}
-
 void RollPhysicControlMain(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
 	sub_45FA70(a1, a2, a3);
 	SlowDownThing(a1, a2, a3);
@@ -44,11 +46,11 @@ signed int Miles_RollCheckInput(EntityData1* a1, CharObj2Base* a2)
 {
 	if (Controllers[a2->PlayerNum].press & (Buttons_X | Buttons_B))
 	{
+		a2->Speed.x += 0.5;
 		a1->Action = Rolling;
 		a2->AnimInfo.Next = 11;
-		(a1->Status) |= Status_Ball; //BallForm
+		(a1->Status) |= Status_Ball; 
 		SetPhysicRoll(a2, a1);
-		//a2->SpindashSpeed = a2->Speed.x;
 		return 1;
 	}
 
@@ -104,6 +106,7 @@ float* sub_461060(float* result, float* a2)
 	return result;
 }
 
+//Giant mess copied pasted from the disassembly, needed to manage the rolling thing.
 int CheckGravityFallThing(EntityData1* a1, EntityData2_* a3, CharObj2Base* a4)
 {
 

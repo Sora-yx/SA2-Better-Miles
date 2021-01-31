@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+//Most of the functions here are directly copied pasted from the disassembly from Sonic grinding, with few extra fixes.
 
 static const void* const Sub4372E0Ptr = (void*)0x4372E0;
 static inline char PlaySound3DThingMaybe(int id, NJS_VECTOR* pos, int a3, char a4, char a5)

@@ -305,7 +305,9 @@ __declspec(naked) void  CheckGravitySwitch() {
 }
 
 void ForceMiles(int player) {
-	if (!TwoPlayerMode) {
+	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
+		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
+
 		CurrentCharacter = Characters_Tails;
 		LoadTails(player);
 	}

@@ -40,8 +40,8 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_CrazyGadget;
-		story->Character = Characters_Tails;
+		story->Level = LevelIDs_TailsVsEggman1;
+		story->Character = Characters_MechTails;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
@@ -51,7 +51,7 @@ extern "C" {
 
 		if (Controllers[0].press & Buttons_Y) {
 			//data1->Position = { -45.30157089, 944, -9151.813477 };
-			data1->Position = { -2039.673584, -1338,  -2235.960205 };
+			//data1->Position = { -2039.673584, -1338,  -2235.960205 };
 		}
 	}
 
