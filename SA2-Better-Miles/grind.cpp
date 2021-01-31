@@ -152,10 +152,10 @@ static inline int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 }
 
 static const void* const CheckGrindPtr = (void*)0x726D00;
-signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
+static inline signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 {
 
-	int result;
+	signed int result;
 
 	__asm
 	{
@@ -164,8 +164,8 @@ signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 		mov eax, [a1]
 
 		call CheckGrindPtr
-		mov result, eax
 		add esp, 8 // a2
+		mov result, eax
 	}
 	return result;
 }
@@ -258,9 +258,8 @@ static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a
 }
 
 static const void* const sub_46D140Ptr = (void*)0x46D140;
-int inline getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
+static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 {
-	int result;
 
 	__asm
 	{
@@ -270,11 +269,9 @@ int inline getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 
 		// Call your __cdecl function here:
 		call sub_46D140Ptr
-		mov result, eax
 		add esp, 8 // a2
 
 	}
-	return result;
 }
 
 void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3) {
@@ -287,7 +284,7 @@ void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3) {
 //Sparkles Rail thing
 //void __usercall sub_754EC0(int playernum@<ebx>)
 static const void* const sub_754EC0Ptr = (void*)0x754EC0;
-int inline sub_754EC0(int playernum)
+static inline void sub_754EC0(int playernum)
 {
 	__asm {
 		mov ebx, [playernum]
@@ -373,14 +370,14 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
 }
 
 static const void* const somethingAboutTrickPtr = (void*)0x45ABE0;
-bool somethingAboutTrick(int a1, EntityData1* a2, CharObj2Base* a3)
+static inline bool somethingAboutTrick(int a1, EntityData1* a2, CharObj2Base* a3)
 {
-	signed int result;
+	int result;
 	__asm
 	{
-		mov esi, a3 // a3
-		mov edi, a2 // a2
-		mov ecx, a1 // a1
+		mov esi, [a3] // a3
+		mov edi, [a2] // a2
+		mov ecx, [a1] // a1
 
 		// Call your __cdecl function here:
 		call somethingAboutTrickPtr
@@ -390,57 +387,52 @@ bool somethingAboutTrick(int a1, EntityData1* a2, CharObj2Base* a3)
 }
 
 static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
-signed int somethingAboutTrick2(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4)
+static inline signed int somethingAboutTrick2(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4)
 {
 	
 	signed int result;
 	__asm
 	{
 		push[a4]
-		mov esi, a2 // a2
-		mov eax, a1 // a1
+		mov esi, [a2] // a2
+		mov eax, [a1] // a1
 
 		// Call your __cdecl function here:
 		call somethingAboutTrick2Ptr
-		mov result, eax
 		add esp, 8
+		mov result, eax
 	}
 	return result;
 }
 
 static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
-int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
+static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
 {
 	int result;
 	__asm
 	{
 		push[a2]
-		mov ebx, a1
-		mov result, ebx
+		mov ebx, [a1]
 		// Call your __cdecl function here:
-		call somethingAboutTrick3Ptr	
-		add esp, 4 // a2
+		call somethingAboutTrick3Ptr
+		add esp, 4
+		mov result, eax
+
 	}
 	return result;
 }
 
 
 static const void* const sub_4EC330Ptr = (void*)0x4EC330;
-static void __declspec(naked) sub_4EC330(int a1, int a2, int a3)
+static inline void sub_4EC330(int a1, int a2, int a3)
 {
 	__asm
 	{
-		push ecx // a3
-		push ebx // a2
-		push edx // a1
-
+		mov ecx, [a3] // a3
+		mov ebx, [a2] // a2
+		mov edx, [a1] // a1
 		// Call your __cdecl function here:
 		call sub_4EC330Ptr
-
-		pop edx // a1
-		pop ebx // a2
-		pop ecx // a3
-		retn
 	}
 }
 
@@ -551,22 +543,6 @@ void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, Tail
 
 }
 
-static const void* const Sub468E70Ptr = (void*)0x468E70;
-float*  sub_468E70(EntityData1* a1, NJS_VECTOR* a2)
-{
-	float* result;
-
-	__asm
-	{
-		mov esi, [a2] // a4
-		mov edi, [a1] // a3
-		// Call your __cdecl function here:		
-		call Sub468E70Ptr
-		mov result, edi
-	}
-	return result;
-}
-
 
 void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
 {
@@ -590,7 +566,7 @@ float* sub_7274F0(EntityData1* a1)
 		mov eax, [a1] // eax0
 		// Call your __cdecl function here:
 		call sub_7274F0Ptr
-		mov result, eax
+		fstp result
 	}
 	return result;
 }
