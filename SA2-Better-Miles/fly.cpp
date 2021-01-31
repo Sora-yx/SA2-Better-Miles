@@ -4,7 +4,7 @@ float TailsFlightTime = 0.0000000000; //fatigue
 double flyCustomSpeedValue = 0.11; //used to improve Miles flight speed
 
 
-static int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
+static signed int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
 	a1->Action = Flying;
 	a1->Status &= 0xDAFFu;
 	a2->AnimInfo.Current = FlyingAnim;
@@ -64,7 +64,7 @@ void Tails_FatigueReloadCheck(EntityData1* data1) {
 	if (data1->Action == Flying || TailsFlightTime == 0.0000000000)
 		return;
 
-	if ((data1->Status & (Status_Unknown1 | Status_Ground)) || MainCharObj1[0]->Action < Flying) {
+	if ((data1->Status & (Status_Unknown1 | Status_Ground))) {
 
 		TailsFlightTime = 0.0000000000;
 	}

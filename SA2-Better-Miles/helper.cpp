@@ -35,8 +35,8 @@ signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 }
 
 
-static const void* const PGetAccelPtr = (void*)0x460860;
-static inline void PGetAcceleration(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
+static const void* const PGetRotationPtr = (void*)0x460860;
+static inline void PGetRotationMaybe(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
 {
 	__asm
 	{
@@ -45,24 +45,24 @@ static inline void PGetAcceleration(EntityData1* a1, CharObj2Base* co2, EntityDa
 		mov eax, a1 // a1
 
 		// Call your __cdecl function here:
-		call PGetAccelPtr
+		call PGetRotationPtr
 
 		add esp, 4 // a3
 	}
 }
 
 
-static const void* const sub_4616E0Ptr = (void*)0x4616E0;
-static inline void sub_4616E0(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+static const void* const PGetAccelPtr = (void*)0x4616E0;
+static inline void PGetAccelMaybe(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
 {
 	__asm
 	{
 		push[a3] // a3
-		push a2 // a2
+		push[a2] // a2
 		mov eax, a1 // a1
 
 		// Call your __cdecl function here:
-		call sub_4616E0Ptr
+		call PGetAccelPtr
 		add esp, 8 // a2
 	}
 }
@@ -86,31 +86,48 @@ static inline void sub_469050(EntityData1* a1, EntityData2_* a2, CharObj2Base* a
 
 
 void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
-	PGetAcceleration(a1, a3, a2);
-	sub_4616E0(a1, a2, a3);
-	sub_469050(a1, a2, a3);
+	PGetRotationMaybe(a1, a3, a2);
+	PGetAccelMaybe(a1, a2, a3);
+	sub_469050(a1, a2, a3); //idk
 	return;
 }
 
 
+static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
+static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_* a3, CharObj2Base* a4)
+{
+	int result;
+	__asm
+	{
+		push[a4] // a4
+		push[a3] // a3
+		mov ecx, [a2] // a1
+		mov eax, [a1]
+		// Call your __cdecl function here:
+		call PlayerCheckFallGravityPtr
+		add esp, 12 // a1<eax> is also used for return value
+		mov result, eax
+	}
+	return result;
+}
+
+int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_* a3, CharObj2Base* a4) {
+	return PlayerCheckFallGravityStuff(a1, a2, a3, a4);
+}
+
 static const void* const VibeThingPtr = (void*)0x438E70;
-static void __declspec(naked) VibeThingASM(int a1, signed int a2, int a3, signed int a4)
+static inline void VibeThingASM(int a1, signed int a2, int a3, signed int a4)
 {
 	__asm
 	{
-		push[esp + 04h] // int a4
-		push ecx // a3
-		push edx // int a2
-		push eax // a1
+		push[a4] // int a4
+		mov ecx, a3 // a3
+		mov edx, a2 // int a2
+		mov eax, a1 // a1
 
 		// Call your __cdecl function here:
 		call VibeThingPtr
-
-		pop eax // a1
-		pop edx // int a2
-		pop ecx // a3
 		add esp, 4 // int a4
-		retn
 	}
 }
 
@@ -145,7 +162,7 @@ Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 	if (isMilesAttacking() && GetCollidingPlayer(obj))
 		return 1;
 
-	FunctionPointer(Bool, original, (ObjectMaster* obj, ObjectMaster* other), CheckBreakObject_t->Target());
+	FunctionPointer(Bool, original, (ObjectMaster * obj, ObjectMaster * other), CheckBreakObject_t->Target());
 	return original(obj, other);
 }
 
@@ -342,7 +359,7 @@ void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
 		if (data->Action == 0 && data->Rotation.x == 3)
 		{
 			data->Rotation.x = 32;
-		} 
+		}
 		else  if (data->Action < 1 && GetCollidingPlayer(obj)) {
 			data->Rotation.x = 3;
 			data->Action = 1;
@@ -404,7 +421,7 @@ void CheckAndOpenIronGateDoor(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
 
-	if (GetCollidingPlayer(obj)) {	
+	if (GetCollidingPlayer(obj)) {
 		data->NextAction = 15;
 	}
 }
@@ -442,8 +459,9 @@ void rocketIG_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
+
 void Super_Aura_r(ObjectMaster* obj) {
-	
+
 	if (MainCharacter[1]) {
 		EntityData2* data2 = MainCharacter[1]->Data2.Entity;
 		word_170ACEE = word_170ACEE & 0xC000 | ((int(data2->CharacterData) != 10 ? 0 : 6)
@@ -521,16 +539,15 @@ void Init_MilesActions() {
 	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
 
 	SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
-	
+
 	DoorIG_t = new Trampoline((int)DoorIG, (int)DoorIG + 0x6, doorIG_r);
 	DoorIG2_t = new Trampoline((int)DoorIG2, (int)DoorIG2 + 0x6, doorIG2_r);
 	RocketIG_t = new Trampoline((int)RocketIG, (int)RocketIG + 0x6, rocketIG_r);
 
+	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
+	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);
+	WriteJump(reinterpret_cast<void*>(0x46ee7c), CheckUpgradeBox);
 
-	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
-	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);	
-    WriteJump(reinterpret_cast<void*>(0x46ee7c), CheckUpgradeBox);
-	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteData<1>((int*)0x776D20, 0x0); //CG Gravity switch need to be updated
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage

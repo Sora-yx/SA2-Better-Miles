@@ -172,7 +172,7 @@ signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 
 
 void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	if (data1->NextAction != 0) {
+	if (data1->NextAction != 0 || data1->Status & Status_DoNextAction) {
 		return;
 	}
 
@@ -190,7 +190,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 	}
 
 	if (data1->Status & Status_DisableControl || !Jump_Pressed[co2->PlayerNum] || !sub_45B2C0(co2, co2->PlayerNum, data1) || sub_45B2C0(co2, co2->PlayerNum, data1) > 3) {
-		if (Tails_Jump(co2, data1)) {
+		if (CheckTailsJump(co2, data1)) {
 			data1->Status &= 0xDFFFu;
 		}
 		else if (*(WORD*)&co2Miles->field_1BC[420] <= 120) {
@@ -245,16 +245,14 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 
 //Math stuff that allow character to move on the rail
 static const void* const sub_46D040Ptr = (void*)0x46D040;
-int inline sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
+static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
 {
 	__asm
 	{
 		push[a3]
 		mov ebx, [a2]
 		mov eax, [a1]
-
 		call sub_46D040Ptr
-
 		add esp, 4 // a3        
 	}
 }
@@ -266,7 +264,6 @@ int inline getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
 
 	__asm
 	{
-
 		push[a3]
 		push[a2]
 		mov eax, [a1]

@@ -50,9 +50,15 @@ ObjectFunc(PrisonLaneDoor, 0x606400);
 ObjectFunc(PrisonLaneDoor3, 0x608610);*/
 ObjectFunc(PrisonLaneDoor4, 0x606A10);
 FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
+
+//control/physic functions
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x45B610);
 void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
 FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x474990);
+FunctionPointer(void, sub_45FA70, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x45FA70);
+
+//Roll functions
+int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_* a3, CharObj2Base* a4);
 
 
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
@@ -107,8 +113,9 @@ enum MilesState {
 	Spinning,
 	Grinding = 71,
 	HandGrinding,
+	Rolling = 90,
 	VictoryPose = 190,
-	Rolling
+
 };
 
 enum MilesAnimation {

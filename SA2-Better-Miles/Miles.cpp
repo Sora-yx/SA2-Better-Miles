@@ -127,7 +127,6 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 
 signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
 {
-
 	short curStat = data->Status;
 	char curPlay = co2->PlayerNum;
 
@@ -136,14 +135,36 @@ signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
 		return 0;
 	}
 
+
 	data->Action = Action_Jump;
-	data->NextAction = Action_Jump;
-	data->Status = 0;
-	co2->AnimInfo.Next = 65;
 	co2->Speed.y = co2->PhysData.JumpSpeed;
+	co2->AnimInfo.Next = 65;
+	data->Status &= 65533u;
+	co2->field_12 = 0;
+
+	PlaySoundProbably(0x2000, 0, 0, 0);
 	return 1;
 }
 
+static const void* const TailsJumpPtr = (void*)0x751B80;
+static inline int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
+{
+	int result;
+	__asm
+	{
+		mov ecx, [a2]
+		mov eax, [a1]
+		call TailsJumpPtr
+		mov result, eax
+	}
+
+	return result;
+}
+
+int CheckTailsJump(CharObj2Base* a1, EntityData1* a2)
+{
+	return Tails_JumpStart(a1, a2);
+}
 
 void Tails_Main_r(ObjectMaster* obj)
 {
@@ -187,7 +208,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		}
 		break;
 	case Pulley:
-		Tails_Jump(co2, data1);
+		CheckTailsJump(co2, data1);
 		break;
 	case Flying:
 		if (isSuperForm() && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
@@ -206,8 +227,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	case Grinding:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
-			break;
 		DoGrindThing(data1, data2, co2, co2Miles);
 		PlayGrindAnimation(data1, co2);
 		MoveCharacterOnRail(data1, co2, data2);
@@ -223,15 +242,10 @@ void Tails_Main_r(ObjectMaster* obj)
 	case 73:
 		CheckTrick(data1, co2, data2, co2Miles);
 		break;
-	case 90:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
-			break;
-		sub_45B610(data1, data2, co2);
-		PlayerMoveStuff(data1, data2, co2);
-		//sub_474990(data1, data2, co2);
+	case Rolling:
+		RollPhysicControlMain(data1, data2, co2);	
 		Miles_DoCollisionAttackStuff(data1);
-		Miles_UnrollCheckSpeed(data1, co2);
-		Miles_UnrollCheckInput(data1, co2);
+		Miles_UnrollCheck(data1, 0, data2, co2);
 		break;
 	case VictoryPose:
 		if (isSuperForm())
@@ -260,8 +274,6 @@ signed char GetCharacterLevel() {
 	return -1;
 }
 
-NJS_TEXNAME MilesDC_texname[25];
-NJS_TEXLIST MilesDC_texlist = { arrayptrandlengthT(MilesDC_texname, Uint32) };
 
 void LoadCharacter_r() {
 
@@ -275,6 +287,7 @@ void LoadCharacter_r() {
 
 	LoadCharacters();
 	CheckAndSetBreakDoor();
+
 	return;
 }
 
