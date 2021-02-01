@@ -45,6 +45,7 @@ bool isCharaSelect();
 
 ObjectFunc(Dynamite_Main, 0x6da880);
 ObjectFunc(DynamiteHiddenBase_Main, 0x714610);
+ObjectFunc(DynamiteSandOcean_Main, 0x65AEA0);
 ObjectFunc(PrisonLaneDoor, 0x606400);
 /*ObjectFunc(PrisonLaneDoor2, 0x605D50);
 ObjectFunc(PrisonLaneDoor3, 0x608610);*/

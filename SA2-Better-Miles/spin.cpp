@@ -1,38 +1,27 @@
 #include "stdafx.h"
 
 
-void Miles_CheckSpinAttack(EntityData1* a2, CharObj2Base* a3)
+int FailSafeTimer = 0;
+void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3)
 {
 
     if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || a2->NextAction != 0)
         return;
 
-    if (Controllers[a3->PlayerNum].on & (Buttons_X | Buttons_B))
+    if (Controllers[a3->PlayerNum].on & (Buttons_X | Buttons_B) && (a2->Status & 0x2000) == 0)
     {
-          a2->NextAction = 39;
-          a3->AnimInfo.field_8 = 0;
-          a3->AnimInfo.Next = Spin1;
+          //a2->NextAction = 39;
+        a2->Action = 60;
+        a3->AnimInfo.Next = Spin1;
+        a3->AnimInfo.field_8 = 0;
+        a1->field_1BC[418] |= 2u;
+        FailSafeTimer = 0;
+        PlaySoundProbably(8200, 0, 0, 0);
     }
+
+    return;
 }
 
-
-static void __declspec(naked) CheckMiles_SpinAttackASM(NJS_OBJECT* a1, EntityData1* a2, CharObj2Base* a3)
-{
-    __asm
-    {
-        push ecx // a3
-        push edx // a2
-        push eax // a1
-
-        // Call your __cdecl function here:
-        call Miles_CheckSpinAttack
-
-        pop eax // a1
-        pop edx // a2
-        pop ecx // a3
-        retn
-    }
-}
 
 //Field 10 or 14 = Frame
 void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
@@ -43,7 +32,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 
     curAnim = a1->AnimInfo.Current;
 
-    if (curAnim == 94 || curAnim >= Spin1 && curAnim <= Spin10)
+    if (curAnim >= Spin1 && curAnim <= Spin10)
     {
         if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
         {
@@ -87,18 +76,11 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
             }
         }
         else {
-            if ((double)a1->AnimInfo.field_10 >= 5.5) //FAILSAFE
+            if (++FailSafeTimer == 30) //FAILSAFE
             {
                 a1->AnimInfo.Next = 0;
                 a2->Action = 0;
             }
-        }
-    }
-    else {
-        if ((double)a1->AnimInfo.field_10 >= 5.5) //FAILSAFE
-        {
-            a1->AnimInfo.Next = 0;
-            a2->Action = 0;
         }
     }
 }

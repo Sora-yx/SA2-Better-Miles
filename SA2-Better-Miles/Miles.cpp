@@ -61,7 +61,7 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 	 case 39:
 		 a4->Action = Spinning;
 		 a3->AnimInfo.field_8 = 0;
-		 a3->AnimInfo.Current = Spin1;
+		 a3->AnimInfo.Current = 94;
 		 Play3DSound_Pos(8200, &a4->Position, 0, 0, 0);
 		 return 1;
 	 case 102:
@@ -186,11 +186,13 @@ void Tails_Main_r(ObjectMaster* obj)
 	{
 	case Standing:
 	case Running:
-		if (co2->Speed.x < 1.3) {
-			Miles_CheckSpinAttack(data1, co2);
-		}
-		else {
-			Miles_RollCheckInput(data1, co2);
+		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1) && !CheckTailsJump(co2, data1)) {
+			if (co2->Speed.x < 1.3) {
+				Miles_CheckSpinAttack(co2Miles, data1, co2);
+			}
+			else {
+				Miles_RollCheckInput(data1, co2);
+			}
 		}
 		break;
 	case Jumping:

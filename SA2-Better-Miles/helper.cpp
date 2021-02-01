@@ -4,12 +4,14 @@ Trampoline* CheckBreakObject_t;
 Trampoline* MysticMelody_t;
 Trampoline* Dynamite_t;
 Trampoline* DynamiteHiddenBase_t;
+Trampoline* DynamiteSandOcean_t;
 Trampoline* PrisonLaneDoor_t;
 Trampoline* PrisonLaneDoor4_t;
 Trampoline* SuperAura_t;
 Trampoline* DoorIG_t;
 Trampoline* DoorIG2_t;
 Trampoline* RocketIG_t;
+Trampoline* BrokenDownSmoke_t;
 
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
@@ -348,6 +350,21 @@ void CheckBreakDynamiteHiddenBase(ObjectMaster* obj) {
 	origin(obj);
 }
 
+void CheckBreakDynamiteSandOcean(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (obj) {
+		if (data->Action == 0 && isMilesAttacking() && GetCollidingPlayer(obj)) {
+			data->Status |= 4u;
+			obj->EntityData2->gap_44[0] = 0;
+		}
+	}
+
+	ObjectFunc(origin, DynamiteSandOcean_t->Target());
+	origin(obj);
+}
+
 void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -496,6 +513,16 @@ void LoadSuperFormFinalBattle() {
 	return;
 }
 
+void BrokenDownSmoke_r(ObjectMaster* a1) {
+
+	if (MainCharObj2[0]->CharID == Characters_Tails)
+		DeleteObject_(a1);
+	else {
+		ObjectFunc(origin, BrokenDownSmoke_t->Target());
+		origin(a1);
+	}
+}
+
 
 bool isRando() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
@@ -537,6 +564,7 @@ void Init_MilesActions() {
 	//MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
 	Dynamite_t = new Trampoline((int)Dynamite_Main, (int)Dynamite_Main + 0x5, CheckBreakDynamite);
 	DynamiteHiddenBase_t = new Trampoline((int)DynamiteHiddenBase_Main, (int)DynamiteHiddenBase_Main + 0x5, CheckBreakDynamiteHiddenBase);
+	DynamiteSandOcean_t = new Trampoline((int)DynamiteSandOcean_Main, (int)DynamiteSandOcean_Main + 0x6, CheckBreakDynamiteSandOcean);
 	PrisonLaneDoor_t = new Trampoline((int)PrisonLaneDoor, (int)PrisonLaneDoor + 0x6, CheckPrisonLaneDoor);
 	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
 
@@ -545,6 +573,8 @@ void Init_MilesActions() {
 	DoorIG_t = new Trampoline((int)DoorIG, (int)DoorIG + 0x6, doorIG_r);
 	DoorIG2_t = new Trampoline((int)DoorIG2, (int)DoorIG2 + 0x6, doorIG2_r);
 	RocketIG_t = new Trampoline((int)RocketIG, (int)RocketIG + 0x6, rocketIG_r);
+
+	BrokenDownSmoke_t = new Trampoline((int)BrokenDownSmokeExec, (int)BrokenDownSmokeExec + 0x7, BrokenDownSmoke_r);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);

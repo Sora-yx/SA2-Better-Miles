@@ -44,11 +44,14 @@ void RollPhysicControlMain(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) 
 
 signed int Miles_RollCheckInput(EntityData1* a1, CharObj2Base* a2)
 {
+	if (CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || a1->NextAction != 0)
+		return 0;
+
 	if (Controllers[a2->PlayerNum].press & (Buttons_X | Buttons_B))
 	{
 		a2->Speed.x += 0.5;
 		a1->Action = Rolling;
-		a2->AnimInfo.Next = 11;
+		a2->AnimInfo.Next = 12;
 		(a1->Status) |= Status_Ball; 
 		SetPhysicRoll(a2, a1);
 		return 1;
