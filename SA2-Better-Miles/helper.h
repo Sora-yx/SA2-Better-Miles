@@ -109,6 +109,7 @@ enum MilesState {
 	Running,
 	Jumping = 6,
 	ObjectControl = 18,
+	MysticMelody = 45,
 	Pulley = 51,
 	Flying = 59,
 	Spinning,

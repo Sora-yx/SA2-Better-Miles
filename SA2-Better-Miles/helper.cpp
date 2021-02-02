@@ -215,81 +215,80 @@ static void __declspec(naked) sub_46EE00()
 	}
 }
 
-static const void* const sub_475F00ptr = (void*)0x475F00;
-static void __declspec(naked) SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
+
+static const void* const SetMysticMelodyActionPtr = (void*)0x475F00;
+static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 {
+
 	__asm
 	{
-		push ecx // a2
-		push eax // a1
-
-		// Call your __cdecl function here:
-		call  sub_475F00ptr
-
-		pop eax // a1
-		pop ecx // a2
-		retn
+		mov ecx, [a2]
+		mov eax, [a1]
+		call SetMysticMelodyActionPtr
 	}
 }
 
-int __cdecl IsPlayerInsideSphere(NJS_VECTOR* x_1, float radius)
-{
-	float v2; // edx
-	float v3; // eax
-	int v4; // esi
-	EntityData1* v5; // eax
-	CollisionInfo* v6; // eax
-	float* v7; // eax
-	double v8; // st7
-	float v10; // [esp+4h] [ebp-14h]
-	float v11; // [esp+8h] [ebp-10h]
-	NJS_VECTOR v; // [esp+Ch] [ebp-Ch] BYREF
-	float v13; // [esp+1Ch] [ebp+4h]
 
-	v2 = x_1->y;
-	v3 = x_1->z;
-	v13 = x_1->x;
-	v10 = v2;
-	v11 = v3;
-	v4 = 0;
+
+int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
+{
+	int player; // esi
+	EntityData1* v3; // eax
+	CollisionInfo* v4; // eax
+	float* v5; // eax
+	double v6; // st7
+	float posX; // [esp+4h] [ebp-1Ch]
+	float posY; // [esp+8h] [ebp-18h]
+	float posZ; // [esp+Ch] [ebp-14h]
+	float v11; // [esp+10h] [ebp-10h]
+	NJS_VECTOR a1; // [esp+14h] [ebp-Ch] BYREF
+
+	posX = position->x;
+	player = 0;
+	posY = position->y;
+	posZ = position->z;
 	while (1)
 	{
-		v5 = MainCharObj1[v4];
-		if (v5)
+		v3 = MainCharObj1[player];
+		if (v3)
 		{
-			v6 = v5->Collision;
-			if (v6)
+			v4 = v3->Collision;
+			if (v4)
 			{
-				v7 = (float*)&v6->CollisionArray->center;
-				v8 = v7[2];
-				// pointer to Y of the first vector because sega hates everything
-				v7 += 3;
-				v.x = v8 - v13;
-				v.y = *v7 - v10;
-				v.z = v7[1] - v11;
-				if (njScalor(&v) - radius < 0.0)
+				v5 = (float*)&v4->CollisionArray->kind;
+				v6 = v5[2];
+				v5 += 3;
+				a1.x = v6 - posX;
+				a1.y = *v5 - posY;
+				a1.z = v5[1] - posZ;
+				v11 = njScalor(&a1) - a2;
+				if (v11 < 0.0)
 				{
 					break;
 				}
 			}
 		}
-		if (++v4 >= 2)
+		if (++player >= 2)
 		{
 			return 0;
 		}
 	}
-	return v4 + 1;
+	return player + 1;
 }
+
 
 EntityData2_* PlayMysticMelody(ObjectMaster* obj)
 {
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data = MainCharObj1[0];
 
-	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 30))
+	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15))
 	{
-		if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B))
-			SetMysticMelodyAction(co2, data);
+		if (data->NextAction == 0 && co2->CharID == Characters_Tails) {
+
+			if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && data->Action != 45)
+				SetMysticMelodyAction(co2, data);
+		}
 	}
 
 	ObjectFunc(origin, MysticMelody_t->Target());
@@ -567,7 +566,7 @@ void Init_MilesActions() {
 		return;
 
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
-	//MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
+	MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
 	Dynamite_t = new Trampoline((int)Dynamite_Main, (int)Dynamite_Main + 0x5, CheckBreakDynamite);
 	DynamiteHiddenBase_t = new Trampoline((int)DynamiteHiddenBase_Main, (int)DynamiteHiddenBase_Main + 0x5, CheckBreakDynamiteHiddenBase);
 	DynamiteSandOcean_t = new Trampoline((int)DynamiteSandOcean_Main, (int)DynamiteSandOcean_Main + 0x6, CheckBreakDynamiteSandOcean);
@@ -589,6 +588,7 @@ void Init_MilesActions() {
 	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
+	WriteData<3>((int*)0x751d70, 0x90); //Remove path action, we will manually call it (fix RH last loop)
 
 	//FinalHazard Stuff
 	WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling super shadow and stuff since we will manually do it.

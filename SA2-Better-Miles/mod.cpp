@@ -39,7 +39,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_CrazyGadget;
+		story->Level = LevelIDs_SkyRail;
 		story->Character = Characters_Tails;
 	}
 
@@ -49,7 +49,7 @@ extern "C" {
 		CharObj2Base* co2 = MainCharObj2[0];
 
 		if (Controllers[0].press & Buttons_Y) {
-			//data1->Position = { -45.30157089, 944, -9151.813477 };
+			data1->Position = { 1897.516357, -102, -5624.889648 };
 			//data1->Position = { -2039.673584, -1338,  -2235.960205 };
 		}
 	}

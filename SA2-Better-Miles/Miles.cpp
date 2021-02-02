@@ -36,6 +36,12 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 
 	switch (a4->NextAction)
 	{
+	case 1:
+		if (CurrentLevel == LevelIDs_RadicalHighway)
+			a4->Action = 1;
+		else
+			a4->Action = 2;
+		break;
 	 case 20: //Pulley
 	 	a4->Status &= 0xDAFFu;
 	 	a3->Speed = { 0, 0, 0 };
@@ -215,6 +221,15 @@ void Tails_Main_r(ObjectMaster* obj)
 				co2->AnimInfo.Next = VictoryAnim;
 			}
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
+		}
+		break;
+	case MysticMelody:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			break;
+
+		if ((co2->AnimInfo.field_C & 1) != 0)
+		{
+			data1->Action = 0;
 		}
 		break;
 	case Pulley:
