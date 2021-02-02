@@ -20,7 +20,7 @@ static inline char PlaySound3DThingMaybe(int id, NJS_VECTOR* pos, int a3, char a
 	return result;
 }
 
-void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+int setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
 	NJS_VECTOR result;
 	int v8 = 0;
@@ -108,7 +108,7 @@ void setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3
 	sub_429000();
 	v8 = 1;
 	a3->Speed.y = 0.0;
-	return;
+	return 1;
 }
 
 

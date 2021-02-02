@@ -43,8 +43,10 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 	 	a3->AnimInfo.Next = 75;
 	 	return 1;
 	 case 31:
-		setGrindingNextAction(a1, a2, a3, a4);
-	 	return 1;
+		 if (setGrindingNextAction(a1, a2, a3, a4))
+	 		return 1;
+		 else
+			return 0;
 	 case 32:
 		 if (!CharacterAnimations[200].Animation)
 		 {

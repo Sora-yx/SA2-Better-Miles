@@ -52,7 +52,7 @@ signed int Miles_RollCheckInput(EntityData1* a1, CharObj2Base* a2)
 		a2->Speed.x += 0.5;
 		a1->Action = Rolling;
 		a2->AnimInfo.Next = 12;
-		(a1->Status) |= Status_Ball; 
+		a1->Status |= Status_Ball; 
 		SetPhysicRoll(a2, a1);
 		return 1;
 	}
@@ -113,40 +113,36 @@ float* sub_461060(float* result, float* a2)
 int CheckGravityFallThing(EntityData1* a1, EntityData2_* a3, CharObj2Base* a4)
 {
 
-	__int16 v4; // bx
-	char v6; // al
-	char v7; // cl
+	__int16 curStatus; // bx
+	char curChar; // al
+	int curaction; // cl
 	char v8; // al
 	NJS_VECTOR* v9; // esi
 	int v10; // eax
-	int v11; // edi
-	int v13; // edx
-	int v14; // edx
-	int v15; // edx
 	char v16; // [esp-4h] [ebp-18h]
 
-	v4 = a1->Status;
-	if ((v4 & (Status_Unknown1 | Status_Ground)) != 0)
+	curStatus = a1->Status;
+	if (((curStatus & (Status_Unknown1 | Status_Ground)) != 0) ||
+		 (CurrentLevel == LevelIDs_CrazyGadget && (a1->Position.x >= -3750 && a1->Position.x <= -3500 || a1->Position.x >= -9400 && a1->Position.x <= -9160))) //hardcoded shit fix for CG somersault
 	{
 		return 0;
 	}
-	if (!ControllerEnabled[a4->PlayerNum]
-		|| (a4->gap70[28] & 0x8000000) != 0
-		|| (v6 = a4->CharID, v6 == 6)
-		|| v6 == 7
-		|| (v7 = a1->Action, a1->Action != 1) && (v6 && v6 != 1 || v7 < 61 || v7 > 68)
-		|| HIWORD(a4->field_12)
-		|| sub_77FBA0(&Gravity, (NJS_VECTOR*)&a4->gap70[12]) >= -0.9847999811172485
-		|| a4->PhysData.RollCancel > (double)a4->Speed.x
-		|| njScalor((const NJS_VECTOR*)a4->gap70) != 0.0)
-	{
-		if ((v4 & Status_Ball) != 0)
+		if (!ControllerEnabled[a4->PlayerNum]
+			|| (curChar = a4->CharID, curChar == 6)
+			|| curChar == 7
+			|| (curaction = a1->Action, a1->Action != 1) && (curChar && curChar != Characters_Shadow || curaction < 61 || curaction > 68)
+			|| HIWORD(a4->field_12)
+			|| sub_77FBA0(&Gravity, (NJS_VECTOR*)&a4->gap70[12]) >= -0.9847999811172485
+			|| a4->PhysData.RollCancel > (double)a4->Speed.x
+			|| njScalor((const NJS_VECTOR*)a4->gap70) != 0.0)
 		{
-			a1->Action = 6;
-			return 1;
+			if ((curStatus & Status_Ball) != 0)
+			{
+				a1->Action = 6;
+				return 1;
+			}
+			goto LABEL_42;
 		}
-		goto LABEL_42;
-	}
 	if ((Gravity.y >= -0.9999899864196777 || a1->Position.y - 60.0 < a4->idk6)
 		&& (Gravity.y <= 0.9999899864196777 || a4->idk5 < a1->Position.y + 60.0))
 	{
@@ -170,9 +166,7 @@ int CheckGravityFallThing(EntityData1* a1, EntityData2_* a3, CharObj2Base* a4)
 	v9 = &a1->Position;
 	v10 = a4->CharID2;
 	a4->IdleTime = 0;
-
 	return 1;
-
 }
 
 void Miles_UnrollCheck(EntityData1* data1, int a2, EntityData2_* data2, CharObj2Base* co2) {
@@ -190,7 +184,7 @@ void Miles_UnrollCheck(EntityData1* data1, int a2, EntityData2_* data2, CharObj2
 			if (CheckTailsJump(co2, data1))
 			{
 				RestorePhysic(co2);
-				data1->Status &= ~(Status_Ground | Status_Unknown1);
+				data1->Status &= Status_Ball;
 				return;
 			}
 

@@ -297,14 +297,19 @@ EntityData2_* PlayMysticMelody(ObjectMaster* obj)
 }
 
 
-static const void* const loc_776D2A = (void*)0x776d23;
+static const void* const loc_776D23 = (void*)0x776D23;
+static const void* const loc_776D5F = (void*)0x776D5F;
 __declspec(naked) void  CheckGravitySwitch() {
 
-	if (MainCharObj1[0]->Action == 0x53 || isMilesAttacking())
+	if (MainCharObj1[0]->Action == 0x53 || (Controllers[0].press & (Buttons_X | Buttons_B)))
 	{
-		_asm jmp loc_776D2A
+		_asm jmp loc_776D23
+	}
+	else {
+		_asm jmp loc_776D5F
 	}
 }
+
 
 void ForceMiles(int player) {
 	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
@@ -479,6 +484,7 @@ void rocketIG_r(ObjectMaster* obj) {
 }
 
 
+
 void Super_Aura_r(ObjectMaster* obj) {
 
 	if (MainCharacter[1]) {
@@ -580,7 +586,7 @@ void Init_MilesActions() {
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);
 	WriteJump(reinterpret_cast<void*>(0x46ee7c), CheckUpgradeBox);
 
-	WriteData<1>((int*)0x776D20, 0x0); //CG Gravity switch need to be updated
+	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
 
