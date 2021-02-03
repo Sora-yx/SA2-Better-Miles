@@ -188,7 +188,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData1* data1 = MainCharObj1[0];
 	EntityData2_* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
-	
+
 
 	switch (data1->Action)
 	{
@@ -265,7 +265,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		DoHangGrinding(data1, co2);
 		break;
 	case 73:
-		CheckTrick(data1, co2, data2, co2Miles);
+		CheckScoreTrick(data1, co2, data2, co2Miles);
 		break;
 	case Rolling:
 		*(int*)&co2Miles->field_1BC[436] = 10000;
@@ -301,6 +301,7 @@ signed char GetCharacterLevel() {
 }
 
 
+
 void LoadCharacter_r() {
 
 	PDS_PERIPHERAL p1 = Controllers[0];
@@ -317,9 +318,6 @@ void LoadCharacter_r() {
 
 	return;
 }
-
-
-
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);

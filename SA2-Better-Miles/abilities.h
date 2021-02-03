@@ -30,6 +30,6 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3);
 
 signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* data1);
 void DoHangGrinding(EntityData1* data, CharObj2Base* co2);
-void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2);
+void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2);
 
 bool isSuperForm();

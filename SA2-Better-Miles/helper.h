@@ -71,7 +71,7 @@ FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, T
 FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
 FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x7271D0);
 FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x46D6D0);
-FunctionPointer(int, calcHandGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
+FunctionPointer(int, calcGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
 FunctionPointer(int, sub_447580, (NJS_OBJECT* v), 0x447580);
 
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
@@ -85,6 +85,7 @@ VoidFunc(sub_47BB50, 0x47BB50);
 void BetterMiles_Init();
 void Init_NewAnimation();
 void Init_MilesActions();
+signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
 
 static Buttons JumpButtons = Buttons_A;
 static Buttons AttackButtons = Buttons_X;
@@ -97,6 +98,7 @@ DataArray(int, EggmanRankVoices, 0x173B80C, 5);
 DataArray(int, ShadowRankVoices, 0x173B820, 5);
 DataArray(int, RougeRankVoices, 0x173B834, 5);
 DataPointer(char, CurrentLevelRank, 0x174B001);
+
 
 ObjectFunc(RocketIG, 0x6A10A0);
 ObjectFunc(DoorIG, 0x69D1D0);

@@ -36,8 +36,8 @@ int setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3,
 	float v40 = 0.0;
 	float v41 = 0.0;
 	a4->Status = a4->Status & 0xFAFF | 0x2000;
-	(a1[13].field_28) = 0;
-	(a1[13].field_2C) = 0;
+	/*(a1[13].field_28) = 0;
+	(a1[13].field_2C) = 0;*/
 	result = { 1, 0, 0 };
 	//sub_429710(); //Make the game crash sometimes not sure why
 	v21 = nj_current_matrix_ptr_;
@@ -153,7 +153,7 @@ static inline int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 }
 
 static const void* const CheckGrindPtr = (void*)0x726D00;
-static inline signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
+static inline signed int CheckTrickASM(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 {
 
 	signed int result;
@@ -185,7 +185,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		return;
 	}
 
-	if (CheckTrick(co2Miles, co2, data1))
+	if (CheckTrickASM(co2Miles, co2, data1))
 	{
 		return;
 	}
@@ -438,7 +438,7 @@ static inline void sub_4EC330(int a1, int a2, int a3)
 }
 
 
-void CheckTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2) {
+void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2) {
 
 	char getcharID2 = 0;
 	int curSound = 0;

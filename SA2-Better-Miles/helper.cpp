@@ -286,7 +286,7 @@ EntityData2_* PlayMysticMelody(ObjectMaster* obj)
 	{
 		if (data->NextAction == 0 && co2->CharID == Characters_Tails) {
 
-			if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && data->Action != 45)
+			if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && data->Action == 0)
 				SetMysticMelodyAction(co2, data);
 		}
 	}
@@ -598,4 +598,5 @@ void Init_MilesActions() {
 
 	//EE Power suply
 	WriteData<5>((void*)0x7899e8, 0x90); //remove powersupply
+
 }
