@@ -88,7 +88,7 @@ int setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3,
 		}
 	}
 	else {
-		a3->AnimInfo.Next = 4;
+		a3->AnimInfo.Next = 9;
 	}
 
 	if (CurrentLevel == LevelIDs_GreenForest)

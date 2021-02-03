@@ -47,8 +47,6 @@ extern "C" {
 
 		CharObj2Base* co2 = MainCharObj2[0];
 		EntityData1* data1 = MainCharObj1[0];
-		EntityData2_* data2 = EntityData2Ptrs[0];
-		SonicCharObj2* so2 = (SonicCharObj2*)MainCharObj2[0];
 
 		if (Controllers[0].press & Buttons_Y) {
 			//data1->Position = { 1897.516357, -102, -5624.889648 };

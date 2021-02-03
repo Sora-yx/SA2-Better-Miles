@@ -268,7 +268,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		CheckScoreTrick(data1, co2, data2, co2Miles);
 		break;
 	case Rolling:
-		*(int*)&co2Miles->field_1BC[436] = 10000;
 		RollPhysicControlMain(data1, data2, co2);	
 		Miles_DoCollisionAttackStuff(data1);
 		Miles_UnrollCheck(data1, 0, data2, co2);
@@ -316,8 +315,14 @@ void LoadCharacter_r() {
 	LoadCharacters();
 	CheckAndSetBreakDoor();
 
+	if (isCharaSelect())
+	{
+		MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
+	}
+
 	return;
 }
+
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
@@ -341,8 +346,9 @@ void BetterMiles_Init() {
 	//Custom anim + new moves
 	Init_NewAnimation();
 
+	Init_MilesSpin();
+
 	if (isCustomAnim) {
-		Init_MilesSpin();
 		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckVictoryPose);
 	}
 

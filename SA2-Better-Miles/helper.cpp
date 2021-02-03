@@ -598,5 +598,4 @@ void Init_MilesActions() {
 
 	//EE Power suply
 	WriteData<5>((void*)0x7899e8, 0x90); //remove powersupply
-
 }
