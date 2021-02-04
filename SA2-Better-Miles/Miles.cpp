@@ -109,7 +109,7 @@ int ActionArray[6] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
 
 //Edit the function which checks where it needs to animate Miles's tails to add more actions.
 static const void* const loc_7512F2 = (void*)0x7512F2; 
-__declspec(naked) void  CheckVictoryPose() {
+__declspec(naked) void  CheckAnimateTailsAction() {
 
 
 	for (int i = 0; i < LengthOfArray(ActionArray); i++)
@@ -154,6 +154,7 @@ signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
 	return 1;
 }
 
+
 static const void* const TailsJumpPtr = (void*)0x751B80;
 static inline int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
 {
@@ -189,7 +190,6 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData2_* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
 
-
 	switch (data1->Action)
 	{
 	case Standing:
@@ -211,13 +211,11 @@ void Tails_Main_r(ObjectMaster* obj)
 		if (!isCustomAnim)
 			return;
 
-		if (TimerStopped != 0) { //Check if the level is finished
+		if (TimerStopped != 0 && (co2->AnimInfo.Next == 54 || co2->AnimInfo.Current == 54)) { //Check if the level is finished
 			if (isSuperForm()) {
-				co2->field_28 = VictorySuperForm;
 				co2->AnimInfo.Next = VictorySuperForm;
 			}
 			else {
-				co2->field_28 = VictoryAnim;
 				co2->AnimInfo.Next = VictoryAnim;
 			}
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
@@ -315,7 +313,7 @@ void LoadCharacter_r() {
 	LoadCharacters();
 	CheckAndSetBreakDoor();
 
-	if (isCharaSelect())
+	if (isCharaSelect() && MainCharObj2[0]->CharID == Characters_Tails)
 	{
 		MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
 	}
@@ -349,7 +347,7 @@ void BetterMiles_Init() {
 	Init_MilesSpin();
 
 	if (isCustomAnim) {
-		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckVictoryPose);
+		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckAnimateTailsAction);
 	}
 
 	Init_StartEndPos();
@@ -358,4 +356,6 @@ void BetterMiles_Init() {
 	//Draw the tails depending on the action
 	WriteCall((void*)0x750B32, Miles_DrawTail);	
 	WriteCall((void*)0x750BB8, Miles_DrawTail);
+
+	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
 }

@@ -140,6 +140,66 @@ void CallVibeThing(int a1, signed int a2, int a3, signed int a4)
 }
 
 
+void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
+{
+	Float v3; // ST00_4
+	Float v4; // ST04_4
+
+	v3 = a3[4] * a1->x + a3[5] * a1->y + a3[6] * a1->z;
+	v4 = a3[8] * a1->x + a3[9] * a1->y + a3[10] * a1->z;
+	a2->x = a3[1] * a1->y + *a3 * a1->x + a3[2] * a1->z;
+	a2->y = v3;
+	a2->z = v4;
+}
+
+int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
+{
+	int player; // esi
+	EntityData1* v3; // eax
+	CollisionInfo* v4; // eax
+	float* v5; // eax
+	double v6; // st7
+	float posX; // [esp+4h] [ebp-1Ch]
+	float posY; // [esp+8h] [ebp-18h]
+	float posZ; // [esp+Ch] [ebp-14h]
+	float v11; // [esp+10h] [ebp-10h]
+	NJS_VECTOR a1; // [esp+14h] [ebp-Ch] BYREF
+
+	posX = position->x;
+	player = 0;
+	posY = position->y;
+	posZ = position->z;
+	while (1)
+	{
+		v3 = MainCharObj1[player];
+		if (v3)
+		{
+			v4 = v3->Collision;
+			if (v4)
+			{
+				v5 = (float*)&v4->CollisionArray->kind;
+				v6 = v5[2];
+				v5 += 3;
+				a1.x = v6 - posX;
+				a1.y = *v5 - posY;
+				a1.z = v5[1] - posZ;
+				v11 = njScalor(&a1) - a2;
+				if (v11 < 0.0)
+				{
+					break;
+				}
+			}
+		}
+		if (++player >= 2)
+		{
+			return 0;
+		}
+	}
+	return player + 1;
+}
+
+
+
 bool isMilesAttacking() {
 
 	if (MainCharObj2[0]->CharID != Characters_Tails)
@@ -229,54 +289,6 @@ static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 }
 
 
-
-int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
-{
-	int player; // esi
-	EntityData1* v3; // eax
-	CollisionInfo* v4; // eax
-	float* v5; // eax
-	double v6; // st7
-	float posX; // [esp+4h] [ebp-1Ch]
-	float posY; // [esp+8h] [ebp-18h]
-	float posZ; // [esp+Ch] [ebp-14h]
-	float v11; // [esp+10h] [ebp-10h]
-	NJS_VECTOR a1; // [esp+14h] [ebp-Ch] BYREF
-
-	posX = position->x;
-	player = 0;
-	posY = position->y;
-	posZ = position->z;
-	while (1)
-	{
-		v3 = MainCharObj1[player];
-		if (v3)
-		{
-			v4 = v3->Collision;
-			if (v4)
-			{
-				v5 = (float*)&v4->CollisionArray->kind;
-				v6 = v5[2];
-				v5 += 3;
-				a1.x = v6 - posX;
-				a1.y = *v5 - posY;
-				a1.z = v5[1] - posZ;
-				v11 = njScalor(&a1) - a2;
-				if (v11 < 0.0)
-				{
-					break;
-				}
-			}
-		}
-		if (++player >= 2)
-		{
-			return 0;
-		}
-	}
-	return player + 1;
-}
-
-
 EntityData2_* PlayMysticMelody(ObjectMaster* obj)
 {
 	CharObj2Base* co2 = MainCharObj2[0];
@@ -286,7 +298,7 @@ EntityData2_* PlayMysticMelody(ObjectMaster* obj)
 	{
 		if (data->NextAction == 0 && co2->CharID == Characters_Tails) {
 
-			if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && data->Action == 0)
+			if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && (data->Action == 0 || data->Action == 60))
 				SetMysticMelodyAction(co2, data);
 		}
 	}
@@ -528,6 +540,18 @@ void BrokenDownSmoke_r(ObjectMaster* a1) {
 	}
 }
 
+static const void* const loc_47366F = (void*)0x47366F;
+static const void* const loc_473222 = (void*)0x473222;
+__declspec(naked) void FixJump() {
+
+	if (MainCharObj2[0]->CharID == Characters_Tails) {
+		_asm jmp loc_47366F
+	}
+	else if (MainCharObj1[0]->Action != 53 && MainCharObj1[0]->Action != 18) {
+		_asm jmp loc_473222
+	}
+}
+
 
 bool isRando() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
@@ -585,7 +609,9 @@ void Init_MilesActions() {
 	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);
 	WriteJump(reinterpret_cast<void*>(0x46ee7c), CheckUpgradeBox);
 
-	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
+	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);	
+	
+	//WriteJump(reinterpret_cast<void*>(0x473219), FixJump);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
 	WriteData<3>((int*)0x751d70, 0x90); //Remove path action, we will manually call it (fix RH last loop)

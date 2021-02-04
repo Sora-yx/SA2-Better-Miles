@@ -541,20 +541,6 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2,
 		//goto LABEL_240;
 	}
 	DeleteObject_(dispScore);
-
-}
-
-
-void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
-{
-	Float v3; // ST00_4
-	Float v4; // ST04_4
-
-	v3 = a3[4] * a1->x + a3[5] * a1->y + a3[6] * a1->z;
-	v4 = a3[8] * a1->x + a3[9] * a1->y + a3[10] * a1->z;
-	a2->x = a3[1] * a1->y + *a3 * a1->x + a3[2] * a1->z;
-	a2->y = v3;
-	a2->z = v4;
 }
 
 
@@ -602,7 +588,11 @@ signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* 
 	//data1->Rotation.y = (atan2f(playerup.x, playerup.z) * 10430.38043493439);
 	data2->Forward.y = data1->Rotation.y;
 	data1->Action = HandGrinding;
-	co2->AnimInfo.Next = 200;
+	if (isCustomAnim)
+		co2->AnimInfo.Next = 200;
+	else
+		co2->AnimInfo.Next = 75;
+	co2->Speed.x += 2.0;
 	co2->Speed.y = 0.0f;
 	return 1;
 }

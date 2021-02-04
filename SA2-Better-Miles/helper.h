@@ -73,10 +73,17 @@ FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_*
 FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x46D6D0);
 FunctionPointer(int, calcGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
 FunctionPointer(int, sub_447580, (NJS_OBJECT* v), 0x447580);
+FunctionPointer(EntityData1*, sub_46C490, (int a1, int a2, int a3), 0x46C490);
+FunctionPointer(signed int, sub_77FE10, (float* a1), 0x77FE10);
+void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3);
+DataPointer(NJS_VECTOR*, dword_1DE95E0, 0x1de95e0);
+
 
 DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
 DataPointer(float, FLOAT_01283704, 0x1283704);
+DataPointer(float*, flt_25F02A0, 0x25F02A0);
+
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude);
 bool isMilesAttacking();
 void Miles_DoCollisionAttackStuff(EntityData1* data1);

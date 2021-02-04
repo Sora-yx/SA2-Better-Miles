@@ -172,19 +172,6 @@ StartPosition CharacterEndArray[] = {
 	{ LevelIDs_EggGolemE, 0, 0, 0, { 0, 200, 220 }, { 0, 200, 220 }, { 0, 200, 220 } },
 };
 
-static const void* const loc_43DF30 = (void*)0x43DF30;
-char PlayVictoryVoice_Original(int playerNum)
-{
-	int result;
-	__asm
-	{
-		mov eax, playerNum
-		call loc_43DF30
-		mov result, eax
-	}
-	return result;
-}
-
 
 static inline void SetEndPosition() {
 
@@ -231,6 +218,7 @@ void Init_StartEndPos() {
 
 	if (isRando() || isCharaSelect())
 		return;
+
 
 	WriteData((StartPosition**)0x43d955, MilesStartArray);
 	WriteData((StartPosition**)0x43df89, CharacterEndArray); //Change Rouge End Array with a more complete one (used to trick the game)		
