@@ -38,7 +38,7 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 	{
 	case 1:
 		if (CurrentLevel == LevelIDs_RadicalHighway)
-			a4->Action = 1;
+			a4->Action = 1; //fix softlock last loop
 		else
 			a4->Action = 2;
 		break;
@@ -185,13 +185,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_ * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
 
-
 	switch (data1->Action)
 	{
-
-	case Jumping:
-		Miles_DoCollisionAttackStuff(data1);
-		break;
 	case MysticMelody:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
 			return;
@@ -230,11 +225,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 		DoHangGrinding(data1, co2);
 		return;
 	case Rolling:
-		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
-			Miles_DoCollisionAttackStuff(data1);
-			Miles_UnrollCheck(data1, 0, data2, co2);
-		}
-		return;
+		Miles_UnrollCheck(data1, 0, data2, co2);
+		break;
 	}
 }
 
@@ -245,7 +237,6 @@ void Tails_Main_r(ObjectMaster* obj)
 
 	ObjectFunc(origin, Tails_Main_t->Target());
 	origin(obj);
-
 
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data1 = MainCharObj1[0];
@@ -265,6 +256,9 @@ void Tails_Main_r(ObjectMaster* obj)
 				Miles_RollCheckInput(data1, co2);
 			}
 		}
+		break;
+	case Jumping:
+		Miles_DoCollisionAttackStuff(data1);
 		break;
 	case ObjectControl:
 		if (!isCustomAnim)
@@ -297,7 +291,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);
-		Miles_UnrollCheck(data1, 0, data2, co2);
+		Miles_DoCollisionAttackStuff(data1);
 		break;
 	case VictoryPose:
 		if (isSuperForm())
