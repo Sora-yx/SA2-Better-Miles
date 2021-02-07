@@ -2,9 +2,9 @@
 #include <fstream>
 #include <iostream>
 
-Trampoline* Tails_Main_t = nullptr;
-Trampoline* Miles_CheckNextActions_t = nullptr;
-
+Trampoline* Tails_Main_t;
+Trampoline* Miles_CheckNextActions_t;
+Trampoline* Tails_RunsAction_t;
 
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
@@ -122,6 +122,7 @@ __declspec(naked) void  CheckAnimateTailsAction() {
 	}
 }
 
+
 void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 	data1->Status |= Status_Attack;
 	data1->Collision->CollisionArray[0].damage &= 0xFCu;
@@ -142,7 +143,6 @@ signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
 	{
 		return 0;
 	}
-
 
 	data->Action = Action_Jump;
 	co2->Speed.y = co2->PhysData.JumpSpeed;
@@ -180,15 +180,78 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
+void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+
+	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_ * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
+	original(data1, data2, co2, co2Miles);
+
+
+	switch (data1->Action)
+	{
+
+	case Jumping:
+		Miles_DoCollisionAttackStuff(data1);
+		break;
+	case MysticMelody:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
+			return;
+		}
+
+		if ((co2->AnimInfo.field_C & 1) != 0)
+		{
+			data1->Action = 0;
+		}
+		return;
+	case Pulley:
+		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
+			CheckTailsJump(co2, data1);
+		}
+		return;
+	case Flying:
+		if (isSuperForm() && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
+		{
+			co2->AnimInfo.Next = 15;
+		}
+		break;
+	case Spinning:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			return;
+
+		if (isCustomAnim)
+			spinOnFrames(co2, data1);
+		break;
+	case Grinding:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			return;
+
+		CheckGrindThing(data1, data2, co2, co2Miles);
+		break;
+	case HandGrinding: //Or whatever you call that thing in CG
+		DoHangGrinding(data1, co2);
+		return;
+	case Rolling:
+		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
+			Miles_DoCollisionAttackStuff(data1);
+			Miles_UnrollCheck(data1, 0, data2, co2);
+		}
+		return;
+	}
+}
+
+
+
 void Tails_Main_r(ObjectMaster* obj)
 {
+
 	ObjectFunc(origin, Tails_Main_t->Target());
 	origin(obj);
+
 
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data1 = MainCharObj1[0];
 	EntityData2_* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
+
 
 	switch (data1->Action)
 	{
@@ -203,13 +266,9 @@ void Tails_Main_r(ObjectMaster* obj)
 			}
 		}
 		break;
-	case Jumping:
-		*(int*)&co2Miles->field_1BC[436] = 10000;
-		Miles_DoCollisionAttackStuff(data1);
-		break;
 	case ObjectControl:
 		if (!isCustomAnim)
-			return;
+			break;
 
 		if (TimerStopped != 0 && (co2->AnimInfo.Next == 54 || co2->AnimInfo.Current == 54)) { //Check if the level is finished
 			if (isSuperForm()) {
@@ -221,53 +280,23 @@ void Tails_Main_r(ObjectMaster* obj)
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
 		}
 		break;
-	case MysticMelody:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
-			break;
-
-		if ((co2->AnimInfo.field_C & 1) != 0)
-		{
-			data1->Action = 0;
-		}
-		break;
-	case Pulley:
-		CheckTailsJump(co2, data1);
-		break;
-	case Flying:
-		if (isSuperForm() && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
-		{
-			co2->AnimInfo.Next = 15;
-		}
-		break;
-	case Spinning:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
-			break;
-		if (isCustomAnim)
-			spinOnFrames(co2, data1);
-		break;
 	case 66:
 		FixAnimationFinalBossOnFrames(co2, data1);
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	case Grinding:
 		DoGrindThing(data1, data2, co2, co2Miles);
-		PlayGrindAnimation(data1, co2);
+		PlayGrindAnimation(data1, co2); //not called by the game, custom function to play animation for Tails
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
-		CheckGrindThing(data1, data2, co2, co2Miles);
 		break;
 	case HandGrinding: //Or whatever you call that thing in CG
-		MoveCharacterOnRail(data1, co2, data2);
 		SomethingAboutHandGrind(data1, data2, co2Miles);
+		MoveCharacterOnRail(data1, co2, data2);
 		SomethingAboutHandGrind2(data1, data2, co2Miles);
-		DoHangGrinding(data1, co2);
-		break;
-	case 73:
-		CheckScoreTrick(data1, co2, data2, co2Miles);
 		break;
 	case Rolling:
-		RollPhysicControlMain(data1, data2, co2);	
-		Miles_DoCollisionAttackStuff(data1);
+		RollPhysicControlMain(data1, data2, co2);
 		Miles_UnrollCheck(data1, 0, data2, co2);
 		break;
 	case VictoryPose:
@@ -278,7 +307,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	}
-
 
 	MilesFly(data1, co2, data2);
 }
@@ -324,6 +352,7 @@ void LoadCharacter_r() {
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
+	Tails_RunsAction_t = new Trampoline((int)Tails_runsAction, (int)Tails_runsAction + 0x7, Tails_runsAction_r);
 
 	if (isMilesAdventure || isMechRemoved) {
 		WriteCall((void*)0x439b13, LoadCharacter_r);

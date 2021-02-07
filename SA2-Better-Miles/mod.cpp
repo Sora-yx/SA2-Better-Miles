@@ -39,8 +39,8 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_MetalHarbor;
-		story->Character = Characters_Sonic;
+		story->Level = LevelIDs_CrazyGadget;
+		story->Character = Characters_Tails;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {

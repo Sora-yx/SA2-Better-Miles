@@ -43,6 +43,8 @@ void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
 bool isRando();
 bool isCharaSelect();
 
+
+FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
 ObjectFunc(Dynamite_Main, 0x6da880);
 ObjectFunc(DynamiteHiddenBase_Main, 0x714610);
 ObjectFunc(DynamiteSandOcean_Main, 0x65AEA0);
