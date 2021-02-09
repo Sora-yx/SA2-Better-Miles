@@ -8,7 +8,7 @@ extern bool isMilesAdventure;
 extern bool jumpVoice;
 extern char realChar;
 void init_RankScore();
-void CheckAndSetBreakDoor();
+void CheckAndSetHackObjectMiles();
 
 struct EntityData2_
 {

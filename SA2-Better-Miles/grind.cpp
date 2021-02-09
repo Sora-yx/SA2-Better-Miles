@@ -185,10 +185,10 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		return;
 	}
 
-	if (CheckTrickASM(co2Miles, co2, data1))
+	/*if (CheckTrickASM(co2Miles, co2, data1))
 	{
 		return;
-	}
+	}*/
 
 	if (data1->Status & Status_DisableControl || !Jump_Pressed[co2->PlayerNum] || !sub_45B2C0(co2, co2->PlayerNum, data1) || sub_45B2C0(co2, co2->PlayerNum, data1) > 3) {
 		if (CheckTailsJump(co2, data1)) {
@@ -350,7 +350,7 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
 		if (curAnim == 203)
 		{
 			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 206;
+			a3->AnimInfo.Next = 205;
 		}
 		if (curAnim == 204)
 		{
@@ -368,6 +368,67 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
 			a3->AnimInfo.Next = 210;
 		}
 	}
+}
+
+//Yes I know that's terrible, but rewriting the whole thing would be a giant nightmare.
+void __cdecl SetAnimationGrindHack()
+{
+	WriteData<1>((int*)0x726836, 204);
+	WriteData<1>((int*)0x726851, 203);
+
+	WriteData<1>((int*)0x726863, 208);
+	WriteData<1>((int*)0x72687e, 207);
+
+	WriteData<1>((int*)0x726890, 206);
+	WriteData<1>((int*)0x7268ab, 205);
+
+	WriteData<1>((int*)0x7268bd, 210);
+	WriteData<1>((int*)0x7268d8, 209);
+
+	WriteData<1>((int*)0x7268fd, 203);
+	WriteData<1>((int*)0x726918, 204);
+
+	WriteData<1>((int*)0x72692a, 207);
+	WriteData<1>((int*)0x726941, 208);
+
+	WriteData<1>((int*)0x726950, 205);
+	WriteData<1>((int*)0x726967, 206);
+
+	WriteData<1>((int*)0x726976, 209);
+	WriteData<1>((int*)0x72698d, 210);
+
+	WriteData<1>((int*)0x726a86, 211);
+	WriteData<1>((int*)0x726a8f, 212);	
+	WriteData<1>((int*)0x726c15, 211);	
+	//not sure
+	WriteData<1>((int*)0x726c2a, 203);		
+	WriteData<1>((int*)0x726c31, 212);	
+	WriteData<1>((int*)0x726c46, 204);	
+	
+	//Should be the rail switch shit thing
+	WriteData<1>((int*)0x726a9c, 205);	
+	WriteData<1>((int*)0x726aa1, 206);	
+	WriteData<1>((int*)0x726aa6, 209);	
+	WriteData<1>((int*)0x726aab, 210);	
+	
+	WriteData<1>((int*)0x726af2, 205);	
+	WriteData<1>((int*)0x726afb, 206);	
+	WriteData<1>((int*)0x726b04, 209);	
+	WriteData<1>((int*)0x726b0d, 210);	
+	
+	WriteData<1>((int*)0x726b15, 203);
+	WriteData<1>((int*)0x726b1a, 204);
+	WriteData<1>((int*)0x726b2f, 207);
+	WriteData<1>((int*)0x726b24, 208);	
+	
+	WriteData<1>((int*)0x726b85, 203);
+	WriteData<1>((int*)0x726b8a, 204);
+	WriteData<1>((int*)0x726b8f, 207);	
+
+	WriteData<1>((int*)0x726bb2, 208);	
+	
+	WriteData<1>((int*)0x726bb6, 212);	
+	WriteData<1>((int*)0x726b93, 211);
 }
 
 static const void* const somethingAboutTrickPtr = (void*)0x45ABE0;
