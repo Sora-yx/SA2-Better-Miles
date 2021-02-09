@@ -39,7 +39,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_CrazyGadget;
+		story->Level = LevelIDs_PrisonLane;
 		story->Character = Characters_Tails;
 	}
 

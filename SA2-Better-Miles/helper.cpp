@@ -420,7 +420,7 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 	origin(obj);
 }
 
-void CheckAndSetBreakDoor() {
+void CheckAndSetHackObjectMiles() {
 
 	if (CurrentCharacter == Characters_Tails || MainCharObj2[0]->CharID == Characters_Tails) {
 		if (CurrentLevel == LevelIDs_HiddenBase) {
@@ -436,6 +436,8 @@ void CheckAndSetBreakDoor() {
 			WriteData<1>((int*)0x79b959, 0x1);
 			WriteData<1>((int*)0x79be57, 0x1);
 		}
+
+		SetAnimationGrindHack();
 	}
 	else { //restore original values
 		WriteData<1>((int*)0x715b58, 0x6);

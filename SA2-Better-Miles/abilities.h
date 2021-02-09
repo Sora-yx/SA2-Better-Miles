@@ -43,6 +43,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2);
 void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3);
 void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3);
+void __cdecl SetAnimationGrindHack();
 
 signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* data1);
 void DoHangGrinding(EntityData1* data, CharObj2Base* co2);
