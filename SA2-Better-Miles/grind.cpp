@@ -78,13 +78,11 @@ int setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3,
 	a4->Action = Grinding;
 
 	if (isCustomAnim) {
-		if ((double)rand() * 0.000030517578125 <= 0.5)
-		{
-			a3->AnimInfo.Next = 207;
+		if ((double)rand() * 0.000030517578125 <= 0.5) {
+			a3->AnimInfo.Next = Anm_Tails_RailFastL;
 		}
-		else
-		{
-			a3->AnimInfo.Next = 203;
+		else {
+			a3->AnimInfo.Next = Anm_Tails_RailL;
 		}
 	}
 	else {
@@ -201,10 +199,10 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 			}
 		}
 		else {
-			if (co2->AnimInfo.Current == 211) { // anim rail lose balance left
+			if (co2->AnimInfo.Current == Anm_Tails_RailBalanceL) {
 				data1->Rotation.y -= 0x4000;
 			}
-			else if (co2->AnimInfo.Current == 212) {// anim rail lose balance right
+			else if (co2->AnimInfo.Current == Anm_Tails_RailBalanceR) {
 				data1->Rotation.y += 0x4000;
 			}
 
@@ -312,22 +310,6 @@ void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2) {
 		sub_754EC0(co2->base.PlayerNum);
 	}
 }
-
-enum TailsAnims {
-	Anm_Tails_RailL = 203,
-	Anm_Tails_RailR,
-	Anm_Tails_RailCrouchL,
-	Anm_Tails_RailCrouchR,
-	Anm_Tails_RailFastL,
-	Anm_Tails_RailFastR,
-	Anm_Tails_RailFastCL,
-	Anm_Tails_RailFastCR,
-	Anm_Tails_RailBalanceL,
-	Anm_Tails_RailBalanceR,
-	Anm_Tails_RailTrick1, // Awesome
-	Anm_Tails_RailTrick2, // Cool
-	Anm_Tails_RailTrick3 // Nice
-};
 
 void TailsRailAnim_ToNormal(CharObj2Base* co2) {
 	switch (co2->AnimInfo.Current) {

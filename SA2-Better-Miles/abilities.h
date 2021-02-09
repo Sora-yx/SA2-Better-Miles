@@ -1,5 +1,21 @@
 #pragma once
 
+enum TailsAnims : unsigned __int16 {
+	Anm_Tails_RailL = 203,
+	Anm_Tails_RailR,
+	Anm_Tails_RailCrouchL,
+	Anm_Tails_RailCrouchR,
+	Anm_Tails_RailFastL,
+	Anm_Tails_RailFastR,
+	Anm_Tails_RailFastCL,
+	Anm_Tails_RailFastCR,
+	Anm_Tails_RailBalanceL,
+	Anm_Tails_RailBalanceR,
+	Anm_Tails_RailTrick1, // Awesome
+	Anm_Tails_RailTrick2, // Cool
+	Anm_Tails_RailTrick3 // Nice
+};
+
 extern bool isInfiniteFly;
 
 signed int Tails_Jump(CharObj2Base* co2, EntityData1* data);
