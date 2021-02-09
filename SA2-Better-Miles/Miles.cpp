@@ -134,27 +134,6 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 }
 
 
-signed int Tails_Jump(CharObj2Base* co2, EntityData1* data)
-{
-	short curStat = data->Status;
-	char curPlay = co2->PlayerNum;
-
-	if ((curStat & 0x4000) != 0 || !Jump_Pressed[curPlay])
-	{
-		return 0;
-	}
-
-	data->Action = Action_Jump;
-	co2->Speed.y = co2->PhysData.JumpSpeed;
-	co2->AnimInfo.Next = 65;
-	data->Status &= 65533u;
-	co2->field_12 = 0;
-
-	PlaySoundProbably(0x2000, 0, 0, 0);
-	return 1;
-}
-
-
 static const void* const TailsJumpPtr = (void*)0x751B80;
 static inline int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
 {
@@ -215,6 +194,9 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
+	case Rolling:
+		Miles_UnrollCheck(data1, data2, co2);
+		return;
 	case Grinding:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
 			return;
@@ -224,9 +206,6 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 	case HandGrinding: //Or whatever you call that thing in CG
 		DoHangGrinding(data1, co2);
 		return;
-	case Rolling:
-		Miles_UnrollCheck(data1, 0, data2, co2);
-		break;
 	}
 }
 
@@ -292,6 +271,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);
 		Miles_DoCollisionAttackStuff(data1);
+		Miles_UnrolCheckInput(data1, data2, co2);
 		break;
 	case VictoryPose:
 		if (isSuperForm())
@@ -318,7 +298,6 @@ signed char GetCharacterLevel() {
 
 	return -1;
 }
-
 
 
 void LoadCharacter_r() {

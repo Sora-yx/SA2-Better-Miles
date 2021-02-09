@@ -18,14 +18,14 @@ enum TailsAnims : unsigned __int16 {
 
 extern bool isInfiniteFly;
 
-signed int Tails_Jump(CharObj2Base* co2, EntityData1* data);
 
 void Init_MilesFly();
 int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
 void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2);
 static const void* const Tails_FlyStartPtr = (void*)0x752DB0;
 DataPointer(double, MilesFlySpeedValue, 0x9065a8);
-void Miles_UnrollCheck(EntityData1* data1, int a2, EntityData2_* data2, CharObj2Base* co2);
+void Miles_UnrollCheck(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2);
+void Miles_UnrolCheckInput(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2);
 DataPointer(WORD, word_170ACEE, 0x170ACEE);
 void RollPhysicControlMain(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
 

@@ -242,12 +242,11 @@ __declspec(naked) void  CheckBreakCGGlasses() {
 static const void* const loc_6d6934 = (void*)0x6d6934;
 __declspec(naked) void  CheckBreakIronBox() {
 
-	if (MainCharObj2[0]->CharID == Characters_Tails || MainCharObj2[0]->Upgrades & Upgrades_SonicFlameRing != 0)
+	if (MainCharObj2[0]->CharID == Characters_Tails || MainCharObj2[0]->CharID == Characters_Sonic && MainCharObj2[0]->Upgrades & Upgrades_SonicFlameRing != 0)
 	{
 		_asm jmp loc_6d6934
 	}
 }
-
 
 static const void* const loc_46ee89 = (void*)0x46ee89;
 static const void* const loc_46ee9b = (void*)0x46ee9b;

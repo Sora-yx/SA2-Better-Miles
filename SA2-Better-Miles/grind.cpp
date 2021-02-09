@@ -161,10 +161,10 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 		return;
 	}
 
-	if (CheckTrickASM(co2Miles, co2, data1))
+	/*if (CheckTrickASM(co2Miles, co2, data1))
 	{
 		return;
-	}
+	}*/
 
 	if (data1->Status & Status_DisableControl || !Jump_Pressed[co2->PlayerNum] || !sub_45B2C0(co2, co2->PlayerNum, data1) || sub_45B2C0(co2, co2->PlayerNum, data1) > 3) {
 		if (CheckTailsJump(co2, data1)) {

@@ -169,7 +169,7 @@ int CheckGravityFallThing(EntityData1* a1, EntityData2_* a3, CharObj2Base* a4)
 	return 1;
 }
 
-void Miles_UnrollCheck(EntityData1* data1, int a2, EntityData2_* data2, CharObj2Base* co2) {
+void Miles_UnrollCheck(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2) {
 
 
 	if (data1->NextAction == 0 || (data1->Status & Status_DoNextAction) == 0)
@@ -194,15 +194,17 @@ void Miles_UnrollCheck(EntityData1* data1, int a2, EntityData2_* data2, CharObj2
 				data1->Status &= ~(Status_Attack | Status_Ball);
 				return;
 			}
-
-			if ((Controllers[co2->PlayerNum].press & 0x402) != 0 || co2->Speed.x < 1.3)
-			{
-				RestorePhysic(co2);
-				data1->Action = 1;
-				co2->AnimInfo.Next = 26;
-				data1->Status &= ~(Status_Attack | Status_Ball);
-			}
 		}
 	}
 	return;
+}
+
+void Miles_UnrolCheckInput(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2) {
+	if ((Controllers[co2->PlayerNum].press & 0x402) != 0 || co2->Speed.x < 1.3)
+	{
+		RestorePhysic(co2);
+		data1->Action = 1;
+		co2->AnimInfo.Next = 26;
+		data1->Status &= ~(Status_Attack | Status_Ball);
+	}
 }
