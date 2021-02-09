@@ -436,8 +436,6 @@ void CheckAndSetHackObjectMiles() {
 			WriteData<1>((int*)0x79b959, 0x1);
 			WriteData<1>((int*)0x79be57, 0x1);
 		}
-
-		SetAnimationGrindHack();
 	}
 	else { //restore original values
 		WriteData<1>((int*)0x715b58, 0x6);

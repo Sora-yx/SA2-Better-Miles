@@ -280,7 +280,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case Grinding:
 		DoGrindThing(data1, data2, co2, co2Miles);
-		//PlayGrindAnimation(data1, co2); //not called by the game, custom function to play animation for Tails
+		PlayGrindAnimation(data1, co2); //not called by the game, custom function to play animation for Tails
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
 		break;
