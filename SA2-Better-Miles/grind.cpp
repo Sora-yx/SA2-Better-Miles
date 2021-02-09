@@ -109,27 +109,6 @@ int setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3,
 	return 1;
 }
 
-
-void idk(CharObj2Base* co2) {
-
-	if (co2->PhysData.RollEnd > co2->Speed.x) {
-		co2->Speed.x = co2->PhysData.RollEnd;
-	}
-
-	//v77 = __OFSUB__(HIWORD(co2->field_12), 12);
-	//v76 = (HIWORD(co2->field_12) - 12) < 0;
-
-	co2->Speed.y = 0.449999988079071 - njScalor(&co2->Speed) * 0.0260000005364418 + co2->Speed.y;
-
-	/*if (v76 ^ v77) {
-		HIWORD(co2->field_12) = 12;
-	}*/
-
-	co2->AnimInfo.Current = 15; // Falling
-	return;
-}
-
-
 static const void* const sub_45B2C0Ptr = (void*)0x45B2C0;
 static inline int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 {
@@ -168,7 +147,6 @@ static inline signed int CheckTrickASM(TailsCharObj2* a1, CharObj2Base* a2, Enti
 	}
 	return result;
 }
-
 
 void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	if (data1->NextAction != 0 || data1->Status & Status_DoNextAction) {
@@ -224,21 +202,18 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 	data1->Action = 10; //SA2Action_LaunchJumpOrFalling
 	PlaySoundProbably(8193, 0, 0, 0);
 
-	Angle analog = 0;
-	Angle analogdif = (analog - data1->Rotation.y);
-	GetAnalog(data1, co2, (signed int*)&analog, 0);
+	Angle analog_angle;
+	Float analog_mag;
 
-	if (analogdif <= 0) {
-		if (analogdif >= 0) {
-			idk(co2);
-			return;
-		}
+	GetAnalog(data1, co2, &analog_angle, &analog_mag);
 
+	analog_mag *= njSin((analog_angle - LOWORD(data1->Rotation.y)));
+
+	if (analog_mag < 0) {
 		data1->Rotation.y = data1->Rotation.y - (12288.0 - njScalor(&co2->Speed) * 800.0);
 	}
 	else {
 		data1->Rotation.y = 12288.0 - njScalor(&co2->Speed) * 800.0 + data1->Rotation.y;
-		idk(co2);
 	}
 }
 
