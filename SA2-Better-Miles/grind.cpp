@@ -313,60 +313,124 @@ void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2) {
 	}
 }
 
+enum TailsAnims {
+	Anm_Tails_RailL = 203,
+	Anm_Tails_RailR,
+	Anm_Tails_RailCrouchL,
+	Anm_Tails_RailCrouchR,
+	Anm_Tails_RailFastL,
+	Anm_Tails_RailFastR,
+	Anm_Tails_RailFastCL,
+	Anm_Tails_RailFastCR,
+	Anm_Tails_RailBalanceL,
+	Anm_Tails_RailBalanceR,
+	Anm_Tails_RailTrick1, // Awesome
+	Anm_Tails_RailTrick2, // Cool
+	Anm_Tails_RailTrick3 // Nice
+};
+
+void TailsRailAnim_ToNormal(CharObj2Base* co2) {
+	switch (co2->AnimInfo.Current) {
+	case Anm_Tails_RailCrouchL:
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.Next = Anm_Tails_RailL;
+		break;
+	case Anm_Tails_RailCrouchR:
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.Next = Anm_Tails_RailR;
+		break;
+	case Anm_Tails_RailFastCL:
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.Next = Anm_Tails_RailFastL;
+		break;
+	case Anm_Tails_RailFastCR:
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.Next = Anm_Tails_RailFastR;
+		break;
+	}
+}
+
+void TailsRailAnim_ToCrouch(CharObj2Base* co2) {
+	switch (co2->AnimInfo.Current) {
+	case Anm_Tails_RailL:
+		co2->AnimInfo.Next = Anm_Tails_RailCrouchL;
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		break;
+	case Anm_Tails_RailR:
+		co2->AnimInfo.Next = Anm_Tails_RailCrouchR;
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		break;
+	case Anm_Tails_RailFastL:
+		co2->AnimInfo.Next = Anm_Tails_RailFastCL;
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		break;
+	case Anm_Tails_RailFastR:
+		co2->AnimInfo.Next = Anm_Tails_RailFastCR;
+		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		break;
+	}
+}
+
+void TailsRailAnim_ToLeft(CharObj2Base* co2) {
+	switch (co2->AnimInfo.Current) {
+	case Anm_Tails_RailR:
+	default:
+		co2->AnimInfo.Next = Anm_Tails_RailL;
+		break;
+	case Anm_Tails_RailCrouchR:
+		co2->AnimInfo.Next = Anm_Tails_RailCrouchL;
+		break;
+	case Anm_Tails_RailFastR:
+		co2->AnimInfo.Next = Anm_Tails_RailFastL;
+		break;
+	case Anm_Tails_RailFastCR:
+		co2->AnimInfo.Next = Anm_Tails_RailFastCL;
+		break;
+	}
+}
+
+void TailsRailAnim_ToRight(CharObj2Base* co2) {
+	switch (co2->AnimInfo.Current) {
+	case Anm_Tails_RailL:
+		co2->AnimInfo.Next = Anm_Tails_RailR;
+		break;
+	case Anm_Tails_RailCrouchL:
+		co2->AnimInfo.Next = Anm_Tails_RailCrouchR;
+		break;
+	case Anm_Tails_RailFastL:
+		co2->AnimInfo.Next = Anm_Tails_RailFastR;
+		break;
+	case Anm_Tails_RailFastCL:
+		co2->AnimInfo.Next = Anm_Tails_RailFastCR;
+		break;
+	}
+}
+
 //SA2 hardcode all the grinding animations id, sadly Miles already use those for different actions so we have to add new animation and full hack the function :(
-void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3) {
-
-	if (a3->CharID != Characters_Tails || !isCustomAnim || data1->Action != Grinding || a3->AnimInfo.Next == 15)
+void PlayGrindAnimation(EntityData1* data1, CharObj2Base* co2) {
+	if (isCustomAnim == false || data1->Action != Grinding || co2->AnimInfo.Next == 15) {
 		return;
-
-	bool B_Buttons = Action_Held[a3->PlayerNum] == 0;
-	int curAnim = a3->AnimInfo.Current;
-
-	if (B_Buttons)
-	{
-		if (curAnim == 205)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 203;
-		}
-		if (curAnim == 206)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 204;
-		}
-		if (curAnim == 209)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 207;
-		}
-		if (curAnim == 210)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 208;
-		}
+	}
+		
+	if (Action_Held[co2->PlayerNum] == 0) {
+		TailsRailAnim_ToNormal(co2);
 	}
 	else {
+		TailsRailAnim_ToCrouch(co2);
+	}
 
-		if (curAnim == 203)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 206;
-		}
-		if (curAnim == 204)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 206;
-		}
-		if (curAnim == 207)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 209;
-		}
-		if (curAnim == 208)
-		{
-			a3->AnimInfo.field_18 = a3->AnimInfo.field_10;
-			a3->AnimInfo.Next = 210;
-		}
+	Angle analog_angle;
+	Float analog_mag;
+
+	GetAnalog(data1, co2, &analog_angle, &analog_mag);
+
+	analog_mag *= njSin((analog_angle - LOWORD(data1->Rotation.y)));
+
+	if (analog_mag < 0) {
+		TailsRailAnim_ToLeft(co2);
+	}
+	else {
+		TailsRailAnim_ToRight(co2);
 	}
 }
 
