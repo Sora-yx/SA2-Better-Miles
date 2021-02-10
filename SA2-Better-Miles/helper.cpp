@@ -561,6 +561,15 @@ bool isRando() {
 	return false;
 }
 
+bool isPhysicMod() {
+	HMODULE physicMod = GetModuleHandle(L"SA2PhysicsSwapMod");
+
+	if (physicMod)
+		return true;
+
+	return false;
+}
+
 bool isCharaSelect() {
 	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
 	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");

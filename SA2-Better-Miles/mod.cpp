@@ -35,23 +35,18 @@ extern "C" {
 		if (isCustomAnim)
 			HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\milesmtn.prs", "Resource\\gd_PC\\Animations\\milesmtn.prs");
 
+		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\se_ch_te\\2.csb", "Resource\\gd_PC\\Sounds\\se_ch_te\\2.csb");
+		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\chao_chara_te\\2.csb", "Resource\\gd_PC\\Sounds\\chao_chara_te\\2.csb");
 		BetterMiles_Init();
 
-		StoryEntry* story = (StoryEntry*)0x173A5E0;
+		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_CrazyGadget;
-		story->Character = Characters_Tails;
+		story->Level = LevelIDs_SonicVsShadow1;
+		story->Character = Characters_Tails;*/
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
 
-		CharObj2Base* co2 = MainCharObj2[0];
-		EntityData1* data1 = MainCharObj1[0];
-
-		if (Controllers[0].press & Buttons_Y) {
-			//data1->Position = { 1897.516357, -102, -5624.889648 };
-			//data1->Position = { -2039.673584, -1338,  -2235.960205 };
-		}
 	}
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };

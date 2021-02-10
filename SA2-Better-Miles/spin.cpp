@@ -90,7 +90,6 @@ void spinOnFrames(CharObj2Base* co2, EntityData1* data1) {
 
     if (co2->AnimInfo.Current) {
         Miles_SpinAttack(co2, data1);
-        Miles_DoCollisionAttackStuff(data1);
     }
     else {
         data1->Action = 1;

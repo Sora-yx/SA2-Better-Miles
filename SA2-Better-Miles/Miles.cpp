@@ -253,6 +253,9 @@ void Tails_Main_r(ObjectMaster* obj)
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
 		}
 		break;
+	case Spinning:
+		Miles_DoCollisionAttackStuff(data1);
+		break;
 	case 66:
 		FixAnimationFinalBossOnFrames(co2, data1);
 		AnimateMilesTails(data1, co2, co2Miles);
@@ -299,14 +302,27 @@ signed char GetCharacterLevel() {
 	return -1;
 }
 
+int BannedMilesLevel[9] = { LevelIDs_SonicVsShadow1, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, LevelIDs_TailsVsEggman2,  LevelIDs_SonicVsShadow2, LevelIDs_KnucklesVsRouge,
+LevelIDs_BigFoot, LevelIDs_FlyingDog
+};
+
+bool isLevelBanned() {
+
+	for (int i = 0; i < LengthOfArray(BannedMilesLevel); i++)
+	{
+		if (CurrentLevel == BannedMilesLevel[i])
+			return true;
+	}
+
+	return false;
+}
 
 void LoadCharacter_r() {
 
 	PDS_PERIPHERAL p1 = Controllers[0];
 
-	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace 
-		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
 
+	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
 			CurrentCharacter = Characters_Tails;
 	}
@@ -334,11 +350,13 @@ void BetterMiles_Init() {
 	}
 
 	//Improve physic
-	PhysicsArray[Characters_Tails].AirAccel = 0.050;
-	PhysicsArray[Characters_Tails].Brake = -0.25;
-	PhysicsArray[Characters_Tails].HangTime = 60;
-	PhysicsArray[Characters_Tails].JumpSpeed = 1.80;
-	PhysicsArray[Characters_Tails].GroundAccel = 0.14;
+	if (!isPhysicMod()) {
+		PhysicsArray[Characters_Tails].AirAccel = 0.050;
+		PhysicsArray[Characters_Tails].Brake = -0.25;
+		PhysicsArray[Characters_Tails].HangTime = 60;
+		PhysicsArray[Characters_Tails].JumpSpeed = 1.80;
+		PhysicsArray[Characters_Tails].GroundAccel = 0.14;
+	}
 
 	Init_MilesActions();
 	Init_MilesFly();

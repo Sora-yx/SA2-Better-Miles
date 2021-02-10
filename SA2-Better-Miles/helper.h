@@ -42,6 +42,7 @@ struct CollisionInfo_
 void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
 bool isRando();
 bool isCharaSelect();
+bool isPhysicMod();
 
 
 FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
