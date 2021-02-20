@@ -222,7 +222,6 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData2_* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
 
-
 	switch (data1->Action)
 	{
 	case Standing:
@@ -302,8 +301,8 @@ signed char GetCharacterLevel() {
 	return -1;
 }
 
-int BannedMilesLevel[9] = { LevelIDs_SonicVsShadow1, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, LevelIDs_TailsVsEggman2,  LevelIDs_SonicVsShadow2, LevelIDs_KnucklesVsRouge,
-LevelIDs_BigFoot, LevelIDs_FlyingDog
+int BannedMilesLevel[10] = { LevelIDs_SonicVsShadow1, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, LevelIDs_TailsVsEggman2,  LevelIDs_SonicVsShadow2, LevelIDs_KnucklesVsRouge,
+LevelIDs_BigFoot, LevelIDs_FlyingDog, LevelIDs_HotShot
 };
 
 bool isLevelBanned() {
@@ -350,12 +349,12 @@ void BetterMiles_Init() {
 	}
 
 	//Improve physic
-	if (!isPhysicMod()) {
+	if (isCustomPhysics) {
 		PhysicsArray[Characters_Tails].AirAccel = 0.050;
 		PhysicsArray[Characters_Tails].Brake = -0.25;
 		PhysicsArray[Characters_Tails].HangTime = 60;
 		PhysicsArray[Characters_Tails].JumpSpeed = 1.80;
-		PhysicsArray[Characters_Tails].GroundAccel = 0.14;
+		PhysicsArray[Characters_Tails].GroundAccel = 0.1418;
 	}
 
 	Init_MilesActions();

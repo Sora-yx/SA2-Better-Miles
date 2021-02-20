@@ -17,6 +17,7 @@ void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3)
         a1->field_1BC[418] |= 2u;
         FailSafeTimer = 0;
         PlaySoundProbably(8200, 0, 0, 0);
+
     }
 
     return;

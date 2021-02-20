@@ -74,7 +74,7 @@ int setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3,
 		v40 = fabs(result.y);
 		v23 = v22 * v40 + a3->Speed.x;
 	}
-	a3->Speed.x = v23;
+	a3->Speed.x = v23 + 1.0;
 	a4->Action = Grinding;
 
 	if (isCustomAnim) {
@@ -613,7 +613,7 @@ signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* 
 		co2->AnimInfo.Next = 200;
 	else
 		co2->AnimInfo.Next = 75;
-	co2->Speed.x += 2.0;
+	co2->Speed.x += 2.3;
 	co2->Speed.y = 0.0f;
 	return 1;
 }

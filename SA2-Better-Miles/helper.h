@@ -6,7 +6,8 @@ extern bool isCustomAnim;
 extern bool isMechRemoved;
 extern bool isMilesAdventure;
 extern bool jumpVoice;
-extern char realChar;
+extern bool isCustomPhysics;
+
 void init_RankScore();
 void CheckAndSetHackObjectMiles();
 
@@ -42,7 +43,6 @@ struct CollisionInfo_
 void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
 bool isRando();
 bool isCharaSelect();
-bool isPhysicMod();
 
 
 FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
@@ -115,6 +115,8 @@ ObjectFunc(DoorIG, 0x69D1D0);
 ObjectFunc(DoorIG2, 0x69F460);
 ObjectFunc(DoorCCThing, 0x79AFB0);
 ObjectFunc(DoorHB, 0x715560);
+ObjectFunc(MetalBox, 0x6D6490);
+ObjectFunc(MetalBoxGravity, 0x77BB90);
 
 enum MilesState {
 	Standing,

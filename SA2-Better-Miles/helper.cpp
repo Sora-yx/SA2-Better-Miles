@@ -12,6 +12,8 @@ Trampoline* DoorIG_t;
 Trampoline* DoorIG2_t;
 Trampoline* RocketIG_t;
 Trampoline* BrokenDownSmoke_t;
+Trampoline* MetalBox_t;
+Trampoline* MetalBoxGravity_t;
 
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
@@ -239,40 +241,14 @@ __declspec(naked) void  CheckBreakCGGlasses() {
 }
 
 
-static const void* const loc_6d6934 = (void*)0x6d6934;
+static const void* const loc_6D6B29 = (void*)0x6d6a94;
 __declspec(naked) void  CheckBreakIronBox() {
 
-	if (MainCharObj2[0]->CharID == Characters_Tails || MainCharObj2[0]->CharID == Characters_Sonic && MainCharObj2[0]->Upgrades & Upgrades_SonicFlameRing != 0)
-	{
-		_asm jmp loc_6d6934
-	}
+
+	_asm jmp loc_6D6B29
+
 }
 
-static const void* const loc_46ee89 = (void*)0x46ee89;
-static const void* const loc_46ee9b = (void*)0x46ee9b;
-__declspec(naked) void CheckUpgradeBox() {
-
-	if (MainCharObj2[0]->CharID == Characters_Rouge && (MainCharObj2[0]->Upgrades & Upgrades_RougeIronBoots) != 0 || (isMilesAttacking() && MainCharObj2[0]->CharID == Characters_Tails)) {
-		_asm jmp loc_46ee89
-	}
-	else {
-		_asm jmp loc_46ee9b
-	}
-}
-
-static void __declspec(naked) sub_46EE00()
-{
-	__asm
-	{
-		push eax // a1
-
-		// Call your __cdecl function here:
-		call CheckUpgradeBox
-
-		add esp, 4 // a1<eax> is also used for return value
-		retn
-	}
-}
 
 
 static const void* const SetMysticMelodyActionPtr = (void*)0x475F00;
@@ -531,7 +507,7 @@ void LoadSuperFormFinalBattle() {
 
 void BrokenDownSmoke_r(ObjectMaster* a1) {
 
-	if (MainCharObj2[0]->CharID == Characters_Tails)
+	if (MainCharObj2[0]->CharID != Characters_MechTails && MainCharObj2[0]->CharID != Characters_MechEggman)
 		DeleteObject_(a1);
 	else {
 		ObjectFunc(origin, BrokenDownSmoke_t->Target());
@@ -539,16 +515,39 @@ void BrokenDownSmoke_r(ObjectMaster* a1) {
 	}
 }
 
-static const void* const loc_47366F = (void*)0x47366F;
-static const void* const loc_473222 = (void*)0x473222;
-__declspec(naked) void FixJump() {
+void MetalBox_r(ObjectMaster* obj) {
 
-	if (MainCharObj2[0]->CharID == Characters_Tails) {
-		_asm jmp loc_47366F
+	EntityData1* data = obj->Data1.Entity;
+
+	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)	 
+	{
+		data->Collision->CollisionArray->push |= 0x4000u;
+		data->field_6 = 1;
+		AddScore(20);
+		Play3DSound_Pos(4113, &data->Position, 1, 127, 80);
+		data->NextAction = 1;
 	}
-	else if (MainCharObj1[0]->Action != 53 && MainCharObj1[0]->Action != 18) {
-		_asm jmp loc_473222
+
+	ObjectFunc(origin, MetalBox_t->Target());
+	origin(obj);
+}
+
+
+void MetalBoxGravity_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)
+	{
+		data->Collision->CollisionArray->push |= 0x4000u;
+		data->field_6 = 1;
+		AddScore(20);
+		Play3DSound_Pos(4113, &data->Position, 1, 127, 80);
+		data->NextAction = 1;
 	}
+
+	ObjectFunc(origin, MetalBoxGravity_t->Target());
+	origin(obj);
 }
 
 
@@ -561,14 +560,6 @@ bool isRando() {
 	return false;
 }
 
-bool isPhysicMod() {
-	HMODULE physicMod = GetModuleHandle(L"SA2PhysicsSwapMod");
-
-	if (physicMod)
-		return true;
-
-	return false;
-}
 
 bool isCharaSelect() {
 	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
@@ -613,10 +604,10 @@ void Init_MilesActions() {
 
 	BrokenDownSmoke_t = new Trampoline((int)BrokenDownSmokeExec, (int)BrokenDownSmokeExec + 0x7, BrokenDownSmoke_r);
 
-	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
-	WriteJump(reinterpret_cast<void*>(0x6d6911), CheckBreakIronBox);
-	WriteJump(reinterpret_cast<void*>(0x46ee7c), CheckUpgradeBox);
+	MetalBox_t = new Trampoline((int)MetalBox, (int)MetalBox + 0x6, MetalBox_r);
+	MetalBoxGravity_t = new Trampoline((int)MetalBoxGravity, (int)MetalBoxGravity + 0x6, MetalBoxGravity_r);
 
+	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);	
 	
 	//WriteJump(reinterpret_cast<void*>(0x473219), FixJump);
@@ -624,12 +615,16 @@ void Init_MilesActions() {
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
 	WriteData<3>((int*)0x751d70, 0x90); //Remove path action, we will manually call it (fix RH last loop)
 
-	//FinalHazard Stuff
-	WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling super shadow and stuff since we will manually do it.
-	WriteCall((void*)0x498a98, LoadSuperFormFinalBattle); //hook "LoadSuperSonic"
-	WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely	
-	WriteData<7>((int*)0x49cfc3, 0x90); //Remove super aura math thing for Tails.
+	WriteData<2>((int*)0x4cd255, 0x90); //remove chara sonic check in cannon core (fix softlock after the first rail)
 
 	//EE Power suply
 	WriteData<5>((void*)0x7899e8, 0x90); //remove powersupply
+
+	if (isMilesAdventure) {
+		//FinalHazard Stuff
+		WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling super shadow and stuff since we will manually do it.
+		WriteCall((void*)0x498a98, LoadSuperFormFinalBattle); //hook "LoadSuperSonic"
+		WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely	
+		WriteData<7>((int*)0x49cfc3, 0x90); //Remove super aura math thing for Tails.
+	}
 }

@@ -7,6 +7,7 @@ bool isMilesAdventure = false;
 
 bool flySoundEffect = true;
 bool jumpVoice = false;
+bool isCustomPhysics = true;
 HelperFunctions HelperFunctionsGlobal;
 
 
@@ -16,6 +17,7 @@ extern "C" {
 	{
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
 		isInfiniteFly = config->getBool("General", "isInfiniteFly", false);
+		isCustomPhysics = config->getBool("General", "isCustomPhysics", true);
 		isCustomAnim = config->getBool("General", "isCustomAnim", true);
 		isMechRemoved = config->getBool("General", "isMechRemoved", true);
 		isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
@@ -41,11 +43,17 @@ extern "C" {
 
 		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_SonicVsShadow1;
+		story->Level = LevelIDs_CrazyGadget;
 		story->Character = Characters_Tails;*/
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
+
+		/*if (Controllers[0].press & Buttons_Y)
+		{
+			MainCharObj1[0]->Position = { -8970.974609, -965, -3804.470215 };
+		}*/
+
 
 	}
 

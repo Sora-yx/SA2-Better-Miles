@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 
-char realChar = 0;
 void PlayRankVoice_i(int id)
 {
 	int v23 = -1;
