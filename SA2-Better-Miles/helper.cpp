@@ -232,22 +232,18 @@ Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 
 
 static const void* const loc_776339 = (void*)0x776339;
+static const void* const loc_776580 = (void*)0x776580;
 __declspec(naked) void  CheckBreakCGGlasses() {
 
 	if (MainCharObj1[0]->Action == 13 || isMilesAttacking())
 	{
 		_asm jmp loc_776339
 	}
+	else {
+		_asm jmp loc_776580
+	}
 }
 
-
-static const void* const loc_6D6B29 = (void*)0x6d6a94;
-__declspec(naked) void  CheckBreakIronBox() {
-
-
-	_asm jmp loc_6D6B29
-
-}
 
 
 

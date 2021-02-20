@@ -117,6 +117,7 @@ ObjectFunc(DoorCCThing, 0x79AFB0);
 ObjectFunc(DoorHB, 0x715560);
 ObjectFunc(MetalBox, 0x6D6490);
 ObjectFunc(MetalBoxGravity, 0x77BB90);
+ObjectFunc(CGTubeGlass, 0x776060);
 
 enum MilesState {
 	Standing,

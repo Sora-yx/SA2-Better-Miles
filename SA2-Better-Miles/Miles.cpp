@@ -48,6 +48,10 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 	 	a4->Action = Pulley;
 	 	a3->AnimInfo.Next = 75;
 	 	return 1;
+	 case 28:
+		 a4->Action = 56;
+		 a4->Status &= 0xDAFFu;
+		 return 1;
 	 case 31:
 		 if (setGrindingNextAction(a1, a2, a3, a4))
 	 		return 1;

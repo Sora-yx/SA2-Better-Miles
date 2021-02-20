@@ -139,7 +139,7 @@ StartPosition CharacterEndArray[] = {
 	{ LevelIDs_FinalRush, 0, 0x4000, 0x4000, { 2530, -26495.5f, 7465 }, { 2531, -20965, 11350 }, { 2531, -20965, 11350 } },
 	{ LevelIDs_GreenHill, 0xC000u, 0xC000u, 0xC000u, { -1970, -1390, -6940 }, { -1970, -1390, -6940 }, { -1970, -1390, -6910 } },
 	{ LevelIDs_MeteorHerd, 0x4000, 0x4000, 0x4000, { 0, -500, -1025 }, { 25, -500, -1025 }, { -25, -500, -1025 } },
-	{ LevelIDs_KnucklesVsRouge, 0, 0, 0, { 0, -340, 10 }, { 0, -340, 10 }, { 0, -340, 10 } },
+	{ LevelIDs_KnucklesVsRouge, 0, 0, 0, { 10, -340, 0 }, { 10, -340, 0 }, { 10, -340, 0 } },
 	{ LevelIDs_CannonsCoreS, 0x1000, 0x1000, 0x1000, { -1600, -5755, -9565 }, { -308, 0, 0 }, { -308, 0, 0 } },
 	{ LevelIDs_CannonsCoreE, 0xC000u, 0xC000u, 0xC000u, { 570, -2630, -3450 }, { 570, -2630, -3450 }, { 570, -2630, -3450 } },
 	{ LevelIDs_CannonsCoreT, 0xC000, 0xC000, 0xC000, { 0, 670, 0 }, { 0, 670, 0 }, { 0, 670, 0 } },
@@ -221,7 +221,6 @@ void Init_StartEndPos() {
 
 	if (isRando() || isCharaSelect())
 		return;
-
 
 	WriteData((StartPosition**)0x43d955, MilesStartArray);
 	WriteData((StartPosition**)0x43df89, CharacterEndArray); //Change Rouge End Array with a more complete one (used to trick the game)		
