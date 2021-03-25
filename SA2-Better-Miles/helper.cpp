@@ -34,10 +34,60 @@ inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 	return result;
 }
 
+
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude) {
 	return GetAnalogASM2(data, co2, angle, magnitude);
 }
 
+
+static const void* const PGetAccelAirPtr = (void*)0x45D770;
+static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
+{
+	__asm
+	{
+		push[data2]
+		mov eax, [co2]
+		mov ecx, a1 // a1
+
+		// Call your __cdecl function here:
+		call PGetAccelAirPtr
+
+		add esp, 4 // a3
+	}
+}
+
+void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2) {
+	return PlayerGetAccelerationAirASM(a1, co2, data2);
+}
+
+static const void* const PResetAnglePtr = (void*)0x460260;
+static inline void PlayerResetAngleASM(EntityData1* a1, CharObj2Base* co2)
+{
+	__asm
+	{
+		mov ebx, [co2]
+		mov eax, [a1] // a1
+		call PResetAnglePtr
+	}
+}
+
+void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2)
+{
+	return PlayerResetAngleASM(a1, co2);
+}
+
+
+
+void DoNextAction_R(int playerNum, char action, int unknown) {
+	 EntityData1* v3 = MainCharObj1[playerNum];
+
+	if (v3)
+	{
+		v3->Status |= Status_DoNextAction;
+		v3->NextAction = action;
+		MainCharObj2[playerNum]->field_28 = unknown;
+	}
+} 
 
 static const void* const PGetRotationPtr = (void*)0x460860;
 static inline void PGetRotationMaybe(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
@@ -55,10 +105,16 @@ static inline void PGetRotationMaybe(EntityData1* a1, CharObj2Base* co2, EntityD
 	}
 }
 
+void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
+{
+	PGetRotationMaybe(a1, co2, data2);
+}
+
 
 static const void* const PGetAccelPtr = (void*)0x4616E0;
-static inline void PGetAccelMaybe(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+static inline int PGetAccelMaybe(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
 {
+	int result;
 	__asm
 	{
 		push[a3] // a3
@@ -67,8 +123,16 @@ static inline void PGetAccelMaybe(EntityData1* a1, EntityData2_* a2, CharObj2Bas
 
 		// Call your __cdecl function here:
 		call PGetAccelPtr
+		mov eax, result
 		add esp, 8 // a2
 	}
+	return result;
+}
+
+
+int PlayerSetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+{
+	return PGetAccelMaybe(a1, a2, a3);
 }
 
 
@@ -88,13 +152,17 @@ static inline void sub_469050(EntityData1* a1, EntityData2_* a2, CharObj2Base* a
 	}
 }
 
+void PlayerResetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
+	sub_469050(a1, a2, a3);
+}
 
 void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
-	PGetRotationMaybe(a1, a3, a2);
+	PlayerGetSpeed(a1, a3, a2);
 	PGetAccelMaybe(a1, a2, a3);
-	sub_469050(a1, a2, a3); //idk
+	PlayerResetPosition(a1, a2, a3); 
 	return;
 }
+
 
 
 static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
@@ -245,8 +313,6 @@ __declspec(naked) void  CheckBreakCGGlasses() {
 }
 
 
-
-
 static const void* const SetMysticMelodyActionPtr = (void*)0x475F00;
 static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 {
@@ -260,7 +326,7 @@ static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 }
 
 
-EntityData2_* PlayMysticMelody(ObjectMaster* obj)
+void PlayMysticMelody(ObjectMaster* obj)
 {
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data = MainCharObj1[0];
@@ -558,6 +624,7 @@ bool isRando() {
 
 
 bool isCharaSelect() {
+
 	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
 	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
 

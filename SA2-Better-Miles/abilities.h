@@ -20,16 +20,14 @@ extern bool isInfiniteFly;
 
 
 void Init_MilesFly();
-int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
 void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2);
 static const void* const Tails_FlyStartPtr = (void*)0x752DB0;
 DataPointer(double, MilesFlySpeedValue, 0x9065a8);
 void Miles_UnrollCheck(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2);
-void Miles_UnrolCheckInput(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2);
+void Miles_UnrollCheckInput(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2);
 DataPointer(WORD, word_170ACEE, 0x170ACEE);
 void RollPhysicControlMain(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
-
-
+void Miles_PerformLightDash(CharObj2Base* co2, EntityData1* data);
 void Init_MilesSpin();
 void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3);
 void spinOnFrames(CharObj2Base* co2, EntityData1* data1);
@@ -43,6 +41,12 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2);
 void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3);
 void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3);
+
+
+signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2);
+signed int Miles_CheckBounceAttack(CharObj2Base* a1, EntityData1* a2);
+void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2_R* data2);
+void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2_R* data2);
 
 signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* data1);
 void DoHangGrinding(EntityData1* data, CharObj2Base* co2);

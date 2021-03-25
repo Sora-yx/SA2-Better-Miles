@@ -34,6 +34,7 @@ signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, 
 
 signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
+
 	switch (a4->NextAction)
 	{
 	case 1:
@@ -42,44 +43,47 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 		else
 			a4->Action = 2;
 		break;
-	 case 20: //Pulley
-	 	a4->Status &= 0xDAFFu;
-	 	a3->Speed = { 0, 0, 0 };
-	 	a4->Action = Pulley;
-	 	a3->AnimInfo.Next = 75;
-	 	return 1;
-	 case 28:
-		 a4->Action = 56;
-		 a4->Status &= 0xDAFFu;
-		 return 1;
-	 case 31:
-		 if (setGrindingNextAction(a1, a2, a3, a4))
-	 		return 1;
-		 else
+	case 20: //Pulley
+		a4->Status &= 0xDAFFu;
+		a3->Speed = { 0, 0, 0 };
+		a4->Action = Pulley;
+		a3->AnimInfo.Next = 75;
+		return 1;
+	case 28:
+		a4->Action = 56;
+		a4->Status &= 0xDAFFu;
+		return 1;
+	case 31:
+		if (setGrindingNextAction(a1, a2, a3, a4))
+			return 1;
+		else
 			return 0;
-	 case 32:
-		 if (!CharacterAnimations[200].Animation)
-		 {
-			 return 1;
-		 }
-		 if (SetHandGranding(a1, a3, a4))
-		 {
-			 return 1;
-		 }
-		 return 0;
-	 case 38:
-		 a4->Action = 6;
-		 return 1;
-	 case 39:
-		 a4->Action = Spinning;
-		 a3->AnimInfo.field_8 = 0;
-		 a3->AnimInfo.Current = 94;
-		 Play3DSound_Pos(8200, &a4->Position, 0, 0, 0);
-		 return 1;
-	 case 102:
-		 MainCharObj1[0]->field_2 = 1;
-		 a4->NextAction = 0;
-		 return 0;
+	case 32:
+		if (!CharacterAnimations[200].Animation)
+		{
+			return 1;
+		}
+		if (SetHandGranding(a1, a3, a4))
+		{
+			return 1;
+		}
+		return 0;
+	case 38:
+		a4->Action = 6;
+		return 1;
+	case 39:
+		a4->Action = Spinning;
+		a3->AnimInfo.field_8 = 0;
+		a3->AnimInfo.Current = 94;
+		Play3DSound_Pos(8200, &a4->Position, 0, 0, 0);
+		return 1;
+	case 102:
+		MainCharObj1[0]->field_2 = 1;
+		a4->NextAction = 0;
+		return 0;
+	case 103:
+		Miles_PerformLightDash(a3, a4);
+		return 1;
 	}
 
 	return Miles_CheckNextActions_original(a1, a2, a3, a4);
@@ -112,7 +116,7 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 int ActionArray[6] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
 
 //Edit the function which checks where it needs to animate Miles's tails to add more actions.
-static const void* const loc_7512F2 = (void*)0x7512F2; 
+static const void* const loc_7512F2 = (void*)0x7512F2;
 __declspec(naked) void  CheckAnimateTailsAction() {
 
 
@@ -163,6 +167,8 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
+
+
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_ * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
@@ -170,6 +176,11 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 
 	switch (data1->Action)
 	{
+	case Jumping:
+		if (Miles_CheckBounceAttack(co2, data1))
+			return;
+
+		break;
 	case MysticMelody:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
 			return;
@@ -198,9 +209,12 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
 		break;
-	case Rolling:
-		Miles_UnrollCheck(data1, data2, co2);
-		return;
+	case Bounce:
+		DoBounce(data1, co2, co2Miles, (EntityData2_R*)data2);
+		break;
+	case BounceFloor:
+		DoBounceOnFloor(data1, co2, co2Miles, (EntityData2_R*)data2);
+		break;
 	case Grinding:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
 			return;
@@ -210,9 +224,30 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 	case HandGrinding: //Or whatever you call that thing in CG
 		DoHangGrinding(data1, co2);
 		return;
+	case Rolling:
+		Miles_UnrollCheck(data1, data2, co2);
+		return;
+	case LightDash:
+		CheckLightDashEnd(data2, co2Miles, co2, data1);
+		return;
 	}
 }
 
+static const void* const lightdashptr = (void*)0x7215D0;
+static inline void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* a5)
+{
+	__asm
+	{
+		push[a5]
+		push[data2]
+		mov eax, [co2]
+		mov ecx, [data]
+
+		call lightdashptr
+		add esp, 8
+		retn
+	}
+}
 
 
 void Tails_Main_r(ObjectMaster* obj)
@@ -263,6 +298,20 @@ void Tails_Main_r(ObjectMaster* obj)
 		FixAnimationFinalBossOnFrames(co2, data1);
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
+	case Bounce:
+		PlayerResetAngle(data1, co2);
+		PlayerGetAccelerationAir(data1, co2, data2);
+		PlayerGetSpeed(data1, co2, data2);
+		PlayerSetPosition(data1, data2, co2);
+		PlayerResetPosition(data1, data2, co2);
+		break;
+	case BounceFloor:
+		PlayerResetAngle(data1, co2);
+		PlayerGetAccelerationAir(data1, co2, data2);
+		PlayerGetSpeed(data1, co2, data2);
+		PlayerSetPosition(data1, data2, co2);
+		PlayerResetPosition(data1, data2, co2);
+		break;
 	case Grinding:
 		DoGrindThing(data1, data2, co2, co2Miles);
 		PlayGrindAnimation(data1, co2); //not called by the game, custom function to play animation for Tails
@@ -277,8 +326,65 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);
 		Miles_DoCollisionAttackStuff(data1);
-		Miles_UnrolCheckInput(data1, data2, co2);
+		Miles_UnrollCheckInput(data1, data2, co2);
 		break;
+	case LightDash:
+	{
+		Miles_InitLightDash(data1, (EntityData2_R*)data2, co2);
+		//Sonic_InitLightDash(data1, co2, data2, co2Miles);
+		int check = PlayerSetPosition(data1, data2, co2);
+		if (check == 2) {
+
+			CallVibeThing(0, 15, co2->PlayerNum, 6);
+			data1->Action = 10;
+			co2Miles->base.AnimInfo.Next = 15;
+			data1->Status &= 0xFBFFu;
+			//lightdashTimer = 0;
+			//sub_437DD0(15, 8210);
+			if (njScalor(&co2->Speed) <= 2.0)
+			{
+				if (&co2->Speed)
+				{
+					co2->Speed = { 0, 0, 0 };
+				}
+			}
+			else
+			{
+				njUnitVector(&co2->Speed);
+				co2->Speed.x *= 2.0;
+				co2->Speed.y *= 2.0;
+				co2->Speed.z *= 2.0;
+			}
+			PlayerResetPosition(data1, data2, co2);
+			if (njScalor(&co2->Speed) <= 2.0)
+			{
+				co2->Speed.x = 0.0;
+				co2->Speed.y = 0.0;
+				co2->Speed.z = 0.0;
+			}
+			else
+			{
+				njUnitVector(&co2->Speed);
+				co2->Speed.x *= 2.0;
+				co2->Speed.y *= 2.0;
+				co2->Speed.z *= 2.0;
+			}
+			//sub_71E460(data, sco2[0], sco2[0]);
+		}
+		else
+		{
+			PlayerResetPosition(data1, data2, co2);
+			//sub_469050(data, data2, &sco2[0]->base);
+			//sub_71E460(data, sco2[0], sco2[0]);
+			return;
+		}
+
+		data1->Action = 16;
+		co2->AnimInfo.Next = 24;
+		data1->Status &= 0xFBFFu;
+		CrashStar_Load();
+	}
+	break;
 	case VictoryPose:
 		if (isSuperForm())
 			co2->AnimInfo.Current = VictorySuperForm;
@@ -377,7 +483,7 @@ void BetterMiles_Init() {
 	Init_VoicesFixes();
 
 	//Draw the tails depending on the action
-	WriteCall((void*)0x750B32, Miles_DrawTail);	
+	WriteCall((void*)0x750B32, Miles_DrawTail);
 	WriteCall((void*)0x750BB8, Miles_DrawTail);
 
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);

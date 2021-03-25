@@ -60,6 +60,12 @@
     <ClCompile Include="helper.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
+    <ClCompile Include="lightdash.cpp">
+      <Filter>Source Files\Character\abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="bounce.cpp">
+      <Filter>Source Files\Character\abilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

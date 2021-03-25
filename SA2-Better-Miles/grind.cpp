@@ -126,7 +126,10 @@ static inline int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 	}
 
 	return result;
+}
 
+int Call_sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3) {
+	return sub_45B2C0(a1, a2, a3);
 }
 
 static const void* const CheckGrindPtr = (void*)0x726D00;
@@ -408,6 +411,11 @@ static inline bool somethingAboutTrick(int a1, EntityData1* a2, CharObj2Base* a3
 	return result;
 }
 
+bool Player_CheckBreakMaybe(int a1, EntityData1* a2, CharObj2Base* a3) {
+
+	return somethingAboutTrick(a1, a2, a3);
+}
+
 static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
 static inline signed int somethingAboutTrick2(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4)
 {
@@ -426,6 +434,12 @@ static inline signed int somethingAboutTrick2(EntityData1* a1, CharObj2Base* a2,
 	}
 	return result;
 }
+
+signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4)
+{
+	return somethingAboutTrick2(a1, a2, a4);
+}
+
 
 static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
 static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)

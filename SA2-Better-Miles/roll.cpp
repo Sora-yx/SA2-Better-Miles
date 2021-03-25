@@ -36,6 +36,11 @@ static inline float SlowDownThing(EntityData1* a1, EntityData2_* a2, CharObj2Bas
 	return result;
 }
 
+float SlowDownThing_r(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+{
+	return SlowDownThing(a1, a2, a3);
+}
+
 void RollPhysicControlMain(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
 	sub_45FA70(a1, a2, a3);
 	SlowDownThing(a1, a2, a3);
@@ -199,7 +204,7 @@ void Miles_UnrollCheck(EntityData1* data1, EntityData2_* data2, CharObj2Base* co
 	return;
 }
 
-void Miles_UnrolCheckInput(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2) {
+void Miles_UnrollCheckInput(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2) {
 	if ((Controllers[co2->PlayerNum].press & 0x402) != 0 || co2->Speed.x < 1.3)
 	{
 		RestorePhysic(co2);

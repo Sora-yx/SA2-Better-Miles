@@ -11,6 +11,31 @@ extern bool isCustomPhysics;
 void init_RankScore();
 void CheckAndSetHackObjectMiles();
 
+union taskwork_subs
+{
+	char b[4];
+	__int16 w[2];
+	int l;
+	float f;
+	void* ptr;
+};
+
+#pragma pack(push, 1)
+struct EntityData2_R
+{
+	taskwork_subs work;
+	NJS_POINT3 spd;
+	NJS_POINT3 acc;
+	Rotation ang_aim;
+	Rotation ang_spd;
+	float force;
+	float accel;
+	float frict;
+};
+#pragma pack(pop)
+
+
+
 struct EntityData2_
 {
 	CharObj2Base* CharacterData;
@@ -24,6 +49,7 @@ struct EntityData2_
 	float field_38;
 	float SomeMultiplier;
 };
+
 
 struct CollisionInfo_
 {
@@ -40,6 +66,15 @@ struct CollisionInfo_
 	CollisionInfo* CollidingObject;
 };
 
+#pragma pack(push, 1)
+struct __declspec(align(2)) HomingAttackTarget
+{
+	EntityData1* entity;
+	float distance;
+};
+#pragma pack(pop)
+
+
 void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
 bool isRando();
 bool isCharaSelect();
@@ -54,22 +89,34 @@ ObjectFunc(PrisonLaneDoor, 0x606400);
 ObjectFunc(PrisonLaneDoor3, 0x608610);*/
 ObjectFunc(PrisonLaneDoor4, 0x606A10);
 FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
+int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 
 //control/physic functions
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x45B610);
 void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
 FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x474990);
 FunctionPointer(void, sub_45FA70, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x45FA70);
+void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2);
+float SlowDownThing_r(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
 
 //Roll functions
 int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_* a3, CharObj2Base* a4);
 
+void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2);
+void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2);
 
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
 void CallVibeThing(int a1, signed int a2, int a3, signed int a4);
 FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
+void __cdecl Miles_InitLightDash(EntityData1* a1, EntityData2_R* data2, CharObj2Base* a3);
+void CheckLightDashEnd(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
+void InitLightDashStuff();
+
+void PlayerResetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
+bool Player_CheckBreakMaybe(int a1, EntityData1* a2, CharObj2Base* a3);
+signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4);
 
 FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
 FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x7271D0);
@@ -90,6 +137,10 @@ DataPointer(float*, flt_25F02A0, 0x25F02A0);
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude);
 bool isMilesAttacking();
 void Miles_DoCollisionAttackStuff(EntityData1* data1);
+signed int CallGetBufferedPosRot(int a1, int a2, NJS_VECTOR* a3, char a4);
+int Call_sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3);
+int PlayerSetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
+void DoNextAction_R(int playerNum, char action, int unknown);
 
 VoidFunc(sub_47BB50, 0x47BB50);
 void BetterMiles_Init();
@@ -128,9 +179,12 @@ enum MilesState {
 	Pulley = 51,
 	Flying = 59,
 	Spinning,
+	Bounce = 69,
+	BounceFloor,
 	Grinding = 71,
 	HandGrinding,
 	Rolling = 90,
+	LightDash,
 	VictoryPose = 190,
 
 };
