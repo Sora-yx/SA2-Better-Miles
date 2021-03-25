@@ -20,7 +20,7 @@ static inline char PlaySound3DThingMaybe(int id, NJS_VECTOR* pos, int a3, char a
 	return result;
 }
 
-int setGrindingNextAction(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
 	NJS_VECTOR result;
 	int v8 = 0;
@@ -151,7 +151,7 @@ static inline signed int CheckTrickASM(TailsCharObj2* a1, CharObj2Base* a2, Enti
 	return result;
 }
 
-void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+void CheckGrindThing(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	if (data1->NextAction != 0 || data1->Status & Status_DoNextAction) {
 		return;
 	}
@@ -187,7 +187,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 				data1->Rotation.y += 0x4000;
 			}
 
-			data2->Forward.x = data1->Rotation.y;
+			data2->ang_aim.y = data1->Rotation.y;
 			if (co2->PhysData.RollEnd > co2->Speed.x) {
 				co2->Speed.x = co2->PhysData.RollEnd;
 			}
@@ -222,7 +222,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2,
 
 //Math stuff that allow character to move on the rail
 static const void* const sub_46D040Ptr = (void*)0x46D040;
-static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3)
+static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a3)
 {
 	__asm
 	{
@@ -235,7 +235,7 @@ static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_* a
 }
 
 static const void* const sub_46D140Ptr = (void*)0x46D140;
-static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
+static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_R* a3)
 {
 
 	__asm
@@ -251,7 +251,7 @@ static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_*
 	}
 }
 
-void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_* a3) {
+void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a3) {
 	sub_46D040(a1, a2, a3);
 	if (a1->Action != 72)
 		getRailAccel(a2, a1, a3);
@@ -276,12 +276,12 @@ void PowderExecute_Rails(TailsCharObj2* sco2, NJS_VECTOR* dir) {
 	}
 }
 
-void LoadRailParticules(TailsCharObj2* co2, EntityData2_* data2) {
+void LoadRailParticules(TailsCharObj2* co2, EntityData2_R* data2) {
 	if (fabs(co2->base.Speed.x) >= 3.7f) {
 		NJS_VECTOR speed;
-		speed.x = data2->VelocityDirection.x * 0.9f;
-		speed.y = data2->VelocityDirection.y * 0.9f;
-		speed.z = data2->VelocityDirection.z * 0.9f;
+		speed.x = data2->spd.x * 0.9f;
+		speed.y = data2->spd.y * 0.9f;
+		speed.z = data2->spd.z * 0.9f;
 
 		PowderExecute_Rails(co2, &speed);
 		PowderExecute_Rails(co2, &speed);
@@ -395,7 +395,7 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* co2) {
 }
 
 static const void* const somethingAboutTrickPtr = (void*)0x45ABE0;
-static inline bool somethingAboutTrick(int a1, EntityData1* a2, CharObj2Base* a3)
+static inline bool PlayerCheckBreakAsm(int a1, EntityData1* a2, CharObj2Base* a3)
 {
 	int result;
 	__asm
@@ -413,11 +413,11 @@ static inline bool somethingAboutTrick(int a1, EntityData1* a2, CharObj2Base* a3
 
 bool Player_CheckBreakMaybe(int a1, EntityData1* a2, CharObj2Base* a3) {
 
-	return somethingAboutTrick(a1, a2, a3);
+	return PlayerCheckBreakAsm(a1, a2, a3);
 }
 
 static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
-static inline signed int somethingAboutTrick2(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4)
+static inline signed int CheckPlayerStopASM(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a4)
 {
 	
 	signed int result;
@@ -435,9 +435,9 @@ static inline signed int somethingAboutTrick2(EntityData1* a1, CharObj2Base* a2,
 	return result;
 }
 
-signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4)
+signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a4)
 {
-	return somethingAboutTrick2(a1, a2, a4);
+	return CheckPlayerStopASM(a1, a2, a4);
 }
 
 
@@ -473,7 +473,7 @@ static inline void sub_4EC330(int a1, int a2, int a3)
 }
 
 
-void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* MilesCO2) {
+void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* MilesCO2) {
 
 	char getcharID2 = 0;
 	int curSound = 0;
@@ -503,7 +503,7 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2,
 		}
 	}
 	PlaySoundProbably(curSound, 0, 0, 0);
-	if (somethingAboutTrick(idk, data1, co2) && co2->Speed.x > 0.0)
+	if (PlayerCheckBreakAsm(idk, data1, co2) && co2->Speed.x > 0.0)
 	{
 		data1->Action = 12;
 		idk2 = 18;
@@ -514,10 +514,10 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2,
 	else
 	{
 
-		if (somethingAboutTrick2(data1, co2, data2))
+		if (CheckPlayerStopASM(data1, co2, data2))
 		{
-			data1->Rotation.x = data2->field_28;
-			data1->Rotation.z = data2->field_30;
+			data1->Rotation.x = data2->ang_aim.x;
+			data1->Rotation.z = data2->ang_aim.z;
 			if (njScalor((const NJS_VECTOR*)data2) >= (double)FLOAT_01283704)
 			{
 				if (njScalor((const NJS_VECTOR*)data2) >= 2.5)
@@ -543,8 +543,8 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2,
 		}
 		else
 		{
-			data1->Rotation.x = data2->field_28;
-			data1->Rotation.z = data2->field_30;
+			data1->Rotation.x = data2->ang_aim.x;
+			data1->Rotation.z = data2->ang_aim.z;
 			data1->Action = 1;
 			somethingAboutTrick3(co2, data1);
 		}
@@ -594,7 +594,7 @@ float* sub_7274F0(EntityData1* a1)
 }
 
 
-signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* data1) {
+signed int SetHandGranding(EntityData2_R* data2, CharObj2Base* co2, EntityData1* data1) {
 
 	NJS_VECTOR* vec = (NJS_VECTOR*)&co2->field_144[4];
 
@@ -621,7 +621,7 @@ signed int SetHandGranding(EntityData2_* data2, CharObj2Base* co2, EntityData1* 
 	njPopMatrixEx();
 
 	//data1->Rotation.y = (atan2f(playerup.x, playerup.z) * 10430.38043493439);
-	data2->Forward.y = data1->Rotation.y;
+	data2->ang_aim.y = data1->Rotation.y;
 	data1->Action = HandGrinding;
 	if (isCustomAnim)
 		co2->AnimInfo.Next = 200;

@@ -29,7 +29,7 @@ signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
 }
 
 
-static inline signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3, TailsCharObj2* a4)
+static inline signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4)
 {
     signed int result;
     __asm
@@ -47,7 +47,7 @@ static inline signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_*
 
 
 static const void* const sub720E00ptr = (void*)0x720E00;
-static inline void sub_720E00(TailsCharObj2* a1, EntityData1* a2, EntityData2* a3, CharObj2Base* a4)
+static inline void sub_720E00(TailsCharObj2* a1, EntityData1* a2, EntityData2_R* a3, CharObj2Base* a4)
 {
     __asm
     {
@@ -77,7 +77,7 @@ static inline int CheckSpeedAndSetNextAnim(CharObj2Base* a1, EntityData1* a2)
 }
 
 static const void* const  sub_4745D0ptr = (void*)0x4745D0;
-static inline int sub_4745D0(CharObj2Base* a1, EntityData1* a2, EntityData2* a3)
+static inline int sub_4745D0(CharObj2Base* a1, EntityData1* a2, EntityData2_R* a3)
 {
     int result;
     __asm
@@ -93,7 +93,7 @@ static inline int sub_4745D0(CharObj2Base* a1, EntityData1* a2, EntityData2* a3)
 }
 
 static const void* const  sub_474630ptr = (void*)0x474630;
-static inline void sub_474630(CharObj2Base* a1, EntityData2* a2, EntityData1* a3)
+static inline void sub_474630(CharObj2Base* a1, EntityData2_R* a2, EntityData1* a3)
 {
     __asm
     {
@@ -109,14 +109,14 @@ float getGrav = 0.0;
 
 void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2_R* data2) {
 
-    if (Miles_CheckNextActions_r((EntityData2_*)data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, (EntityData2_*)data2, co2, co2Miles)) {
+    if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, data2, co2, co2Miles)) {
         return;
     }
     if ((data->Status & 3) != 0)
     {
         data->Action = 70;
-        data->Rotation.x = data2->acc.z;
-        data->Rotation.z = data2->ang_aim.y;
+        data->Rotation.x = data2->ang_aim.x;
+        data->Rotation.z = data2->ang_aim.z;
         if (co2Miles->field_1BC[28] == 1)
         {
             co2->Speed.y = 4.5999999;
@@ -157,7 +157,7 @@ void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, Ent
 
 void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2_R* data2) {
 
-    if (Miles_CheckNextActions_r((EntityData2_*)data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, (EntityData2_*)data2, co2, co2Miles)) {
+    if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, data2, co2, co2Miles)) {
         return;
     }
 
@@ -173,13 +173,13 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
         }
         else
         {
-            if (CheckPlayerStop(data, co2, (EntityData2_*)data2))
+            if (CheckPlayerStop(data, co2, data2))
             {
-                data->Rotation.x = data2->acc.z;
-                data->Rotation.z = data2->ang_aim.y;
-                if (njScalor((const NJS_VECTOR*)data2) >= (double)1.0)
+                data->Rotation.x = data2->ang_aim.x;
+                data->Rotation.z = data2->ang_aim.z;
+                if (njScalor((const NJS_VECTOR*)&data2->spd) >= (double)1.0)
                 {
-                    if (njScalor((const NJS_VECTOR*)data2) >= 2.5)
+                    if (njScalor((const NJS_VECTOR*)&data2->spd) >= 2.5)
                     {
                         co2->AnimInfo.Next = 17;
                         CallVibeThing(0, 15, co2->PlayerNum, 6);
@@ -198,8 +198,8 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
             }
             else
             {
-                data->Rotation.x = data2->acc.z;
-                data->Rotation.z = data2->ang_aim.y;
+                data->Rotation.x = data2->ang_aim.x;
+                data->Rotation.z = data2->ang_aim.z;
                 data->Action = 1;
                 CheckSpeedAndSetNextAnim(co2, data);
             }
@@ -217,9 +217,9 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
                 co2->AnimInfo.Next = 67;
                 data->Status &= 0xFEFFu;
             }
-            if (sub_4745D0(co2, data, (EntityData2*)data2))
+            if (sub_4745D0(co2, data, data2))
             {
-                sub_474630(co2, (EntityData2*)data2, data);
+                sub_474630(co2, data2, data);
                 data->Status &= 0xFAFFu;
             }
         }

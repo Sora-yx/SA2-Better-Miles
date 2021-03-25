@@ -23,7 +23,6 @@ union taskwork_subs
 #pragma pack(push, 1)
 struct EntityData2_R
 {
-	taskwork_subs work;
 	NJS_POINT3 spd;
 	NJS_POINT3 acc;
 	Rotation ang_aim;
@@ -80,7 +79,7 @@ bool isRando();
 bool isCharaSelect();
 
 
-FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
+FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
 ObjectFunc(Dynamite_Main, 0x6da880);
 ObjectFunc(DynamiteHiddenBase_Main, 0x714610);
 ObjectFunc(DynamiteSandOcean_Main, 0x65AEA0);
@@ -92,18 +91,18 @@ FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 
 //control/physic functions
-FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x45B610);
-void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
-FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x474990);
-FunctionPointer(void, sub_45FA70, (EntityData1* data, EntityData2_* a3, CharObj2Base* co2), 0x45FA70);
-void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2);
-float SlowDownThing_r(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
+FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x45B610);
+void PlayerMoveStuff(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
+FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x474990);
+FunctionPointer(void, sub_45FA70, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x45FA70);
+void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2);
+float SlowDownThing_r(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
 
 //Roll functions
-int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_* a3, CharObj2Base* a4);
+int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4);
 
 void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2);
-void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2);
+void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2);
 
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
@@ -111,16 +110,18 @@ DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
 void CallVibeThing(int a1, signed int a2, int a3, signed int a4);
 FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
 void __cdecl Miles_InitLightDash(EntityData1* a1, EntityData2_R* data2, CharObj2Base* a3);
-void CheckLightDashEnd(EntityData2_* data2, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
+void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
+
+void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data);
 void InitLightDashStuff();
 
-void PlayerResetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
+void PlayerResetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
 bool Player_CheckBreakMaybe(int a1, EntityData1* a2, CharObj2Base* a3);
-signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2_* a4);
+signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a4);
 
-FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
-FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x7271D0);
-FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2_* a2, TailsCharObj2* a3), 0x46D6D0);
+FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
+FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2_R* a2, TailsCharObj2* a3), 0x7271D0);
+FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2_R* a2, TailsCharObj2* a3), 0x46D6D0);
 FunctionPointer(int, calcGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
 FunctionPointer(int, sub_447580, (NJS_OBJECT* v), 0x447580);
 FunctionPointer(EntityData1*, sub_46C490, (int a1, int a2, int a3), 0x46C490);
@@ -129,7 +130,7 @@ void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3);
 DataPointer(NJS_VECTOR*, dword_1DE95E0, 0x1de95e0);
 
 
-DataArray(EntityData2_*, EntityData2Ptrs, 0x1DE95E0, 8);
+DataArray(EntityData2_R*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
 DataPointer(float, FLOAT_01283704, 0x1283704);
 DataPointer(float*, flt_25F02A0, 0x25F02A0);
@@ -139,14 +140,14 @@ bool isMilesAttacking();
 void Miles_DoCollisionAttackStuff(EntityData1* data1);
 signed int CallGetBufferedPosRot(int a1, int a2, NJS_VECTOR* a3, char a4);
 int Call_sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3);
-int PlayerSetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3);
+int PlayerSetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
 void DoNextAction_R(int playerNum, char action, int unknown);
 
 VoidFunc(sub_47BB50, 0x47BB50);
 void BetterMiles_Init();
 void Init_NewAnimation();
 void Init_MilesActions();
-signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
+signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
 
 static Buttons JumpButtons = Buttons_A;
 static Buttons AttackButtons = Buttons_X;

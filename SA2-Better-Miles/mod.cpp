@@ -47,7 +47,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_PyramidCave;
+		story->Level = LevelIDs_MetalHarbor;
 		story->Character = Characters_Sonic;
 	}
 

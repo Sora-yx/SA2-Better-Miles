@@ -21,7 +21,7 @@ void SetPhysicRoll(CharObj2Base* co2, EntityData1* v1) {
 
 
 static const void* const SlowDownThingPtr = (void*)0x45F840;
-static inline float SlowDownThing(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+static inline float SlowDownThing(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
 	float result;
 	__asm
@@ -36,12 +36,12 @@ static inline float SlowDownThing(EntityData1* a1, EntityData2_* a2, CharObj2Bas
 	return result;
 }
 
-float SlowDownThing_r(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+float SlowDownThing_r(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
 	return SlowDownThing(a1, a2, a3);
 }
 
-void RollPhysicControlMain(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
+void RollPhysicControlMain(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
 	sub_45FA70(a1, a2, a3);
 	SlowDownThing(a1, a2, a3);
 	PlayerMoveStuff(a1, a2, a3);
@@ -96,26 +96,24 @@ double sub_77FBA0(NJS_VECTOR* a1, NJS_VECTOR* a2)
 	v7 = a2->z * a1->z;
 	return (float)(v3 + v7);
 }
-
-float* sub_461060(float* result, float* a2)
+void ResetPlayerSpeed(CharObj2Base* result, EntityData2_R* a2)
 {
 	if (result)
 	{
-		result[27] = 0.0;
-		result[26] = 0.0;
-		result[25] = 0.0;
+		result->Speed.z = 0.0;
+		result->Speed.y = 0.0;
+		result->Speed.x = 0.0;
 	}
 	if (a2)
 	{
-		a2[2] = 0.0;
-		a2[1] = 0.0;
-		*a2 = 0.0;
+		a2->spd.z = 0.0;
+		a2->spd.y = 0.0;
+		a2->spd.x = 0.0;
 	}
-	return result;
 }
 
 //Giant mess copied pasted from the disassembly, needed to manage the rolling thing.
-int CheckGravityFallThing(EntityData1* a1, EntityData2_* a3, CharObj2Base* a4)
+int CheckGravityFallThing(EntityData1* a1, EntityData2_R* a3, CharObj2Base* a4)
 {
 
 	__int16 curStatus; // bx
@@ -158,7 +156,7 @@ int CheckGravityFallThing(EntityData1* a1, EntityData2_* a3, CharObj2Base* a4)
 	}
 	a1->Action = 11;
 	a4->AnimInfo.Next = 61;
-	sub_461060((float*)&a4->PlayerNum, (float*)a3);
+	ResetPlayerSpeed(a4, a3);
 	v8 = a4->CharID;
 	if (v8 == 7 || v8 == 6)
 	{
@@ -174,7 +172,7 @@ int CheckGravityFallThing(EntityData1* a1, EntityData2_* a3, CharObj2Base* a4)
 	return 1;
 }
 
-void Miles_UnrollCheck(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2) {
+void Miles_UnrollCheck(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2) {
 
 
 	if (data1->NextAction == 0 || (data1->Status & Status_DoNextAction) == 0)
@@ -204,7 +202,7 @@ void Miles_UnrollCheck(EntityData1* data1, EntityData2_* data2, CharObj2Base* co
 	return;
 }
 
-void Miles_UnrollCheckInput(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2) {
+void Miles_UnrollCheckInput(EntityData1* data1, CharObj2Base* co2) {
 	if ((Controllers[co2->PlayerNum].press & 0x402) != 0 || co2->Speed.x < 1.3)
 	{
 		RestorePhysic(co2);

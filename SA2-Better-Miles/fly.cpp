@@ -30,7 +30,7 @@ int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharO
 	}
 }
 
-void Tails_CheckGetAltitude(CharObj2Base* a1, EntityData1* a2, EntityData2_* a3)
+void Tails_CheckGetAltitude(CharObj2Base* a1)
 {
 	if (Controllers[a1->PlayerNum].on & Buttons_A) {
 		if (TailsFlightTime < 1.0) {
@@ -78,10 +78,10 @@ void Tails_Fatigue(EntityData1* data1, CharObj2Base* co2) {
 	}
 }
 
-void MilesFly(EntityData1* data1, CharObj2Base* co2, EntityData2_* data2) {
+void MilesFly(EntityData1* data1, CharObj2Base* co2) {
 
     if (data1->Action == Flying && TailsFlightTime < 1.0) {
-       Tails_CheckGetAltitude(co2, data1, data2);
+       Tails_CheckGetAltitude(co2);
        Miles_CheckLoseAltitude(co2, data1);
     }
 

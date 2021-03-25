@@ -41,7 +41,7 @@ signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 
 
 static const void* const PGetAccelAirPtr = (void*)0x45D770;
-static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
+static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
 {
 	__asm
 	{
@@ -56,7 +56,7 @@ static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co
 	}
 }
 
-void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2) {
+void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2) {
 	return PlayerGetAccelerationAirASM(a1, co2, data2);
 }
 
@@ -89,8 +89,8 @@ void DoNextAction_R(int playerNum, char action, int unknown) {
 	}
 } 
 
-static const void* const PGetRotationPtr = (void*)0x460860;
-static inline void PGetRotationMaybe(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
+static const void* const PGetSpeedPtr = (void*)0x460860;
+static inline void PlayerGetSpeedASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
 {
 	__asm
 	{
@@ -99,66 +99,62 @@ static inline void PGetRotationMaybe(EntityData1* a1, CharObj2Base* co2, EntityD
 		mov eax, a1 // a1
 
 		// Call your __cdecl function here:
-		call PGetRotationPtr
+		call PGetSpeedPtr
 
 		add esp, 4 // a3
 	}
 }
 
-void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_* data2)
+void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
 {
-	PGetRotationMaybe(a1, co2, data2);
+	PlayerGetSpeedASM(a1, co2, data2);
 }
 
 
-static const void* const PGetAccelPtr = (void*)0x4616E0;
-static inline int PGetAccelMaybe(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+static const void* const PSetPositionptr = (void*)0x4616E0;
+static inline int PSetPositionASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
 	int result;
 	__asm
 	{
-		push[a3] // a3
-		push[a2] // a2
-		mov eax, a1 // a1
-
-		// Call your __cdecl function here:
-		call PGetAccelPtr
-		mov eax, result
-		add esp, 8 // a2
+		push[a3]
+		push[a2]
+		mov eax, [a1]
+		call PSetPositionptr
+		add esp, 8
+		mov result, eax
 	}
 	return result;
 }
 
 
-int PlayerSetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+int PlayerSetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
-	return PGetAccelMaybe(a1, a2, a3);
+	return PSetPositionASM(a1, a2, a3);
 }
 
 
 
 static const void* const sub_469050Ptr = (void*)0x469050;
-static inline void sub_469050(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3)
+static inline void PResetPositionASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
 	__asm
 	{
 		push[a3] // a3
 		mov ebx, a2 // a2
 		mov eax, a1 // a1
-
-		// Call your __cdecl function here:
 		call sub_469050Ptr
 		add esp, 4 // a2
 	}
 }
 
-void PlayerResetPosition(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
-	sub_469050(a1, a2, a3);
+void PlayerResetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
+	PResetPositionASM(a1, a2, a3);
 }
 
-void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
+void PlayerMoveStuff(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
 	PlayerGetSpeed(a1, a3, a2);
-	PGetAccelMaybe(a1, a2, a3);
+	PlayerSetPosition(a1, a2, a3);
 	PlayerResetPosition(a1, a2, a3); 
 	return;
 }
@@ -166,7 +162,7 @@ void PlayerMoveStuff(EntityData1* a1, EntityData2_* a2, CharObj2Base* a3) {
 
 
 static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
-static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_* a3, CharObj2Base* a4)
+static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4)
 {
 	int result;
 	__asm
@@ -183,7 +179,7 @@ static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityDat
 	return result;
 }
 
-int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_* a3, CharObj2Base* a4) {
+int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4) {
 	return PlayerCheckFallGravityStuff(a1, a2, a3, a4);
 }
 

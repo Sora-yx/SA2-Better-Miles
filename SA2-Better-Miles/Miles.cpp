@@ -8,7 +8,7 @@ Trampoline* Tails_RunsAction_t;
 
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
-signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+signed int Miles_CheckNextActions_original(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
 	const auto MilesCheck_ptr = Miles_CheckNextActions_t->Target();
 
@@ -32,7 +32,7 @@ signed int Miles_CheckNextActions_original(EntityData2_* a1, TailsCharObj2* a2, 
 
 
 
-signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
 
 	switch (a4->NextAction)
@@ -54,7 +54,7 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_* a1, TailsCharObj2* a2,
 		a4->Status &= 0xDAFFu;
 		return 1;
 	case 31:
-		if (setGrindingNextAction(a1, a2, a3, a4))
+		if (setGrindingNextAction(a2, a3, a4))
 			return 1;
 		else
 			return 0;
@@ -169,9 +169,9 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 
 
-void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 
-	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_ * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
+	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_R * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
 
 	switch (data1->Action)
@@ -228,13 +228,13 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_* data2, CharObj
 		Miles_UnrollCheck(data1, data2, co2);
 		return;
 	case LightDash:
-		CheckLightDashEnd(data2, co2Miles, co2, data1);
+		CheckLightDashEnd(co2Miles, co2, data1);
 		return;
 	}
 }
 
 static const void* const lightdashptr = (void*)0x7215D0;
-static inline void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2_* data2, TailsCharObj2* a5)
+static inline void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* a5)
 {
 	__asm
 	{
@@ -242,13 +242,23 @@ static inline void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, Ent
 		push[data2]
 		mov eax, [co2]
 		mov ecx, [data]
-
 		call lightdashptr
 		add esp, 8
-		retn
 	}
 }
 
+static const void* const afterimagePtr = (void*)0x71E460;
+static inline void CheckAndDisplayAfterImage(EntityData1* data, CharObj2Base* co2, TailsCharObj2* a5)
+{
+	__asm
+	{
+		push[a5]
+		push[co2]
+		mov esi, [data]
+		call afterimagePtr
+		add esp, 8
+	}
+}
 
 void Tails_Main_r(ObjectMaster* obj)
 {
@@ -258,7 +268,7 @@ void Tails_Main_r(ObjectMaster* obj)
 
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data1 = MainCharObj1[0];
-	EntityData2_* data2 = EntityData2Ptrs[0];
+	EntityData2_R* data2 = EntityData2Ptrs[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
 
 	switch (data1->Action)
@@ -326,63 +336,70 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);
 		Miles_DoCollisionAttackStuff(data1);
-		Miles_UnrollCheckInput(data1, data2, co2);
+		Miles_UnrollCheckInput(data1, co2);
 		break;
 	case LightDash:
 	{
-		Miles_InitLightDash(data1, (EntityData2_R*)data2, co2);
-		//Sonic_InitLightDash(data1, co2, data2, co2Miles);
+		CheckRefreshLightDashTimer(co2, data1);
+		Sonic_InitLightDash(data1, co2, data2, co2Miles);
 		int check = PlayerSetPosition(data1, data2, co2);
 		if (check == 2) {
 
-			CallVibeThing(0, 15, co2->PlayerNum, 6);
-			data1->Action = 10;
-			co2Miles->base.AnimInfo.Next = 15;
-			data1->Status &= 0xFBFFu;
-			//lightdashTimer = 0;
-			//sub_437DD0(15, 8210);
-			if (njScalor(&co2->Speed) <= 2.0)
+			if (((short)CurrentLevel != LevelIDs_GreenHill)) {
+				PlaySoundProbably(0x7f, 0, 0, 0);
+			}
+
+			data1->Action = 16;
+			co2->AnimInfo.Next = 24;
+			data1->Status = data1->Status & 0xfbff;
+
+			//PlaySound3(24, 0x2012);
+			CrashStar_Load();
+			CheckAndDisplayAfterImage(data1, co2, co2Miles);
+			//PlayerAfterImageThing(sonicCo2, sonicCo2);
+		}
+		else {
+			if (check == 0)
 			{
-				if (&co2->Speed)
-				{
-					co2->Speed = { 0, 0, 0 };
+				CheckAndDisplayAfterImage(data1, co2, co2Miles);
+				PlayerResetPosition(data1, data2, co2);
+			}
+			else {
+				data1->Action = 10;
+				co2->AnimInfo.Next = 15;
+				data1->Status &= 0xFBFFu;
+				if (njScalor(&data2->spd) <= 2.0) {
+					if (&data2->spd)
+					{
+						data2->spd.z = 0.0;
+						data2->spd.y = 0.0;
+						data2->spd.x = 0.0;
+					}
+				}
+				else {
+					njUnitVector(&data2->spd);
+					data2->spd.x = data2->spd.x * 2.0;
+					data2->spd.y = data2->spd.y * 2.0;
+					data2->spd.z = data2->spd.z * 2.0;
+				}
+				PlayerResetPosition(data1, data2, co2);
+
+				if (njScalor(&co2->Speed) <= 2.0) {
+					co2->Speed.x = 0.0;
+					co2->Speed.y = 0.0;
+					co2->Speed.z = 0.0;
+					CheckAndDisplayAfterImage(data1, co2, co2Miles);
+					//PlayerAfterImageThing(sonicCo2, sonicCo2);
+				}
+				else {
+					njUnitVector(&co2->Speed);
+					co2->Speed.x = co2->Speed.x * 2.0;
+					co2->Speed.y = co2->Speed.y * 2.0;
+					co2->Speed.z = 2.0 * co2->Speed.z;
 				}
 			}
-			else
-			{
-				njUnitVector(&co2->Speed);
-				co2->Speed.x *= 2.0;
-				co2->Speed.y *= 2.0;
-				co2->Speed.z *= 2.0;
-			}
-			PlayerResetPosition(data1, data2, co2);
-			if (njScalor(&co2->Speed) <= 2.0)
-			{
-				co2->Speed.x = 0.0;
-				co2->Speed.y = 0.0;
-				co2->Speed.z = 0.0;
-			}
-			else
-			{
-				njUnitVector(&co2->Speed);
-				co2->Speed.x *= 2.0;
-				co2->Speed.y *= 2.0;
-				co2->Speed.z *= 2.0;
-			}
-			//sub_71E460(data, sco2[0], sco2[0]);
+	
 		}
-		else
-		{
-			PlayerResetPosition(data1, data2, co2);
-			//sub_469050(data, data2, &sco2[0]->base);
-			//sub_71E460(data, sco2[0], sco2[0]);
-			return;
-		}
-
-		data1->Action = 16;
-		co2->AnimInfo.Next = 24;
-		data1->Status &= 0xFBFFu;
-		CrashStar_Load();
 	}
 	break;
 	case VictoryPose:
@@ -394,7 +411,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	}
 
-	MilesFly(data1, co2, data2);
+	MilesFly(data1, co2);
 }
 
 
@@ -487,4 +504,5 @@ void BetterMiles_Init() {
 	WriteCall((void*)0x750BB8, Miles_DrawTail);
 
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
+	WriteData<1>((int*)0x71e477, 0x84); //test remove model check after image
 }
