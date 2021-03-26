@@ -17,10 +17,10 @@ Trampoline* MetalBoxGravity_t;
 
 
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
-inline int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
+inline signed int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
 {
 
-	int result;
+	signed int result;
 	__asm
 	{
 		push[magnitude]
@@ -273,7 +273,7 @@ bool isMilesAttacking() {
 
 	EntityData1* data1 = MainCharObj1[0];
 
-	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling)
+	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling || data1->Action == Bounce)
 		return true;
 
 	return false;

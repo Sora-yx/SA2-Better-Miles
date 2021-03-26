@@ -160,6 +160,7 @@
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="startposition.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="swimming.cpp" />
     <ClCompile Include="voices.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -14,8 +14,8 @@ static inline char PlaySound3DThingMaybe(int id, NJS_VECTOR* pos, int a3, char a
 		mov esi, [pos]
 		mov edi, [id]
 		call Sub4372E0Ptr
-		mov result, al
 		add esp, 12
+		mov result, al
 	}
 	return result;
 }
@@ -429,7 +429,7 @@ static inline signed int CheckPlayerStopASM(EntityData1* a1, CharObj2Base* a2, E
 
 		// Call your __cdecl function here:
 		call somethingAboutTrick2Ptr
-		add esp, 8
+		add esp, 4
 		mov result, eax
 	}
 	return result;

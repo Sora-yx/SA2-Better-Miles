@@ -42,7 +42,7 @@ float SlowDownThing_r(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 }
 
 void RollPhysicControlMain(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
-	sub_45FA70(a1, a2, a3);
+	PlayerGetRotation(a1, a2, a3);
 	SlowDownThing(a1, a2, a3);
 	PlayerMoveStuff(a1, a2, a3);
 }

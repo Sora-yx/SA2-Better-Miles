@@ -4,15 +4,16 @@ float TailsFlightTime = 0.0000000000; //fatigue
 double flyCustomSpeedValue = 0.11; //used to improve Miles flight speed
 
 
-static signed int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
+static void Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
 	a1->Action = Flying;
 	a1->Status &= 0xDAFFu;
 	a2->AnimInfo.Current = FlyingAnim;
 	a3->field_1BC[418] |= 1u; //idk
-	return PlayVoice(2, 1629);
+	PlayVoice(2, 1629);
+	return;
 }
 
-int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
+static inline void Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
 {
 	__asm
 	{
@@ -23,7 +24,6 @@ int __declspec() Tails_FlyStartASM(EntityData1* a1, CharObj2Base* a2, TailsCharO
 		// Call your __cdecl function here:
 		call Tails_FlyStart
 
-		add esp, 4 // a1<eax> is also used for return value
 		pop edx // a2
 		pop ecx // a3
 		retn

@@ -31,7 +31,6 @@ signed int Miles_CheckNextActions_original(EntityData2_R* a1, TailsCharObj2* a2,
 }
 
 
-
 signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
 
@@ -112,6 +111,25 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 }
 
 
+static inline signed int Tails_CheckActionWindowASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4)
+{
+	signed int result;
+	__asm
+	{
+		push[a4]
+		mov ecx, [a3]
+		mov edx, [a2]
+		mov eax, [a1]
+		call Tails_CheckActionWindowPtr
+		add esp, 4
+		mov result, eax
+	}
+	return result;
+}
+
+signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4) {
+	return Tails_CheckActionWindowASM(a1, a2, a3, a4);
+}
 
 int ActionArray[6] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
 
@@ -163,7 +181,7 @@ int CheckTailsJump(CharObj2Base* a1, EntityData1* a2)
 }
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
-	if (MainCharObj1[0]->Action != Rolling)
+	if (MainCharObj1[0]->Action != Rolling && MainCharObj1[0]->Action != Bounce && MainCharObj1[0]->Action != BounceFloor)
 		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
@@ -176,8 +194,23 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 
 	switch (data1->Action)
 	{
+	case Standing:
+	case Running:
+		if (Miles_SetNextActionSwim(co2Miles, data1))
+			return;
+
+		break;
 	case Jumping:
-		if (Miles_CheckBounceAttack(co2, data1))
+		if (Miles_CheckBounceAttack(co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
+			return;
+
+		break;
+	case 7:
+	case 8:
+	case 10:
+	case 15:
+	case 17:
+		if (Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
 		break;
@@ -197,23 +230,34 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		}
 		return;
 	case Flying:
+		if (Miles_SetNextActionSwim(co2Miles, data1))
+			return;
+
 		if (isSuperForm() && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
 		{
 			co2->AnimInfo.Next = 15;
 		}
 		break;
 	case Spinning:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
 		if (isCustomAnim)
 			spinOnFrames(co2, data1);
+
 		break;
 	case Bounce:
-		DoBounce(data1, co2, co2Miles, (EntityData2_R*)data2);
+		if (Miles_SetNextActionSwim(co2Miles, data1))
+			return;
+
+		DoBounce(data1, co2, co2Miles, data2);
 		break;
 	case BounceFloor:
-		DoBounceOnFloor(data1, co2, co2Miles, (EntityData2_R*)data2);
+
+		if (Miles_SetNextActionSwim(co2Miles, data1))
+			return;
+
+		DoBounceOnFloor(data1, co2, co2Miles, data2);
 		break;
 	case Grinding:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
@@ -225,11 +269,23 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		DoHangGrinding(data1, co2);
 		return;
 	case Rolling:
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			return;
+
 		Miles_UnrollCheck(data1, data2, co2);
 		return;
 	case LightDash:
 		CheckLightDashEnd(co2Miles, co2, data1);
 		return;
+	case FloatingOnWater:
+		CheckFloatingStuff(data2, data1, co2, co2Miles);
+		break;
+	case Swimming:
+		CheckSwimmingStuff(data2, data1, co2, co2Miles);
+		break;
+	case Diving:
+		CheckDivingStuff(data2, data1, co2, co2Miles);
+		break;
 	}
 }
 
@@ -275,6 +331,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	{
 	case Standing:
 	case Running:
+
 		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1) && !CheckTailsJump(co2, data1)) {
 			if (co2->Speed.x < 1.3) {
 				Miles_CheckSpinAttack(co2Miles, data1, co2);
@@ -301,6 +358,7 @@ void Tails_Main_r(ObjectMaster* obj)
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
 		}
 		break;
+	case Flying:
 	case Spinning:
 		Miles_DoCollisionAttackStuff(data1);
 		break;
@@ -402,6 +460,36 @@ void Tails_Main_r(ObjectMaster* obj)
 		}
 	}
 	break;
+	case FloatingOnWater:
+		Miles_GetFloat(data1, co2);
+		PlayerResetAngle(data1, co2);
+		PlayerGetRotation(data1, data2, co2);
+		PlayerGetAccelerationAir(data1, co2, data2);
+		PlayerGetSpeed(data1, co2, data2);
+		PlayerSetPosition(data1, data2, co2);
+		PlayerResetPosition(data1, data2, co2);
+
+		if (co2->PhysData.CameraY + data1->Position.y > co2->idk5)
+		{
+			co2->AnimInfo.Next = FloatingWaterAnim;
+		}
+
+		break;
+	case Swimming:
+		Miles_GetFloat(data1, co2);
+		PlayerResetAngle(data1, co2);
+		PlayerGetAccelerationAir(data1, co2, data2);
+		PlayerGetSpeed(data1, co2, data2);
+		PlayerSetPosition(data1, data2, co2);
+		PlayerResetPosition(data1, data2, co2);
+		break;
+	case Diving:
+		PlayerResetAngle(data1, co2);
+		PlayerGetAccelerationAir(data1, co2, data2);
+		PlayerGetSpeed(data1, co2, data2);
+		PlayerSetPosition(data1, data2, co2);
+		PlayerResetPosition(data1, data2, co2);
+		break;
 	case VictoryPose:
 		if (isSuperForm())
 			co2->AnimInfo.Current = VictorySuperForm;
@@ -445,8 +533,6 @@ bool isLevelBanned() {
 
 void LoadCharacter_r() {
 
-	PDS_PERIPHERAL p1 = Controllers[0];
-
 
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
@@ -481,7 +567,10 @@ void BetterMiles_Init() {
 		PhysicsArray[Characters_Tails].Brake = -0.25;
 		PhysicsArray[Characters_Tails].HangTime = 60;
 		PhysicsArray[Characters_Tails].JumpSpeed = 1.80;
-		PhysicsArray[Characters_Tails].GroundAccel = 0.1418;
+		PhysicsArray[Characters_Tails].GroundAccel = 0.1618;
+		PhysicsArray[Characters_Tails].RollDecel = -0.008;
+		PhysicsArray[Characters_Tails].Run1 = 2.8;
+		PhysicsArray[Characters_Tails].Run2 = 5.09;
 	}
 
 	Init_MilesActions();

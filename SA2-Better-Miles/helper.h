@@ -11,6 +11,7 @@ extern bool isCustomPhysics;
 void init_RankScore();
 void CheckAndSetHackObjectMiles();
 
+
 union taskwork_subs
 {
 	char b[4];
@@ -80,6 +81,7 @@ bool isCharaSelect();
 
 
 FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
+signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4);
 ObjectFunc(Dynamite_Main, 0x6da880);
 ObjectFunc(DynamiteHiddenBase_Main, 0x714610);
 ObjectFunc(DynamiteSandOcean_Main, 0x65AEA0);
@@ -94,9 +96,10 @@ int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x45B610);
 void PlayerMoveStuff(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
 FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x474990);
-FunctionPointer(void, sub_45FA70, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x45FA70);
+FunctionPointer(void, PlayerGetRotation, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x45FA70);
 void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2);
 float SlowDownThing_r(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
+
 
 //Roll functions
 int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4);
@@ -109,7 +112,7 @@ FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
 void CallVibeThing(int a1, signed int a2, int a3, signed int a4);
 FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
-void __cdecl Miles_InitLightDash(EntityData1* a1, EntityData2_R* data2, CharObj2Base* a3);
+
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
 
 void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data);
@@ -127,7 +130,6 @@ FunctionPointer(int, sub_447580, (NJS_OBJECT* v), 0x447580);
 FunctionPointer(EntityData1*, sub_46C490, (int a1, int a2, int a3), 0x46C490);
 FunctionPointer(signed int, sub_77FE10, (float* a1), 0x77FE10);
 void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3);
-DataPointer(NJS_VECTOR*, dword_1DE95E0, 0x1de95e0);
 
 
 DataArray(EntityData2_R*, EntityData2Ptrs, 0x1DE95E0, 8);
@@ -186,6 +188,9 @@ enum MilesState {
 	HandGrinding,
 	Rolling = 90,
 	LightDash,
+	FloatingOnWater,
+	Swimming,
+	Diving,
 	VictoryPose = 190,
 
 };
@@ -207,5 +212,12 @@ enum MilesAnimation {
 	Spin10,
 	RollAnim,
 	SwapAnim = 216,
-	VictorySuperForm
+	VictorySuperForm,
+	LightdashAnim,
+	PaddingAnim,
+	BeginDivingAnim,
+	DivingAnim,
+	BegingSurfacingAnim,
+	SurfacingAnim,
+	FloatingWaterAnim,
 };
