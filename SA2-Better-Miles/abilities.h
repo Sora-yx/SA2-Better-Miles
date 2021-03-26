@@ -18,6 +18,8 @@ enum TailsAnims : unsigned __int16 {
 };
 
 extern bool isInfiniteFly;
+extern bool isLightDash;
+extern bool isBounce;
 
 
 void Init_MilesFly();

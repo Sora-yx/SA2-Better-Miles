@@ -4,7 +4,7 @@ bool rebound = false;
 
 signed int Miles_CheckBounceAttack(CharObj2Base* a1, EntityData1* a2)
 {
-	if (!Action_Pressed[a1->PlayerNum])
+	if (!Action_Pressed[a1->PlayerNum] || !isBounce)
 	{
 		return 0;
 	}
@@ -19,7 +19,7 @@ signed int Miles_CheckBounceAttack(CharObj2Base* a1, EntityData1* a2)
 
 signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
 {
-	if (!Action_Pressed[a1->PlayerNum])
+	if (!Action_Pressed[a1->PlayerNum] || !isBounce)
 	{
 		return 0;
 	}

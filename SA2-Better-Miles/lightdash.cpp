@@ -225,5 +225,8 @@ void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data) {
 
 void InitLightDashStuff() {
 
+	if (!isLightDash)
+		return;
+
 	RingMain_t = new Trampoline((int)RingMain, (int)RingMain + 0x6, RingMain_R);
 }

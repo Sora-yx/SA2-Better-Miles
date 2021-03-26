@@ -1,13 +1,17 @@
 #include "stdafx.h"
 
-bool isInfiniteFly = false;
+bool isCustomPhysics = true;
 bool isCustomAnim = true;
 bool isMechRemoved = false;
 bool isMilesAdventure = false;
 
+bool isInfiniteFly = false;
+bool isLightDash = true;
+bool isBounce = true;
+
 bool flySoundEffect = true;
 bool jumpVoice = false;
-bool isCustomPhysics = true;
+
 HelperFunctions HelperFunctionsGlobal;
 
 
@@ -16,11 +20,14 @@ extern "C" {
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
-		isInfiniteFly = config->getBool("General", "isInfiniteFly", false);
 		isCustomPhysics = config->getBool("General", "isCustomPhysics", true);
 		isCustomAnim = config->getBool("General", "isCustomAnim", true);
 		isMechRemoved = config->getBool("General", "isMechRemoved", true);
 		isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
+
+		isInfiniteFly = config->getBool("Abilities", "isInfiniteFly", false);
+		isLightDash = config->getBool("Abilities", "isLightDash", true);
+		isBounce = config->getBool("Abilities", "isBounce", true);
 
 		flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
 		jumpVoice = config->getBool("Audio", "jumpVoice", false);
@@ -47,7 +54,7 @@ extern "C" {
 
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
-		story->Level = LevelIDs_CannonsCoreK;
+		story->Level = LevelIDs_MetalHarbor;
 		story->Character = Characters_Tails;
 	}
 
