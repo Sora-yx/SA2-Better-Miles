@@ -5,6 +5,7 @@
 Trampoline* Tails_Main_t;
 Trampoline* Miles_CheckNextActions_t;
 Trampoline* Tails_RunsAction_t;
+Trampoline* LoadCharacters_t;
 
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
@@ -289,32 +290,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 	}
 }
 
-static const void* const lightdashptr = (void*)0x7215D0;
-static inline void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* a5)
-{
-	__asm
-	{
-		push[a5]
-		push[data2]
-		mov eax, [co2]
-		mov ecx, [data]
-		call lightdashptr
-		add esp, 8
-	}
-}
 
-static const void* const afterimagePtr = (void*)0x71E460;
-static inline void CheckAndDisplayAfterImage(EntityData1* data, CharObj2Base* co2, TailsCharObj2* a5)
-{
-	__asm
-	{
-		push[a5]
-		push[co2]
-		mov esi, [data]
-		call afterimagePtr
-		add esp, 8
-	}
-}
 
 void Tails_Main_r(ObjectMaster* obj)
 {
@@ -334,7 +310,7 @@ void Tails_Main_r(ObjectMaster* obj)
 
 		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1) && !CheckTailsJump(co2, data1)) {
 			if (co2->Speed.x < 1.3) {
-				Miles_CheckSpinAttack(co2Miles, data1, co2);
+				Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 			}
 			else {
 				Miles_RollCheckInput(data1, co2);
@@ -456,7 +432,7 @@ void Tails_Main_r(ObjectMaster* obj)
 					co2->Speed.z = 2.0 * co2->Speed.z;
 				}
 			}
-	
+
 		}
 	}
 	break;
@@ -531,20 +507,29 @@ bool isLevelBanned() {
 	return false;
 }
 
-void LoadCharacter_r() {
+NJS_TEXNAME MilesEffect_texname[23];
+NJS_TEXLIST MILESEFF_TEXLIST = { arrayptrandlengthT(MilesEffect_texname, Uint32) };
 
+void LoadCharacter_r() {
 
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
 			CurrentCharacter = Characters_Tails;
 	}
 
-	LoadCharacters();
+	auto original = reinterpret_cast<decltype(LoadCharacter_r)*>(LoadCharacters_t->Target());
+	original();
+
+
+	LoadShEffTex();
+	LoadTextureList("miles_efftex", &MILESEFF_TEXLIST);
 	CheckAndSetHackObjectMiles();
 
-	if (isCharaSelect() && MainCharObj2[0]->CharID == Characters_Tails)
-	{
-		MainCharObj2[0]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
+	for (int i = 0; i < 2; i++) {
+		if (isCharaSelect() && MainCharObj2[i]->CharID == Characters_Tails)
+		{
+			MainCharObj2[i]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
+		}
 	}
 
 	return;
@@ -556,10 +541,10 @@ void BetterMiles_Init() {
 	Tails_RunsAction_t = new Trampoline((int)Tails_runsAction, (int)Tails_runsAction + 0x7, Tails_runsAction_r);
 
 	if (isMilesAdventure || isMechRemoved) {
-		WriteCall((void*)0x439b13, LoadCharacter_r);
-		WriteCall((void*)0x43cada, LoadCharacter_r);
 		init_RankScore();
 	}
+
+	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
 
 	//Improve physic
 	if (isCustomPhysics) {
@@ -593,5 +578,4 @@ void BetterMiles_Init() {
 	WriteCall((void*)0x750BB8, Miles_DrawTail);
 
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
-	WriteData<1>((int*)0x71e477, 0x84); //test remove model check after image
 }

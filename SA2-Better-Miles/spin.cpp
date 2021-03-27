@@ -2,23 +2,31 @@
 
 
 int FailSafeTimer = 0;
-void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3)
+int spinDelay = 0;
+void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3, EntityData2_R* a4)
 {
 
-    if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || a2->NextAction != 0)
+    if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || Miles_CheckNextActions_r(a4, a1, a3, a2)) {
+        spinDelay = 0;
         return;
+    }
 
     if (Controllers[a3->PlayerNum].on & (Buttons_X | Buttons_B) && (a2->Status & 0x2000) == 0)
     {
           //a2->NextAction = 39;
-        a2->Action = 60;
-        a3->AnimInfo.Next = Spin1;
-        a3->AnimInfo.field_8 = 0;
-        a1->field_1BC[418] |= 2u;
-        FailSafeTimer = 0;
-        PlaySoundProbably(8200, 0, 0, 0);
-
+        if (++spinDelay >= 10) {
+            a2->Action = 60;
+            a3->AnimInfo.Next = Spin1;
+            a3->AnimInfo.field_8 = 0;
+            a1->field_1BC[418] |= 2u;
+            FailSafeTimer = 0;
+            PlaySoundProbably(8200, 0, 0, 0);
+        }
     }
+    else {
+        spinDelay = 0;
+    }
+ 
 
     return;
 }
@@ -79,6 +87,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
         else {
             if (++FailSafeTimer == 30) //FAILSAFE
             {
+                spinDelay = 0;
                 a1->AnimInfo.Next = 0;
                 a2->Action = 0;
             }

@@ -5,17 +5,23 @@ int lightdashTimer = 0;
 Trampoline* RingMain_t;
 
 
-void DoNextAction_r(int playerNum, char action, int unknown)
+static const void* const lightdashptr = (void*)0x7215D0;
+static inline void Sonic_InitLightDashASM(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* a5)
 {
-	EntityData1* v3; // eax
-
-	v3 = MainCharObj1[playerNum];
-	if (v3)
+	__asm
 	{
-		v3->Status |= Status_DoNextAction;
-		v3->NextAction = action;
-		MainCharObj2[playerNum]->field_28 = unknown;
+		push[a5]
+		push[data2]
+		mov eax, [co2]
+		mov ecx, [data]
+		call lightdashptr
+		add esp, 8
 	}
+}
+
+
+void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* a5) {
+	return Sonic_InitLightDashASM(data, co2, data2, a5);
 }
 
 void Miles_PerformLightDash(CharObj2Base* co2, EntityData1* data)

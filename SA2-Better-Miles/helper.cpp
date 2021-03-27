@@ -40,6 +40,103 @@ signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Flo
 }
 
 
+
+void DoNextAction_r(int playerNum, char action, int unknown)
+{
+	EntityData1* v3; // eax
+
+	v3 = MainCharObj1[playerNum];
+	if (v3)
+	{
+		v3->Status |= Status_DoNextAction;
+		v3->NextAction = action;
+		MainCharObj2[playerNum]->field_28 = unknown;
+	}
+}
+
+
+signed int NjPushMatrixMaybe(float* _this)
+{
+	char* v1; // eax
+	NJS_MATRIX_PTR v2; // esi
+
+	v1 = (char*)nj_current_matrix_ptr_;
+	v2 = nj_current_matrix_ptr_ + 12;
+
+	if (_this)
+	{
+		v1 = (char*)_this;
+	}
+	memmove((char*)nj_current_matrix_ptr_ + 48, v1, 0x30u);
+	nj_current_matrix_ptr_ = v2;
+	return 1;
+}
+
+
+
+static const void* const auraPtr = (void*)0x755EA0;
+static inline ObjectMaster* auraCheckTex(ObjectMaster* a1)
+{
+	ObjectMaster* result;
+	__asm
+	{
+		mov edi, [a1]
+		call auraPtr
+		mov result, edi
+	}
+	return result;
+}
+
+
+static const void* const sub428A30ptr = (void*)0x428A30;
+static inline void njTranslatePosition(NJS_VECTOR* a1)
+{
+	__asm
+	{
+		mov eax, [a1]
+		call sub428A30ptr
+	}
+}
+
+
+
+void CheckAndDisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
+{
+	NJS_OBJECT* v3; // edi
+	NJS_MATRIX_PTR v4; // ebx
+
+	if ((FrameCountIngame & 1) == 0 && a2->CharID == Characters_Tails && CharacterModels[208].Model)
+	{
+		v3 = CharacterModels[208].Model;
+		NjPushMatrixMaybe(flt_25F02A0);
+
+		njTranslatePosition(&a1->Position);
+		v4 = nj_current_matrix_ptr_;
+		if (a1->Rotation.z)
+		{
+			njRotateZ((float*)nj_current_matrix_ptr_, a1->Rotation.z);
+		}
+		if (a1->Rotation.x)
+		{
+			njRotateX((float*)v4, a1->Rotation.x);
+		}
+		if (a1->Rotation.y != 0x8000)
+		{
+			njRotateY((float*)v4, 0x8000 - a1->Rotation.y);
+		}
+		if (!TwoPlayerMode)
+		{
+			PlayerAfterImageMaybe(v3, 0, a3->TextureList, 0.0, 0);
+			v4 = nj_current_matrix_ptr_;
+		}
+		if ((unsigned int)(v4 - 12) >= dword_267053C)
+		{
+			nj_current_matrix_ptr_ = v4 - 12;
+		}
+	}
+}
+
+
 static const void* const PGetAccelAirPtr = (void*)0x45D770;
 static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
 {
@@ -79,7 +176,7 @@ void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2)
 
 
 void DoNextAction_R(int playerNum, char action, int unknown) {
-	 EntityData1* v3 = MainCharObj1[playerNum];
+	EntityData1* v3 = MainCharObj1[playerNum];
 
 	if (v3)
 	{
@@ -87,7 +184,7 @@ void DoNextAction_R(int playerNum, char action, int unknown) {
 		v3->NextAction = action;
 		MainCharObj2[playerNum]->field_28 = unknown;
 	}
-} 
+}
 
 static const void* const PGetSpeedPtr = (void*)0x460860;
 static inline void PlayerGetSpeedASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
@@ -155,7 +252,7 @@ void PlayerResetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
 void PlayerMoveStuff(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
 	PlayerGetSpeed(a1, a3, a2);
 	PlayerSetPosition(a1, a2, a3);
-	PlayerResetPosition(a1, a2, a3); 
+	PlayerResetPosition(a1, a2, a3);
 	return;
 }
 
@@ -273,7 +370,7 @@ bool isMilesAttacking() {
 
 	EntityData1* data1 = MainCharObj1[0];
 
-	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling || data1->Action == Bounce)
+	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
 		return true;
 
 	return false;
@@ -455,22 +552,9 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 
 void CheckAndSetHackObjectMiles() {
 
-	if (CurrentCharacter == Characters_Tails || MainCharObj2[0]->CharID == Characters_Tails) {
-		if (CurrentLevel == LevelIDs_HiddenBase) {
-			//Hidden base door Col Stuff
-			WriteData<1>((int*)0x715b58, 0x1);
-			WriteData<1>((int*)0x715aa8, 0x1);
-			WriteData<1>((int*)0x7158bf, 0x1);
-		}
 
-		if (CurrentLevel == LevelIDs_CannonsCoreT) {
-			//CC door col Stuff
-			WriteData<1>((int*)0x79b427, 0x1);
-			WriteData<1>((int*)0x79b959, 0x1);
-			WriteData<1>((int*)0x79be57, 0x1);
-		}
-	}
-	else { //restore original values
+	if (CurrentCharacter == Characters_MechTails || CurrentCharacter == Characters_MechEggman) {
+
 		WriteData<1>((int*)0x715b58, 0x6);
 		WriteData<1>((int*)0x715aa8, 0x6);
 		WriteData<1>((int*)0x7158bf, 0x6);
@@ -478,7 +562,25 @@ void CheckAndSetHackObjectMiles() {
 		WriteData<1>((int*)0x79b427, 0x6);
 		WriteData<1>((int*)0x79b959, 0x6);
 		WriteData<1>((int*)0x79be57, 0x6);
+		return; //if one player has a mech, we don't need to hack the door 
 	}
+
+
+	//hack so non mech character can destroy the doors
+	if (CurrentLevel == LevelIDs_HiddenBase) {
+		//Hidden base door Col Stuff
+		WriteData<1>((int*)0x715b58, 0x1);
+		WriteData<1>((int*)0x715aa8, 0x1);
+		WriteData<1>((int*)0x7158bf, 0x1);
+	}
+
+	if (CurrentLevel == LevelIDs_CannonsCoreT) {
+		//CC door col Stuff
+		WriteData<1>((int*)0x79b427, 0x1);
+		WriteData<1>((int*)0x79b959, 0x1);
+		WriteData<1>((int*)0x79be57, 0x1);
+	}
+
 	return;
 }
 
@@ -577,7 +679,7 @@ void MetalBox_r(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
 
-	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)	 
+	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)
 	{
 		data->Collision->CollisionArray->push |= 0x4000u;
 		data->field_6 = 1;
@@ -667,8 +769,8 @@ void Init_MilesActions() {
 	MetalBoxGravity_t = new Trampoline((int)MetalBoxGravity, (int)MetalBoxGravity + 0x6, MetalBoxGravity_r);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
-	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);	
-	
+	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
+
 	//WriteJump(reinterpret_cast<void*>(0x473219), FixJump);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage

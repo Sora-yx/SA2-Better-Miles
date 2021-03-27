@@ -40,7 +40,7 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	(a1[13].field_2C) = 0;*/
 	result = { 1, 0, 0 };
 	//sub_429710(); //Make the game crash sometimes not sure why
-	v21 = nj_current_matrix_ptr_;
+	v21 = (float*)nj_current_matrix_ptr_;
 	if (nj_current_matrix_ptr_)
 	{
 		memset(nj_current_matrix_ptr_, v20, 0x30u);

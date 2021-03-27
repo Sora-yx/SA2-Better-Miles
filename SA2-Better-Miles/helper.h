@@ -91,6 +91,7 @@ ObjectFunc(PrisonLaneDoor3, 0x608610);*/
 ObjectFunc(PrisonLaneDoor4, 0x606A10);
 FunctionPointer(int, njPushUnitMatrix_, (), 0x44B210);
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
+FunctionPointer(int, LoadShEffTex, (), 0x755DE0);
 
 //control/physic functions
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x45B610);
@@ -110,6 +111,7 @@ void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_R*
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
+signed int NjPushMatrixMaybe(float* _this);
 void CallVibeThing(int a1, signed int a2, int a3, signed int a4);
 FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
 
@@ -128,19 +130,23 @@ FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityDa
 FunctionPointer(int, calcGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
 FunctionPointer(int, sub_447580, (NJS_OBJECT* v), 0x447580);
 FunctionPointer(EntityData1*, sub_46C490, (int a1, int a2, int a3), 0x46C490);
-FunctionPointer(signed int, sub_77FE10, (float* a1), 0x77FE10);
+//FunctionPointer(signed int, sub_77FE10, (float* a1), 0x77FE10);
 void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3);
+FunctionPointer(void, PlayerAfterImageMaybe, (NJS_OBJECT* a1, int a2, NJS_TEXLIST* a3, float a4, char a5), 0x476C20);
 
 
 DataArray(EntityData2_R*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
 DataPointer(float, FLOAT_01283704, 0x1283704);
-DataPointer(float*, flt_25F02A0, 0x25F02A0);
+DataArray(float, flt_25F02A0, 0x25F02A0, 5);
 
+DataPointer(DWORD, dword_267053C, 0x267053C); //something checked for after image
+void DoNextAction_r(int playerNum, char action, int unknown);
+
+void CheckAndDisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude);
 bool isMilesAttacking();
 void Miles_DoCollisionAttackStuff(EntityData1* data1);
-signed int CallGetBufferedPosRot(int a1, int a2, NJS_VECTOR* a3, char a4);
 int Call_sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3);
 int PlayerSetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
 void DoNextAction_R(int playerNum, char action, int unknown);
