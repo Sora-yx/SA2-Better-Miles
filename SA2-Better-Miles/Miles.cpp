@@ -179,6 +179,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_R * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
 
+
 	switch (data1->Action)
 	{
 	case Standing:
@@ -194,7 +195,17 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		break;
 	case 7:
 	case 8:
+		if (Miles_SetNextActionSwim(co2Miles, data1))
+			return;
+
+		break;
 	case 10:
+		if (Miles_SetNextActionSwim(co2Miles, data1))
+			return;
+
+		*(int*)&co2Miles->field_1BC[436] = -17000;
+		
+		break;
 	case 15:
 	case 17:
 		if (Miles_SetNextActionSwim(co2Miles, data1))
@@ -216,6 +227,9 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 			CheckTailsJump(co2, data1);
 		}
 		return;
+	case Action_AirBubble:
+		*(int*)&co2Miles->field_1BC[436] = -17000;
+		break;
 	case Flying:
 		if (Miles_SetNextActionSwim(co2Miles, data1))
 			return;
@@ -268,9 +282,11 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		CheckFloatingStuff(data2, data1, co2, co2Miles);
 		break;
 	case Swimming:
+		*(int*)&co2Miles->field_1BC[436] = -17000; //fix "rotation Y" of the tails
 		CheckSwimmingStuff(data2, data1, co2, co2Miles);
 		break;
 	case Diving:
+		*(int*)&co2Miles->field_1BC[436] = -17000;
 		CheckDivingStuff(data2, data1, co2, co2Miles);
 		break;
 	}

@@ -104,7 +104,6 @@ void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_R*
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
 FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 DataPointer(NJS_MATRIX_PTR, nj_current_matrix_ptr_, 0x1A557FC);
-signed int NjPushMatrixMaybe(float* _this);
 void CallVibeThing(int a1, signed int a2, int a3, signed int a4);
 FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
 

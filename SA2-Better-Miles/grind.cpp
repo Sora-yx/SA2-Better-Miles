@@ -360,7 +360,7 @@ void TailsRailAnim_ToRight(CharObj2Base* co2) {
 	}
 }
 
-//SA2 hardcode all the grinding animations id, sadly Miles already use those for different actions so we have to add new animation and full hack the function :(
+//SA2 hardcode all the grinding animations id, sadly Miles already uses those for different actions, so we have to manually add new animation :(
 void PlayGrindAnimation(EntityData1* data1, CharObj2Base* co2) {
 	if (isCustomAnim == false || data1->Action != Grinding || co2->AnimInfo.Next == 15) {
 		return;

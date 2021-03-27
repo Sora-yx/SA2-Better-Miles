@@ -223,7 +223,7 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 214, 208, 4, 15, 0.0625f, 0.35f },
 	{ 215, 208, 4, 15, 0.0625f, 0.35f },
 	//Super Sonic Imported anim (intro + victory pose)
-	{ 216, 208, 4, 87, 1, 0.5f }, 
+	{ 216, 208, 4, 87, 1, 0.5f },
 	{ 217, 208, 6, 217, 1, 0.5f },
 	//light dash
 	{ 218, 208, 3, 218, 1, 0.5f },
@@ -236,12 +236,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 224, 208, 3, 224, 0.0625f, 0.1f },
 };
 
-
-
 void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1) {
-
 	if (CurrentLevel == LevelIDs_FinalHazard && data1->NextAction == 0) {
-
 		if (co2->AnimInfo.Next == 100 || co2->AnimInfo.Current == 100)
 		{
 			if (!isCustomAnim)
@@ -262,8 +258,6 @@ void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1) {
 		}
 	}
 }
-
-
 
 void Init_NewAnimation() {
 	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);

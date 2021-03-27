@@ -49,35 +49,20 @@ void DoNextAction_r(int playerNum, char action, int unknown)
 	}
 }
 
-signed int NjPushMatrixMaybe(float* _this)
+//signed int __usercall njPushMatrix@<eax>(NJS_MATRIX_PTR m@<ecx>)
+static const void* const njPushMatrixPtr = (void*)0x77FE10;
+static inline signed int njPushMatrixMaybe(NJS_MATRIX_PTR m)
 {
-	char* v1; // eax
-	NJS_MATRIX_PTR v2; // esi
-
-	v1 = (char*)nj_current_matrix_ptr_;
-	v2 = nj_current_matrix_ptr_ + 12;
-
-	if (_this)
-	{
-		v1 = (char*)_this;
-	}
-	memmove((char*)nj_current_matrix_ptr_ + 48, v1, 0x30u);
-	nj_current_matrix_ptr_ = v2;
-	return 1;
-}
-
-static const void* const auraPtr = (void*)0x755EA0;
-static inline ObjectMaster* auraCheckTex(ObjectMaster* a1)
-{
-	ObjectMaster* result;
+	signed int result;
 	__asm
 	{
-		mov edi, [a1]
-		call auraPtr
-		mov result, edi
+		mov ecx, [m]
+		call njPushMatrixPtr
+		mov result, eax
 	}
 	return result;
 }
+
 
 static const void* const sub428A30ptr = (void*)0x428A30;
 static inline void njTranslatePosition(NJS_VECTOR* a1)
@@ -97,7 +82,7 @@ void CheckAndDisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2*
 	if ((FrameCountIngame & 1) == 0 && a2->CharID == Characters_Tails && CharacterModels[208].Model)
 	{
 		v3 = CharacterModels[208].Model;
-		NjPushMatrixMaybe(flt_25F02A0);
+		njPushMatrixMaybe(flt_25F02A0);
 
 		njTranslatePosition(&a1->Position);
 		v4 = nj_current_matrix_ptr_;
@@ -352,12 +337,24 @@ bool isMilesAttacking() {
 	return false;
 }
 
+bool isMilesAttackingBox() {
+	if (MainCharObj2[0]->CharID != Characters_Tails)
+		return false;
+
+	EntityData1* data1 = MainCharObj1[0];
+
+	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
+		return true;
+
+	return false;
+}
+
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data1 = MainCharObj1[0];
 
-	if (isMilesAttacking() && GetCollidingPlayer(obj))
+	if (isMilesAttackingBox() && GetCollidingPlayer(obj))
 		return 1;
 
 	FunctionPointer(Bool, original, (ObjectMaster * obj, ObjectMaster * other), CheckBreakObject_t->Target());
@@ -615,7 +612,7 @@ void BrokenDownSmoke_r(ObjectMaster* a1) {
 void MetalBox_r(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
-	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)
+	if (GetCollidingPlayer(obj) && isMilesAttackingBox() && data->NextAction < 1)
 	{
 		data->Collision->CollisionArray->push |= 0x4000u;
 		data->field_6 = 1;
@@ -631,7 +628,7 @@ void MetalBox_r(ObjectMaster* obj) {
 void MetalBoxGravity_r(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
-	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)
+	if (GetCollidingPlayer(obj) && isMilesAttackingBox() && data->NextAction < 1)
 	{
 		data->Collision->CollisionArray->push |= 0x4000u;
 		data->field_6 = 1;
