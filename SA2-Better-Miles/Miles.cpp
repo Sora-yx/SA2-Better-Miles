@@ -10,7 +10,6 @@ Trampoline* LoadCharacters_t;
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
 signed int Miles_CheckNextActions_original(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
-
 	const auto MilesCheck_ptr = Miles_CheckNextActions_t->Target();
 
 	signed int result;
@@ -31,10 +30,7 @@ signed int Miles_CheckNextActions_original(EntityData2_R* a1, TailsCharObj2* a2,
 	return result;
 }
 
-
 signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
-
-
 	switch (a4->NextAction)
 	{
 	case 1:
@@ -89,10 +85,8 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2
 	return Miles_CheckNextActions_original(a1, a2, a3, a4);
 }
 
-
 static void __declspec(naked) Miles_CheckNextActionsASM()
 {
-
 	__asm
 	{
 		push esi // a4
@@ -110,7 +104,6 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 		retn
 	}
 }
-
 
 static inline signed int Tails_CheckActionWindowASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4)
 {
@@ -137,8 +130,6 @@ int ActionArray[6] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
 //Edit the function which checks where it needs to animate Miles's tails to add more actions.
 static const void* const loc_7512F2 = (void*)0x7512F2;
 __declspec(naked) void  CheckAnimateTailsAction() {
-
-
 	for (int i = 0; i < LengthOfArray(ActionArray); i++)
 	{
 		if (MainCharObj1[0]->Action != ActionArray[i])
@@ -149,7 +140,6 @@ __declspec(naked) void  CheckAnimateTailsAction() {
 	}
 }
 
-
 void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 	data1->Status |= Status_Attack;
 	data1->Collision->CollisionArray[0].damage &= 0xFCu;
@@ -159,7 +149,6 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 	data1->Collision->CollisionArray[1].attr &= 0xFFFFFFEF;
 	return;
 }
-
 
 static const void* const TailsJumpPtr = (void*)0x751B80;
 static inline int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
@@ -182,14 +171,11 @@ int CheckTailsJump(CharObj2Base* a1, EntityData1* a2)
 }
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
-	if (MainCharObj1[0]->Action != Rolling && MainCharObj1[0]->Action != Bounce && MainCharObj1[0]->Action != BounceFloor)
+	if (MainCharObj1[0]->Action != Rolling)
 		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
-
-
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_R * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
 
@@ -290,11 +276,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 	}
 }
 
-
-
 void Tails_Main_r(ObjectMaster* obj)
 {
-
 	ObjectFunc(origin, Tails_Main_t->Target());
 	origin(obj);
 
@@ -340,7 +323,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case 66:
 		FixAnimationFinalBossOnFrames(co2, data1);
-		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	case Bounce:
 		PlayerResetAngle(data1, co2);
@@ -378,7 +360,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		Sonic_InitLightDash(data1, co2, data2, co2Miles);
 		int check = PlayerSetPosition(data1, data2, co2);
 		if (check == 2) {
-
 			if (((short)CurrentLevel != LevelIDs_GreenHill)) {
 				PlaySoundProbably(0x7f, 0, 0, 0);
 			}
@@ -432,7 +413,6 @@ void Tails_Main_r(ObjectMaster* obj)
 					co2->Speed.z = 2.0 * co2->Speed.z;
 				}
 			}
-
 		}
 	}
 	break;
@@ -478,9 +458,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	MilesFly(data1, co2);
 }
 
-
 signed char GetCharacterLevel() {
-
 	for (int i = 0; i < 33; i++)
 	{
 		if (CurrentLevel == StageSelectLevels[i].Level)
@@ -497,7 +475,6 @@ LevelIDs_BigFoot, LevelIDs_FlyingDog, LevelIDs_HotShot
 };
 
 bool isLevelBanned() {
-
 	for (int i = 0; i < LengthOfArray(BannedMilesLevel); i++)
 	{
 		if (CurrentLevel == BannedMilesLevel[i])
@@ -507,11 +484,7 @@ bool isLevelBanned() {
 	return false;
 }
 
-NJS_TEXNAME MilesEffect_texname[23];
-NJS_TEXLIST MILESEFF_TEXLIST = { arrayptrandlengthT(MilesEffect_texname, Uint32) };
-
 void LoadCharacter_r() {
-
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
 			CurrentCharacter = Characters_Tails;
@@ -520,9 +493,6 @@ void LoadCharacter_r() {
 	auto original = reinterpret_cast<decltype(LoadCharacter_r)*>(LoadCharacters_t->Target());
 	original();
 
-
-	LoadShEffTex();
-	LoadTextureList("miles_efftex", &MILESEFF_TEXLIST);
 	CheckAndSetHackObjectMiles();
 
 	for (int i = 0; i < 2; i++) {

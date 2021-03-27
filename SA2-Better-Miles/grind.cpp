@@ -21,7 +21,6 @@ static inline char PlaySound3DThingMaybe(int id, NJS_VECTOR* pos, int a3, char a
 }
 
 int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
-
 	NJS_VECTOR result;
 	int v8 = 0;
 	float* v21;
@@ -102,7 +101,7 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 		}
 	}
 	PlaySound3DThingMaybe(v25, &a4->Position, 0, 0, 127);
-	CallVibeThing(0, 15, a3->PlayerNum, 6); //Vibe thing 
+	CallVibeThing(0, 15, a3->PlayerNum, 6); //Vibe thing
 	sub_429000();
 	v8 = 1;
 	a3->Speed.y = 0.0;
@@ -112,7 +111,6 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 static const void* const sub_45B2C0Ptr = (void*)0x45B2C0;
 static inline int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
 {
-
 	int result;
 
 	__asm
@@ -135,7 +133,6 @@ int Call_sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3) {
 static const void* const CheckGrindPtr = (void*)0x726D00;
 static inline signed int CheckTrickASM(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
 {
-
 	signed int result;
 
 	__asm
@@ -195,7 +192,6 @@ void CheckGrindThing(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2
 			data1->Action = 10; //SA2Action_LaunchJumpOrFalling
 			co2->AnimInfo.Current = 15; //Falling
 			data1->Status &= 0xDFFFu;
-
 		}
 
 		return;
@@ -230,14 +226,13 @@ static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2_R* 
 		mov ebx, [a2]
 		mov eax, [a1]
 		call sub_46D040Ptr
-		add esp, 4 // a3        
+		add esp, 4 // a3
 	}
 }
 
 static const void* const sub_46D140Ptr = (void*)0x46D140;
 static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_R* a3)
 {
-
 	__asm
 	{
 		push[a3]
@@ -247,7 +242,6 @@ static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2_R
 		// Call your __cdecl function here:
 		call sub_46D140Ptr
 		add esp, 8 // a2
-
 	}
 }
 
@@ -371,7 +365,7 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* co2) {
 	if (isCustomAnim == false || data1->Action != Grinding || co2->AnimInfo.Next == 15) {
 		return;
 	}
-		
+
 	if (Action_Held[co2->PlayerNum] == 0) {
 		TailsRailAnim_ToNormal(co2);
 	}
@@ -412,14 +406,12 @@ static inline bool PlayerCheckBreakAsm(int a1, EntityData1* a2, CharObj2Base* a3
 }
 
 bool Player_CheckBreakMaybe(int a1, EntityData1* a2, CharObj2Base* a3) {
-
 	return PlayerCheckBreakAsm(a1, a2, a3);
 }
 
 static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
 static inline signed int CheckPlayerStopASM(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a4)
 {
-	
 	signed int result;
 	__asm
 	{
@@ -440,7 +432,6 @@ signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a4)
 	return CheckPlayerStopASM(a1, a2, a4);
 }
 
-
 static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
 static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
 {
@@ -453,11 +444,9 @@ static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
 		call somethingAboutTrick3Ptr
 		add esp, 4
 		mov result, eax
-
 	}
 	return result;
 }
-
 
 static const void* const sub_4EC330Ptr = (void*)0x4EC330;
 static inline void sub_4EC330(int a1, int a2, int a3)
@@ -472,9 +461,7 @@ static inline void sub_4EC330(int a1, int a2, int a3)
 	}
 }
 
-
 void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* MilesCO2) {
-
 	char getcharID2 = 0;
 	int curSound = 0;
 	int idk = 0;
@@ -513,7 +500,6 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_R* data2
 	}
 	else
 	{
-
 		if (CheckPlayerStopASM(data1, co2, data2))
 		{
 			data1->Rotation.x = data2->ang_aim.x;
@@ -578,7 +564,6 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_R* data2
 	DeleteObject_(dispScore);
 }
 
-
 static const void* const sub_7274F0Ptr = (void*)0x7274F0;
 float* sub_7274F0(EntityData1* a1)
 {
@@ -593,9 +578,7 @@ float* sub_7274F0(EntityData1* a1)
 	return result;
 }
 
-
 signed int SetHandGranding(EntityData2_R* data2, CharObj2Base* co2, EntityData1* data1) {
-
 	NJS_VECTOR* vec = (NJS_VECTOR*)&co2->field_144[4];
 
 	data1->Status = data1->Status & 0xFAFF | Status_OnPath;
@@ -636,50 +619,50 @@ void DoHangGrinding(EntityData1* data, CharObj2Base* co2) {
 	if (data->NextAction != 0)
 		return;
 
-		int curStatus = data->Status;
-		int curChar2 = co2->CharID2;
-		int curSound = 0;
+	int curStatus = data->Status;
+	int curChar2 = co2->CharID2;
+	int curSound = 0;
 
-		if ((curStatus & 0x2000) != 0)
-		{
-			if ((data->Status & 0x4000) == 0 && Jump_Pressed[co2->PlayerNum])
-			{
-				data->Action = 10;
-				data->Status = curStatus & 0xDFFF;
-
-				if (curChar2 == 8)
-				{
-					curSound = 8212;
-				}
-				else if (curChar2 == 12)
-				{
-					curSound = 8215;
-				}
-				else
-				{
-					curSound = 8193;
-					if (co2->CharID)
-					{
-						curSound = 0x2000;
-					}
-				}
-				PlaySoundProbably(curSound, 0, 0, 0);
-				if (co2->PhysData.RollEnd > (double)co2->Speed.x)
-				{
-					co2->Speed.x = co2->PhysData.RollEnd;
-				}
-				co2->AnimInfo.Next = 15;
-				co2->Speed.y = -1.5;
-				sub_7274F0(data);
-			}
-		}
-		else
+	if ((curStatus & 0x2000) != 0)
+	{
+		if ((data->Status & 0x4000) == 0 && Jump_Pressed[co2->PlayerNum])
 		{
 			data->Action = 10;
+			data->Status = curStatus & 0xDFFF;
+
+			if (curChar2 == 8)
+			{
+				curSound = 8212;
+			}
+			else if (curChar2 == 12)
+			{
+				curSound = 8215;
+			}
+			else
+			{
+				curSound = 8193;
+				if (co2->CharID)
+				{
+					curSound = 0x2000;
+				}
+			}
+			PlaySoundProbably(curSound, 0, 0, 0);
+			if (co2->PhysData.RollEnd > (double)co2->Speed.x)
+			{
+				co2->Speed.x = co2->PhysData.RollEnd;
+			}
 			co2->AnimInfo.Next = 15;
-			data->Status &= 0xDFFFu;
+			co2->Speed.y = -1.5;
 			sub_7274F0(data);
 		}
-	
+	}
+	else
+	{
+		data->Action = 10;
+		co2->AnimInfo.Next = 15;
+		data->Status &= 0xDFFFu;
+		sub_7274F0(data);
+	}
+
 	return;
 }

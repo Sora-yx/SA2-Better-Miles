@@ -15,11 +15,9 @@ Trampoline* BrokenDownSmoke_t;
 Trampoline* MetalBox_t;
 Trampoline* MetalBoxGravity_t;
 
-
 static const void* const GetAnalogPtr2 = (void*)0x45A870;
 inline signed int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
 {
-
 	signed int result;
 	__asm
 	{
@@ -34,12 +32,9 @@ inline signed int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* ang
 	return result;
 }
 
-
 signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude) {
 	return GetAnalogASM2(data, co2, angle, magnitude);
 }
-
-
 
 void DoNextAction_r(int playerNum, char action, int unknown)
 {
@@ -53,7 +48,6 @@ void DoNextAction_r(int playerNum, char action, int unknown)
 		MainCharObj2[playerNum]->field_28 = unknown;
 	}
 }
-
 
 signed int NjPushMatrixMaybe(float* _this)
 {
@@ -72,8 +66,6 @@ signed int NjPushMatrixMaybe(float* _this)
 	return 1;
 }
 
-
-
 static const void* const auraPtr = (void*)0x755EA0;
 static inline ObjectMaster* auraCheckTex(ObjectMaster* a1)
 {
@@ -87,7 +79,6 @@ static inline ObjectMaster* auraCheckTex(ObjectMaster* a1)
 	return result;
 }
 
-
 static const void* const sub428A30ptr = (void*)0x428A30;
 static inline void njTranslatePosition(NJS_VECTOR* a1)
 {
@@ -97,8 +88,6 @@ static inline void njTranslatePosition(NJS_VECTOR* a1)
 		call sub428A30ptr
 	}
 }
-
-
 
 void CheckAndDisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
 {
@@ -136,7 +125,6 @@ void CheckAndDisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2*
 	}
 }
 
-
 static const void* const PGetAccelAirPtr = (void*)0x45D770;
 static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
 {
@@ -173,8 +161,6 @@ void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2)
 	return PlayerResetAngleASM(a1, co2);
 }
 
-
-
 void DoNextAction_R(int playerNum, char action, int unknown) {
 	EntityData1* v3 = MainCharObj1[playerNum];
 
@@ -207,7 +193,6 @@ void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
 	PlayerGetSpeedASM(a1, co2, data2);
 }
 
-
 static const void* const PSetPositionptr = (void*)0x4616E0;
 static inline int PSetPositionASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
@@ -224,13 +209,10 @@ static inline int PSetPositionASM(EntityData1* a1, EntityData2_R* a2, CharObj2Ba
 	return result;
 }
 
-
 int PlayerSetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
 {
 	return PSetPositionASM(a1, a2, a3);
 }
-
-
 
 static const void* const sub_469050Ptr = (void*)0x469050;
 static inline void PResetPositionASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
@@ -255,8 +237,6 @@ void PlayerMoveStuff(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
 	PlayerResetPosition(a1, a2, a3);
 	return;
 }
-
-
 
 static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
 static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4)
@@ -301,7 +281,6 @@ void CallVibeThing(int a1, signed int a2, int a3, signed int a4)
 	VibeThingASM(a1, a2, a3, a4);
 	return;
 }
-
 
 void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
 {
@@ -361,10 +340,7 @@ int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 	return player + 1;
 }
 
-
-
 bool isMilesAttacking() {
-
 	if (MainCharObj2[0]->CharID != Characters_Tails)
 		return false;
 
@@ -376,13 +352,10 @@ bool isMilesAttacking() {
 	return false;
 }
 
-
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
-
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data1 = MainCharObj1[0];
-
 
 	if (isMilesAttacking() && GetCollidingPlayer(obj))
 		return 1;
@@ -391,11 +364,9 @@ Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 	return original(obj, other);
 }
 
-
 static const void* const loc_776339 = (void*)0x776339;
 static const void* const loc_776580 = (void*)0x776580;
 __declspec(naked) void  CheckBreakCGGlasses() {
-
 	if (MainCharObj1[0]->Action == 13 || isMilesAttacking())
 	{
 		_asm jmp loc_776339
@@ -405,11 +376,9 @@ __declspec(naked) void  CheckBreakCGGlasses() {
 	}
 }
 
-
 static const void* const SetMysticMelodyActionPtr = (void*)0x475F00;
 static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 {
-
 	__asm
 	{
 		mov ecx, [a2]
@@ -417,7 +386,6 @@ static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 		call SetMysticMelodyActionPtr
 	}
 }
-
 
 void PlayMysticMelody(ObjectMaster* obj)
 {
@@ -427,7 +395,6 @@ void PlayMysticMelody(ObjectMaster* obj)
 	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15))
 	{
 		if (data->NextAction == 0 && co2->CharID == Characters_Tails) {
-
 			if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && (data->Action == 0 || data->Action == 60))
 				SetMysticMelodyAction(co2, data);
 		}
@@ -437,11 +404,9 @@ void PlayMysticMelody(ObjectMaster* obj)
 	origin(obj);
 }
 
-
 static const void* const loc_776D23 = (void*)0x776D23;
 static const void* const loc_776D5F = (void*)0x776D5F;
 __declspec(naked) void  CheckGravitySwitch() {
-
 	if (MainCharObj1[0]->Action == 0x53 || (Controllers[0].press & (Buttons_X | Buttons_B)))
 	{
 		_asm jmp loc_776D23
@@ -451,11 +416,9 @@ __declspec(naked) void  CheckGravitySwitch() {
 	}
 }
 
-
 void ForceMiles(int player) {
 	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
 		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
-
 		CurrentCharacter = Characters_Tails;
 		LoadTails(player);
 	}
@@ -465,9 +428,7 @@ void ForceMiles(int player) {
 	}
 }
 
-
 void CheckBreakDynamite(ObjectMaster* obj) {
-
 	EntityData1* data = obj->Data1.Entity;
 
 	if (obj) {
@@ -482,7 +443,6 @@ void CheckBreakDynamite(ObjectMaster* obj) {
 }
 
 void CheckBreakDynamiteHiddenBase(ObjectMaster* obj) {
-
 	EntityData1* data = obj->Data1.Entity;
 
 	if (obj) {
@@ -497,7 +457,6 @@ void CheckBreakDynamiteHiddenBase(ObjectMaster* obj) {
 }
 
 void CheckBreakDynamiteSandOcean(ObjectMaster* obj) {
-
 	EntityData1* data = obj->Data1.Entity;
 
 	if (obj) {
@@ -512,12 +471,10 @@ void CheckBreakDynamiteSandOcean(ObjectMaster* obj) {
 }
 
 void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
-
 	EntityData1* data = obj->Data1.Entity;
 	EntityData2* data2 = obj->Data2.Entity;
 
 	if (obj) {
-
 		if (MainCharObj2[0]->CharID != Characters_Tails)
 			return;
 
@@ -532,18 +489,14 @@ void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
 	}
 }
 
-
 void CheckPrisonLaneDoor(ObjectMaster* obj) {
-
 	CheckAndOpenPrisonLaneDoor(obj);
 
 	ObjectFunc(origin, PrisonLaneDoor_t->Target());
 	origin(obj);
 }
 
-
 void CheckPrisonLaneDoor4(ObjectMaster* obj) {
-
 	CheckAndOpenPrisonLaneDoor(obj);
 
 	ObjectFunc(origin, PrisonLaneDoor4_t->Target());
@@ -551,10 +504,7 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 }
 
 void CheckAndSetHackObjectMiles() {
-
-
 	if (CurrentCharacter == Characters_MechTails || CurrentCharacter == Characters_MechEggman) {
-
 		WriteData<1>((int*)0x715b58, 0x6);
 		WriteData<1>((int*)0x715aa8, 0x6);
 		WriteData<1>((int*)0x7158bf, 0x6);
@@ -562,9 +512,8 @@ void CheckAndSetHackObjectMiles() {
 		WriteData<1>((int*)0x79b427, 0x6);
 		WriteData<1>((int*)0x79b959, 0x6);
 		WriteData<1>((int*)0x79be57, 0x6);
-		return; //if one player has a mech, we don't need to hack the door 
+		return; //if one player has a mech, we don't need to hack the door
 	}
-
 
 	//hack so non mech character can destroy the doors
 	if (CurrentLevel == LevelIDs_HiddenBase) {
@@ -585,7 +534,6 @@ void CheckAndSetHackObjectMiles() {
 }
 
 void CheckAndOpenIronGateDoor(ObjectMaster* obj) {
-
 	if (MainCharObj2[0]->CharID != Characters_Tails)
 		return;
 
@@ -596,9 +544,7 @@ void CheckAndOpenIronGateDoor(ObjectMaster* obj) {
 	}
 }
 
-
 void doorIG_r(ObjectMaster* obj) {
-
 	CheckAndOpenIronGateDoor(obj);
 
 	ObjectFunc(origin, DoorIG_t->Target());
@@ -606,7 +552,6 @@ void doorIG_r(ObjectMaster* obj) {
 }
 
 void doorIG2_r(ObjectMaster* obj) {
-
 	CheckAndOpenIronGateDoor(obj);
 
 	ObjectFunc(origin, DoorIG2_t->Target());
@@ -614,11 +559,9 @@ void doorIG2_r(ObjectMaster* obj) {
 }
 
 void rocketIG_r(ObjectMaster* obj) {
-
 	EntityData1* data = obj->Data1.Entity;
 
 	if (MainCharObj2[0]->CharID == Characters_Tails) {
-
 		if (GetCollidingPlayer(obj) && isMilesAttacking() && data->Action == 5)
 		{
 			data->Action = 6;
@@ -629,10 +572,7 @@ void rocketIG_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
-
-
 void Super_Aura_r(ObjectMaster* obj) {
-
 	if (MainCharacter[1]) {
 		EntityData2* data2 = MainCharacter[1]->Data2.Entity;
 		word_170ACEE = word_170ACEE & 0xC000 | ((int(data2->CharacterData) != 10 ? 0 : 6)
@@ -644,9 +584,7 @@ void Super_Aura_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
-
 void LoadSuperFormFinalBattle() {
-
 	if (MainCharacter[1])
 		DeleteObject_(MainCharacter[1]);
 
@@ -666,7 +604,6 @@ void LoadSuperFormFinalBattle() {
 }
 
 void BrokenDownSmoke_r(ObjectMaster* a1) {
-
 	if (MainCharObj2[0]->CharID != Characters_MechTails && MainCharObj2[0]->CharID != Characters_MechEggman)
 		DeleteObject_(a1);
 	else {
@@ -676,7 +613,6 @@ void BrokenDownSmoke_r(ObjectMaster* a1) {
 }
 
 void MetalBox_r(ObjectMaster* obj) {
-
 	EntityData1* data = obj->Data1.Entity;
 
 	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)
@@ -692,9 +628,7 @@ void MetalBox_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
-
 void MetalBoxGravity_r(ObjectMaster* obj) {
-
 	EntityData1* data = obj->Data1.Entity;
 
 	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->NextAction < 1)
@@ -710,7 +644,6 @@ void MetalBoxGravity_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
-
 bool isRando() {
 	HMODULE randoMod = GetModuleHandle(L"Rando");
 
@@ -720,9 +653,7 @@ bool isRando() {
 	return false;
 }
 
-
 bool isCharaSelect() {
-
 	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
 	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
 
@@ -742,7 +673,6 @@ bool isSuperForm() {
 }
 
 void Init_MilesActions() {
-
 	if (isMechRemoved)
 		WriteCall((void*)0x43D6CD, ForceMiles);
 
@@ -785,7 +715,7 @@ void Init_MilesActions() {
 		//FinalHazard Stuff
 		WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling super shadow and stuff since we will manually do it.
 		WriteCall((void*)0x498a98, LoadSuperFormFinalBattle); //hook "LoadSuperSonic"
-		WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely	
+		WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely
 		WriteData<7>((int*)0x49cfc3, 0x90); //Remove super aura math thing for Tails.
 	}
 }

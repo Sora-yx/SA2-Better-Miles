@@ -4,7 +4,6 @@ int lightdashTime = 0;
 int lightdashTimer = 0;
 Trampoline* RingMain_t;
 
-
 static const void* const lightdashptr = (void*)0x7215D0;
 static inline void Sonic_InitLightDashASM(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* a5)
 {
@@ -18,7 +17,6 @@ static inline void Sonic_InitLightDashASM(EntityData1* data, CharObj2Base* co2, 
 		add esp, 8
 	}
 }
-
 
 void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* a5) {
 	return Sonic_InitLightDashASM(data, co2, data2, a5);
@@ -38,7 +36,6 @@ void Miles_PerformLightDash(CharObj2Base* co2, EntityData1* data)
 	PlaySoundProbably(8210, 0, 0, 0);
 }
 
-
 static const void* const GetBufferedPositionAndRotPtr = (void*)0x46DBF0;
 static inline signed int GetBufferedPositionAndRot(int a1, int a2, NJS_VECTOR* a3, char a4)
 {
@@ -56,10 +53,8 @@ static inline signed int GetBufferedPositionAndRot(int a1, int a2, NJS_VECTOR* a
 	return result;
 }
 
-
 void RingMain_R(ObjectMaster* obj)
 {
-
 	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 20))
 	{
 		if (Controllers[0].on & (Buttons_Y) && (MainCharObj1[0]->Action <= Running || MainCharObj1[0]->Action == Jumping || MainCharObj1[0]->Action == 10 || MainCharObj1[0]->Action == Flying)) {
@@ -72,8 +67,6 @@ void RingMain_R(ObjectMaster* obj)
 }
 
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1) {
-
-
 	int lightdashTimee = lightdashTime;
 	int getTimer = lightdashTimee - 1;
 	lightdashTime = lightdashTimee - 1;
@@ -172,7 +165,6 @@ LABEL_157:
 	return;
 }
 
-
 static const void* const PConvertVPtr = (void*)0x468DF0;
 static inline void PConvertVector_G2PASM(EntityData1* a1, NJS_VECTOR* a2)
 {
@@ -184,7 +176,6 @@ static inline void PConvertVector_G2PASM(EntityData1* a1, NJS_VECTOR* a2)
 		add esp, 8
 	}
 }
-
 
 static const void* const sub721480ptr = (void*)0x721480;
 static inline HomingAttackTarget* sub_721480(CharObj2Base* a1, EntityData1* a2, float a3)
@@ -202,9 +193,7 @@ static inline HomingAttackTarget* sub_721480(CharObj2Base* a1, EntityData1* a2, 
 	return result;
 }
 
-
 void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data) {
-
 	HomingAttackTarget* v6 = sub_721480(co2, data, 32.0);
 	if (v6)
 	{
@@ -214,7 +203,6 @@ void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data) {
 		}
 	}
 	else {
-
 		if (lightdashTimer <= 1 && !sub_721480(co2, data, 64.0))
 		{
 			if (njScalor(&co2->Speed) > 2.0)
@@ -230,7 +218,6 @@ void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data) {
 }
 
 void InitLightDashStuff() {
-
 	if (!isLightDash)
 		return;
 

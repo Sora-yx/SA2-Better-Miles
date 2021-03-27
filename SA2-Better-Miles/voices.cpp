@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 void PlayRankVoice_i(int id)
 {
 	int v23 = -1;
@@ -47,9 +46,7 @@ __declspec(naked) void PlayRankVoice()
 	}
 }
 
-
 void Init_VoicesFixes() {
-
 	if (!isCharaSelect())
 		WriteJump((void*)0x44FC5E, PlayRankVoice);
 

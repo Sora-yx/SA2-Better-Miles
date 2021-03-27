@@ -14,9 +14,7 @@ bool jumpVoice = false;
 
 HelperFunctions HelperFunctionsGlobal;
 
-
 extern "C" {
-
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
 		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
@@ -49,9 +47,6 @@ extern "C" {
 		BetterMiles_Init();
 		InitLightDashStuff();
 
-		//WriteData<7>((int*)0x65F18E, 0x90);		
-		//WriteData<7>((int*)0x65f187, 0x90);
-
 		StoryEntry* story = (StoryEntry*)0x173A5E0;
 		story->Type = 1;
 		story->Level = LevelIDs_MetalHarbor;
@@ -59,15 +54,6 @@ extern "C" {
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
-
-		if (Controllers[0].press & Buttons_Y)
-		{
-			//MainCharObj1[0]->Action = Action_Noclip;
-
-			//MainCharObj1[0]->Position = { -8970.974609, -965, -3804.470215 };
-		}
-
-
 	}
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };

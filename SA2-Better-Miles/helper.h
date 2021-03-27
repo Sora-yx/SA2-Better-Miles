@@ -11,7 +11,6 @@ extern bool isCustomPhysics;
 void init_RankScore();
 void CheckAndSetHackObjectMiles();
 
-
 union taskwork_subs
 {
 	char b[4];
@@ -34,8 +33,6 @@ struct EntityData2_R
 };
 #pragma pack(pop)
 
-
-
 struct EntityData2_
 {
 	CharObj2Base* CharacterData;
@@ -49,7 +46,6 @@ struct EntityData2_
 	float field_38;
 	float SomeMultiplier;
 };
-
 
 struct CollisionInfo_
 {
@@ -74,11 +70,9 @@ struct __declspec(align(2)) HomingAttackTarget
 };
 #pragma pack(pop)
 
-
 void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
 bool isRando();
 bool isCharaSelect();
-
 
 FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
 signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4);
@@ -100,7 +94,6 @@ FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2_R* a3, CharObj
 FunctionPointer(void, PlayerGetRotation, (EntityData1* data, EntityData2_R* a3, CharObj2Base* co2), 0x45FA70);
 void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2);
 float SlowDownThing_r(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
-
 
 //Roll functions
 int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4);
@@ -133,7 +126,6 @@ FunctionPointer(EntityData1*, sub_46C490, (int a1, int a2, int a3), 0x46C490);
 //FunctionPointer(signed int, sub_77FE10, (float* a1), 0x77FE10);
 void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3);
 FunctionPointer(void, PlayerAfterImageMaybe, (NJS_OBJECT* a1, int a2, NJS_TEXLIST* a3, float a4, char a5), 0x476C20);
-
 
 DataArray(EntityData2_R*, EntityData2Ptrs, 0x1DE95E0, 8);
 DataPointer(char, TimerStopped, 0x174afda);
@@ -169,7 +161,6 @@ DataArray(int, ShadowRankVoices, 0x173B820, 5);
 DataArray(int, RougeRankVoices, 0x173B834, 5);
 DataPointer(char, CurrentLevelRank, 0x174B001);
 
-
 ObjectFunc(RocketIG, 0x6A10A0);
 ObjectFunc(DoorIG, 0x69D1D0);
 ObjectFunc(DoorIG2, 0x69F460);
@@ -198,7 +189,6 @@ enum MilesState {
 	Swimming,
 	Diving,
 	VictoryPose = 190,
-
 };
 
 enum MilesAnimation {

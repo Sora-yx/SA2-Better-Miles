@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2)
 {
 	int v2; // eax
@@ -22,7 +21,6 @@ bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2)
 	}
 	return result;
 }
-
 
 bool isSwimAllowed(TailsCharObj2* a1, EntityData1* a2)
 {
@@ -46,7 +44,6 @@ bool isSwimAllowed(TailsCharObj2* a1, EntityData1* a2)
 
 signed int Miles_SetNextActionSwim(TailsCharObj2* a1, EntityData1* a2)
 {
-
 	if (CurrentLevel == 90 || Action_Held[a1->base.PlayerNum] || !isSwimAllowed(a1, a2))
 	{
 		return 0;
@@ -55,7 +52,6 @@ signed int Miles_SetNextActionSwim(TailsCharObj2* a1, EntityData1* a2)
 	a1->base.AnimInfo.Next = 224;
 	return 1;
 }
-
 
 void Miles_GetFloat(EntityData1* a1, CharObj2Base* a2)
 {
@@ -113,7 +109,6 @@ bool CheckWaterDistanceThing(CharObj2Base* a1)
 	return v2 > 7.0;
 }
 
-
 void CheckFloatingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
 	{
@@ -151,13 +146,11 @@ void CheckSwimmingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* c
 	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
 	{
 		if ((co2->SurfaceFlagsBelow & SurfaceFlag_Water) != 0 && CheckWaterDistanceThing(co2)) {
-
 			if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles) && !CheckTailsJump(co2, data))
 			{
-				if ( (!CallGetAnalog(data, co2, 0, 0)
+				if ((!CallGetAnalog(data, co2, 0, 0)
 					|| (data->Status & Status_DisableControl)))
 				{
-
 					data->Action = FloatingOnWater;
 					co2->AnimInfo.Next = 222;
 					return;
@@ -234,8 +227,8 @@ void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2
 		{
 			if (!Action_Held[co2->PlayerNum])
 			{
-				if ( (!CallGetAnalog(data, co2, 0, 0)
-					|| (data->Status & 0x2000) == 0) )
+				if ((!CallGetAnalog(data, co2, 0, 0)
+					|| (data->Status & 0x2000) == 0))
 				{
 					data->Action = FloatingOnWater;
 					co2->AnimInfo.Next = 222;
@@ -251,5 +244,4 @@ void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2
 		}
 	}
 	return;
-
 }

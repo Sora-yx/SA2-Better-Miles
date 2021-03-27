@@ -31,9 +31,6 @@ signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
 	return 1;
 }
 
-
-
-
 static const void* const SetNextAnimPtr = (void*)0x474F80;
 static inline int CheckSpeedAndSetNextAnim(CharObj2Base* a1, EntityData1* a2)
 {
@@ -79,9 +76,7 @@ static inline void sub_474630(CharObj2Base* a1, EntityData2_R* a2, EntityData1* 
 
 float getGrav = 0.0;
 
-
 void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2_R* data2) {
-
 	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, data2, co2, co2Miles)) {
 		return;
 	}
@@ -127,9 +122,7 @@ void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, Ent
 	return;
 }
 
-
 void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2_R* data2) {
-
 	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, data2, co2, co2Miles)) {
 		return;
 	}
@@ -168,7 +161,6 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
 			data->Action = 1;
 			CheckSpeedAndSetNextAnim(co2, data);
 		}
-
 	}
 	else if ((data->Status & 0x4000) != 0
 		|| (!Jump_Pressed[co2->PlayerNum])

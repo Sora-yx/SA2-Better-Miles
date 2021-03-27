@@ -1,6 +1,5 @@
 #pragma once
 
-
 enum TailsAnims : unsigned __int16 {
 	Anm_Tails_RailL = 203,
 	Anm_Tails_RailR,
@@ -21,7 +20,6 @@ extern bool isInfiniteFly;
 extern bool isLightDash;
 extern bool isBounce;
 
-
 void Init_MilesFly();
 void MilesFly(EntityData1* data1, CharObj2Base* co2);
 static const void* const Tails_FlyStartPtr = (void*)0x752DB0;
@@ -38,7 +36,6 @@ void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2_R* da
 void Miles_GetFloat(EntityData1* a1, CharObj2Base* a2);
 bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2);
 
-
 signed int Miles_SetNextActionSwim(TailsCharObj2* a1, EntityData1* a2);
 void CheckFloatingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles);
 void CheckSwimmingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles);
@@ -52,7 +49,6 @@ void CheckGrindThing(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2
 void LoadRailParticules(TailsCharObj2* co2, EntityData2_R* data2);
 void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2_R* a3);
 void PlayGrindAnimation(EntityData1* data1, CharObj2Base* a3);
-
 
 signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2);
 signed int Miles_CheckBounceAttack(CharObj2Base* a1, EntityData1* a2);
