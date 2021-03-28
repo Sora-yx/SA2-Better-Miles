@@ -201,12 +201,21 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
+//Many animations make Miles's tails in a very weird rotation, we force a specific rotation so they look decent here.
+void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles) {
+
+	if (co2->AnimInfo.Current == 74 || co2->AnimInfo.Current >= 121 && co2->AnimInfo.Current <= 130 || co2->AnimInfo.Current >= 195 && co2->AnimInfo.Current <= 197)
+		*(int*)&co2Miles->field_1BC[436] = -9000;
+}
 
 
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_R * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
 
+
+	CheckAndFixTailsRotation(co2, co2Miles);
 
 	switch (data1->Action)
 	{
@@ -291,7 +300,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 	case Grinding:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
 			return;
-
+		*(int*)&co2Miles->field_1BC[436] = -9000;
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		break;
 	case HandGrinding: //Or whatever you call that thing in CG
@@ -459,7 +468,6 @@ void Tails_Main_r(ObjectMaster* obj)
 			//PlaySound3(24, 0x2012);
 			CrashStar_Load();
 			CheckAndDisplayAfterImage(data1, co2, co2Miles);
-			//PlayerAfterImageThing(sonicCo2, sonicCo2);
 		}
 		else {
 			if (check == 0)
@@ -492,7 +500,6 @@ void Tails_Main_r(ObjectMaster* obj)
 					co2->Speed.y = 0.0;
 					co2->Speed.z = 0.0;
 					CheckAndDisplayAfterImage(data1, co2, co2Miles);
-					//PlayerAfterImageThing(sonicCo2, sonicCo2);
 				}
 				else {
 					njUnitVector(&co2->Speed);
@@ -572,6 +579,23 @@ bool isLevelBanned() {
 	return false;
 }
 
+void SetSpacePhysics(CharObj2Base* co2) {
+	switch (CurrentLevel)
+	{
+	case LevelIDs_FinalRush:
+	case LevelIDs_MeteorHerd:
+	case LevelIDs_FinalChase:
+	case LevelIDs_CosmicWall:
+	case LevelIDs_MadSpace:
+	case LevelIDs_PlanetQuest:
+	case LevelIDs_CosmicWall2P:
+		co2->PhysData.RollDecel = -0.0070000002;
+		co2->PhysData.AirDecel = -0.018999999;
+		break;
+	}
+
+	return;
+}
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
@@ -581,14 +605,21 @@ void LoadCharacter_r() {
 	auto original = reinterpret_cast<decltype(LoadCharacter_r)*>(LoadCharacters_t->Target());
 	original();
 
-	CheckAndSetHackObjectMiles();
-
 	for (int i = 0; i < 2; i++) {
-		if (isCharaSelect() && MainCharObj2[i]->CharID == Characters_Tails)
-		{
-			MainCharObj2[i]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
+		if (MainCharObj2[i]) {
+			if (MainCharObj2[i]->CharID == Characters_Tails)
+			{
+				if (isCharaSelect()) {
+					MainCharObj2[i]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
+				}
+				SetSpacePhysics(MainCharObj2[i]);
+			}
+
+			CheckAndSetHackObject(MainCharObj2[i]);
 		}
 	}
+
+
 
 	return;
 }
@@ -606,14 +637,13 @@ void BetterMiles_Init() {
 
 	//Improve physic
 	if (isCustomPhysics) {
-		PhysicsArray[Characters_Tails].AirAccel = 0.050;
-		PhysicsArray[Characters_Tails].Brake = -0.25;
+		PhysicsArray[Characters_Tails].AirAccel = 0.050f;
+		PhysicsArray[Characters_Tails].MaxAccel = 2.0f;
 		PhysicsArray[Characters_Tails].HangTime = 60;
-		PhysicsArray[Characters_Tails].JumpSpeed = 1.80;
-		PhysicsArray[Characters_Tails].GroundAccel = 0.1618;
-		PhysicsArray[Characters_Tails].RollDecel = -0.008;
-		PhysicsArray[Characters_Tails].Run1 = 2.8;
-		PhysicsArray[Characters_Tails].Run2 = 5.09;
+		PhysicsArray[Characters_Tails].JumpSpeed = 1.80f;
+		PhysicsArray[Characters_Tails].GroundAccel = 0.05f;
+		PhysicsArray[Characters_Tails].RollDecel = -0.008f;
+		PhysicsArray[Characters_Tails].Run2 = 5.09f;
 	}
 
 	Init_MilesActions();

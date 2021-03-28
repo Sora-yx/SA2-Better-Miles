@@ -523,8 +523,9 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 	origin(obj);
 }
 
-void CheckAndSetHackObjectMiles() {
-	if (CurrentCharacter == Characters_MechTails || CurrentCharacter == Characters_MechEggman) {
+void CheckAndSetHackObject(CharObj2Base* co2) {
+
+	if (co2->CharID == Characters_MechTails || co2->CharID == Characters_MechEggman) {
 		WriteData<1>((int*)0x715b58, 0x6);
 		WriteData<1>((int*)0x715aa8, 0x6);
 		WriteData<1>((int*)0x7158bf, 0x6);
