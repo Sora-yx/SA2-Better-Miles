@@ -159,7 +159,10 @@ void CheckSwimmingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* c
 				if (Action_Held[co2->PlayerNum])
 				{
 					data->Action = Diving;
-					co2->AnimInfo.Next = 220;
+					if (!isCustomAnim)
+						co2->AnimInfo.Next = 15;
+					else
+						co2->AnimInfo.Next = 220;
 					PlaySoundProbably(28675, 0, 0, 0);
 					return;
 				}
@@ -181,7 +184,10 @@ void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2
 		if (CheckWaterSurface(co2, data))
 		{
 			data->Action = FloatingOnWater;
-			co2->AnimInfo.Next = 222;
+			if (!isCustomAnim)
+				co2->AnimInfo.Next = 15;
+			else
+				co2->AnimInfo.Next = 222;
 			return;
 		}
 		else if ((data->Status & 3) != 0)
@@ -231,13 +237,19 @@ void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2
 					|| (data->Status & 0x2000) == 0))
 				{
 					data->Action = FloatingOnWater;
-					co2->AnimInfo.Next = 222;
+					if (!isCustomAnim)
+						co2->AnimInfo.Next = 15;
+					else
+						co2->AnimInfo.Next = 222;
 					return;
 				}
 				else
 				{
 					data->Action = Swimming;
-					co2->AnimInfo.Next = 219;
+					if (!isCustomAnim)
+						co2->AnimInfo.Next = 15;
+					else
+						co2->AnimInfo.Next = 219;
 					return;
 				}
 			}
