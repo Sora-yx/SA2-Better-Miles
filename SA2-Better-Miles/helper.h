@@ -141,6 +141,7 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1);
 int Call_sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3);
 int PlayerSetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
 void DoNextAction_R(int playerNum, char action, int unknown);
+char Play3DSoundPosThing(int id, NJS_VECTOR* pos, int a3, char a4, char a5);
 
 VoidFunc(sub_47BB50, 0x47BB50);
 void BetterMiles_Init();
@@ -193,8 +194,16 @@ enum MilesState {
 enum MilesAnimation {
 	FlyingAnim = 90,
 	TailAttackAnim = 94,
-	VictoryAnim = 118,
-	VictoryPoseEnd,
+	SwapAnim = 216,
+	VictorySuperForm,
+	LightdashAnim,
+	PaddingAnim,
+	BeginDivingAnim,
+	DivingAnim,
+	BegingSurfacingAnim,
+	SurfacingAnim,
+	FloatingWaterAnim,
+	VictoryAnim,
 	Spin1,
 	Spin2,
 	Spin3,
@@ -205,14 +214,4 @@ enum MilesAnimation {
 	Spin8,
 	Spin9,
 	Spin10,
-	RollAnim,
-	SwapAnim = 216,
-	VictorySuperForm,
-	LightdashAnim,
-	PaddingAnim,
-	BeginDivingAnim,
-	DivingAnim,
-	BegingSurfacingAnim,
-	SurfacingAnim,
-	FloatingWaterAnim,
 };

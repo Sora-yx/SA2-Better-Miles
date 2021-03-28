@@ -39,6 +39,22 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2
 		else
 			a4->Action = 2;
 		break;
+	case 3:
+		if (a4->Action == Rolling)
+		{
+			a4->Action = 1;
+			a3->AnimInfo.Next = 1;
+			a4->Status &= 0xFAFFu;
+			return 1;
+		}
+		if (a4->Action != 71)
+		{
+			return 1;
+		}
+		a4->Action = 10;
+		a3->AnimInfo.Next = 15;
+		a4->Status &= 0xDFFFu;
+		return 1;
 	case 20: //Pulley
 		a4->Status &= 0xDAFFu;
 		a3->Speed = { 0, 0, 0 };
@@ -64,6 +80,16 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2
 			return 1;
 		}
 		return 0;
+	case 34: //snowboard stuff
+		a4->Action = 79;
+		a3->AnimInfo.Next = 129; //board
+		if ((a4->Status & 0x100) != 0)
+		{
+			a4->Status &= 0xFEFFu;
+		}
+		a4->Status &= 0xDFFFu;
+		//*(float*)&a3->field_2C[16] = 0.0;
+		return 1;
 	case 38:
 		a4->Action = 6;
 		return 1;
@@ -175,6 +201,8 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
+
+
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_R * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
@@ -269,6 +297,29 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 	case HandGrinding: //Or whatever you call that thing in CG
 		DoHangGrinding(data1, co2);
 		return;
+	case 76:
+		BoardStuff(data2, co2Miles, data1, co2);
+		return;
+	case 79:
+		if ((data1->Status & 3) == 0)
+		{
+			return;
+		}
+
+		PlaySoundProbably(8195, 0, 0, 0);
+		data1->Action = 76;
+		co2->AnimInfo.Next = 121;
+		co2->AnimInfo.field_10 = 0.0;
+		if (co2->Speed.x <= 0.30000001)
+		{
+			co2->Speed.x = 1.0;
+		}
+		data1->Rotation.x = data2->ang_aim.x;
+		data1->Rotation.z = data2->ang_aim.z;
+		break;
+	case 80:
+		BoardJumpStuff(data1, co2, data2);
+		break;
 	case Rolling:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
 			return;
@@ -294,6 +345,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 
 void Tails_Main_r(ObjectMaster* obj)
 {
+
 	ObjectFunc(origin, Tails_Main_t->Target());
 	origin(obj);
 
@@ -364,6 +416,26 @@ void Tails_Main_r(ObjectMaster* obj)
 		SomethingAboutHandGrind(data1, data2, co2Miles);
 		MoveCharacterOnRail(data1, co2, data2);
 		SomethingAboutHandGrind2(data1, data2, co2Miles);
+		break;
+	case Action_Board:
+	{
+		PhysicsBoardStuff(co2, data1, data2, 7.8200002);
+		PlayerGetSpeed(data1, co2, data2);
+		int checkPos = PlayerSetPosition(data1, data2, co2);
+		if (checkPos != 2)
+		{
+			PlayerResetPosition(data1, data2, co2);
+			BoardSparklesMaybe(data2, data1, co2Miles);
+		}
+	}
+		break;
+	case 79:
+	case 80:
+		PlayerResetAngle(data1, co2);
+		PhysicsBoardStuff2(data1, data2, co2);
+		PlayerGetSpeed(data1, co2, data2);
+		PlayerSetPosition(data1, data2, co2);
+		PlayerResetPosition(data1, data2, co2);
 		break;
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);

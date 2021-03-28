@@ -118,6 +118,7 @@ void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, Ent
 	// sub_720E00(co2Miles, data, (EntityData2*)data2, co2);
 	co2->Speed.x = 4.0;
 	data->Action = Flying;
+	co2->AnimInfo.Next = FlyingAnim;
 	data->Status &= 0xFEFFu;
 	return;
 }
@@ -183,8 +184,9 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
 	}
 	else
 	{
-		co2->Speed.x = 5.0;
+		co2->Speed.x = 4.0;
 		data->Action = Flying;
+		co2->AnimInfo.Next = FlyingAnim;
 		data->Status &= 0xFEFFu;
 
 		if (CurrentLevel != LevelIDs_GreenHill)

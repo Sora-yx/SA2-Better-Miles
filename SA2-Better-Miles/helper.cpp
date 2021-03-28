@@ -110,6 +110,29 @@ void CheckAndDisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2*
 	}
 }
 
+static const void* const Sub4372E0Ptr = (void*)0x4372E0;
+static inline char PlaySound3DThingMaybeASM(int id, NJS_VECTOR* pos, int a3, char a4, char a5)
+{
+	char result;
+	__asm
+	{
+		push[a5]
+		push[a4]
+		push[a3]
+		mov esi, [pos]
+		mov edi, [id]
+		call Sub4372E0Ptr
+		add esp, 12
+		mov result, al
+	}
+	return result;
+}
+
+char Play3DSoundPosThing(int id, NJS_VECTOR* pos, int a3, char a4, char a5) {
+
+	return PlaySound3DThingMaybeASM(id, pos, a3, a4, a5);
+}
+
 static const void* const PGetAccelAirPtr = (void*)0x45D770;
 static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
 {

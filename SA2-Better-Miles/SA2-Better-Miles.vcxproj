@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="board.cpp" />
     <ClCompile Include="bounce.cpp" />
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="animations.cpp" />

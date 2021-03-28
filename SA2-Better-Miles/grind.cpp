@@ -2,23 +2,7 @@
 
 //Most of the functions here are directly copied pasted from the disassembly from Sonic grinding, with few extra fixes.
 
-static const void* const Sub4372E0Ptr = (void*)0x4372E0;
-static inline char PlaySound3DThingMaybe(int id, NJS_VECTOR* pos, int a3, char a4, char a5)
-{
-	char result;
-	__asm
-	{
-		push[a5]
-		push[a4]
-		push[a3]
-		mov esi, [pos]
-		mov edi, [id]
-		call Sub4372E0Ptr
-		add esp, 12
-		mov result, al
-	}
-	return result;
-}
+
 
 int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 	NJS_VECTOR result;
@@ -100,7 +84,7 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 			v25 = 4103;
 		}
 	}
-	PlaySound3DThingMaybe(v25, &a4->Position, 0, 0, 127);
+	Play3DSoundPosThing(v25, &a4->Position, 0, 0, 127);
 	CallVibeThing(0, 15, a3->PlayerNum, 6); //Vibe thing
 	sub_429000();
 	v8 = 1;

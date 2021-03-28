@@ -69,6 +69,9 @@
     <ClCompile Include="swimming.cpp">
       <Filter>Source Files\Character\abilities</Filter>
     </ClCompile>
+    <ClCompile Include="board.cpp">
+      <Filter>Source Files\Character\abilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

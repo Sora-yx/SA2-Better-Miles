@@ -59,4 +59,11 @@ signed int SetHandGranding(EntityData2_R* data2, CharObj2Base* co2, EntityData1*
 void DoHangGrinding(EntityData1* data, CharObj2Base* co2);
 void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2_R* data2, TailsCharObj2* MilesCO2);
 
+void BoardStuff(EntityData2_R* data2, TailsCharObj2* co2Miles, EntityData1* data, CharObj2Base* co2);
+void BoardJumpStuff(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2);
+float PhysicsBoardStuff2(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3);
+void BoardSparklesMaybe(EntityData2_R* a1, EntityData1* a2, TailsCharObj2* a3);
+int PhysicsBoardStuff(CharObj2Base* a1, EntityData1* a2, EntityData2_R* a3, float a4);
+
+
 bool isSuperForm();
