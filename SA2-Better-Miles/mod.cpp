@@ -46,11 +46,6 @@ extern "C" {
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\chao_chara_te\\2.csb", "Resource\\gd_PC\\Sounds\\chao_chara_te\\2.csb");
 		BetterMiles_Init();
 		InitLightDashStuff();
-
-		StoryEntry* story = (StoryEntry*)0x173A5E0;
-		story->Type = 1;
-		story->Level = LevelIDs_CityEscape;
-		story->Character = Characters_Tails;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {

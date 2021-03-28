@@ -2,8 +2,6 @@
 
 //Most of the functions here are directly copied pasted from the disassembly from Sonic grinding, with few extra fixes.
 
-
-
 int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 	NJS_VECTOR result;
 	int v8 = 0;

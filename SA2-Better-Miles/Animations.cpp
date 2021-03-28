@@ -121,10 +121,10 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 115, 208, 4, 0, 1, 0.3f },
 	{ 116, 208, 11, 0, 0.25f, 0.3f },
 	{ 117, 208, 11, 0, 0.25f, 0.3f },
-	//2p pos which doesn't exist 
+	//2p pos which doesn't exist
 	{ 117, 208, 11, 0, 0.25f, 0.3f },
 	{ 117, 208, 11, 0, 0.25f, 0.3f },
-	//Extended using the Sonic Animation list to fix crashes 
+	//Extended using the Sonic Animation list to fix crashes
 	//Board Stuff
 	{ 120, 208, 3, 120, 1, 0.1f },
 	{ 121, 208, 13, 121, 0.25f, 0.3f },

@@ -203,17 +203,13 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 //Many animations make Miles's tails in a very weird rotation, we force a specific rotation so they look decent here.
 void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles) {
-
 	if (co2->AnimInfo.Current == 74 || co2->AnimInfo.Current >= 121 && co2->AnimInfo.Current <= 130 || co2->AnimInfo.Current >= 195 && co2->AnimInfo.Current <= 197)
 		*(int*)&co2Miles->field_1BC[436] = -9000;
 }
 
-
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_R * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
-
 
 	CheckAndFixTailsRotation(co2, co2Miles);
 
@@ -241,7 +237,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 			return;
 
 		*(int*)&co2Miles->field_1BC[436] = -17000;
-		
+
 		break;
 	case 15:
 	case 17:
@@ -310,7 +306,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		BoardStuff(data2, co2Miles, data1, co2);
 		return;
 	case 79:
-		if ((data1->Status & 3) == 0)
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1) || (data1->Status & 3) == 0)
 		{
 			return;
 		}
@@ -327,7 +323,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		data1->Rotation.z = data2->ang_aim.z;
 		break;
 	case 80:
-		BoardJumpStuff(data1, co2, data2);
+		BoardJumpStuff(data1, co2Miles, co2, data2);
 		break;
 	case Rolling:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
@@ -354,7 +350,6 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 
 void Tails_Main_r(ObjectMaster* obj)
 {
-
 	ObjectFunc(origin, Tails_Main_t->Target());
 	origin(obj);
 
@@ -436,8 +431,9 @@ void Tails_Main_r(ObjectMaster* obj)
 			PlayerResetPosition(data1, data2, co2);
 			BoardSparklesMaybe(data2, data1, co2Miles);
 		}
+		BoardSoundEffect(co2, data1);
 	}
-		break;
+	break;
 	case 79:
 	case 80:
 		PlayerResetAngle(data1, co2);
@@ -618,8 +614,6 @@ void LoadCharacter_r() {
 			CheckAndSetHackObject(MainCharObj2[i]);
 		}
 	}
-
-
 
 	return;
 }

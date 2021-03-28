@@ -1,5 +1,21 @@
 #include "stdafx.h"
 
+void BoardSoundEffect(CharObj2Base* co2, EntityData1* data) {
+	if (CurrentLevel == 10)
+	{
+		if (co2->Speed.x > 0.2000000029802322)
+		{
+			Play3DSound_EntityAndPos(data, 6, &data->Position, 2);
+		}
+	}
+	else if (CurrentLevel == 13 || CurrentLevel == 52)
+	{
+		if (co2->Speed.x > 0.2000000029802322)
+		{
+			Play3DSound_EntityAndPos(data, 8, &data->Position, 2);
+		}
+	}
+}
 
 static const void* const sub_45E300Ptr = (void*)0x45E300;
 static inline int sub_45E300ASM(CharObj2Base* a1, EntityData1* a2, EntityData2_R* a3, float a4)
@@ -59,9 +75,7 @@ float PhysicsBoardStuff2(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
 	return sub_45E9A0(a1, a2, a3);
 }
 
-
 void BoardStuff(EntityData2_R* data2, TailsCharObj2* co2Miles, EntityData1* data, CharObj2Base* co2) {
-
 	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data))
 	{
 		return;
@@ -76,13 +90,18 @@ void BoardStuff(EntityData2_R* data2, TailsCharObj2* co2Miles, EntityData1* data
 		{
 			co2->Speed.x = co2->PhysData.RollCancel + co2->Speed.x; //jogspeed
 		}
+		data->Status &= 0xFFFDu;
+		co2->field_12 = 0;
 	}
 
 	return;
 }
 
-
-void BoardJumpStuff(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2) {
+void BoardJumpStuff(EntityData1* data, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData2_R* data2) {
+	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data))
+	{
+		return;
+	}
 
 	if ((data->Status & 3) != 0)
 	{
@@ -108,5 +127,4 @@ void BoardJumpStuff(EntityData1* data, CharObj2Base* co2, EntityData2_R* data2) 
 	}
 
 	return;
-
 }

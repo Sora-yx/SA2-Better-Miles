@@ -10,6 +10,7 @@ extern bool isCustomPhysics;
 
 void init_RankScore();
 void CheckAndSetHackObject(CharObj2Base* co2);
+void BoardSoundEffect(CharObj2Base* co2, EntityData1* data);
 
 union taskwork_subs
 {

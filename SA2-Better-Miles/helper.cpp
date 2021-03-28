@@ -63,7 +63,6 @@ static inline signed int njPushMatrixMaybe(NJS_MATRIX_PTR m)
 	return result;
 }
 
-
 static const void* const sub428A30ptr = (void*)0x428A30;
 static inline void njTranslatePosition(NJS_VECTOR* a1)
 {
@@ -129,7 +128,6 @@ static inline char PlaySound3DThingMaybeASM(int id, NJS_VECTOR* pos, int a3, cha
 }
 
 char Play3DSoundPosThing(int id, NJS_VECTOR* pos, int a3, char a4, char a5) {
-
 	return PlaySound3DThingMaybeASM(id, pos, a3, a4, a5);
 }
 
@@ -524,7 +522,6 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 }
 
 void CheckAndSetHackObject(CharObj2Base* co2) {
-
 	if (co2->CharID == Characters_MechTails || co2->CharID == Characters_MechEggman) {
 		WriteData<1>((int*)0x715b58, 0x6);
 		WriteData<1>((int*)0x715aa8, 0x6);
