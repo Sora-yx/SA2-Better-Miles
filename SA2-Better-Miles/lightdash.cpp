@@ -55,7 +55,7 @@ static inline signed int GetBufferedPositionAndRot(int a1, int a2, NJS_VECTOR* a
 
 void RingMain_R(ObjectMaster* obj)
 {
-	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 20))
+	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 25))
 	{
 		if (Controllers[0].on & (Buttons_Y) && (MainCharObj1[0]->Action <= Running || MainCharObj1[0]->Action == Jumping || MainCharObj1[0]->Action == 10 || MainCharObj1[0]->Action == Flying)) {
 			DoNextAction_r(0, 103, 0);
@@ -115,13 +115,16 @@ void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* 
 			GetBufferedPositionAndRot(co2->PlayerNum, 0, &vecIDK, 1);
 			if (CheckDistance(&data1->Position, &vecIDK) <= 1.5)
 			{
-				data1->Action = 12;
-				float v55 = co2->Speed.x > 2.0;
+				data1->Action = 1;
+				bool v55 = co2->Speed.x > 2.0;
 				co2->AnimInfo.Next = 18;
 				co2->AnimInfo.field_8 = 0;
 				if (v55)
 				{
 					co2->Speed.x = 2.0;
+				}
+				else {
+					co2->Speed.x += 2.0;
 				}
 				data1->Status &= 0xFBFFu;
 				lightdashTime = 0;

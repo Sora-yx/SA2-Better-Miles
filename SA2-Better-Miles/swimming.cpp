@@ -65,7 +65,7 @@ void Miles_GetFloat(EntityData1* a1, CharObj2Base* a2)
 	float v9; // [esp+4h] [ebp-8h]
 	float v10; // [esp+8h] [ebp-4h]
 
-	v10 = a1->Position.y + 1.0;
+	v10 = a1->Position.y -1.0; //Used for Character surface position check. (Knuckles originally uses "+1.0", but since Miles is a bit smaller, we will got for -1.0.)
 	v9 = a2->PhysData.CollisionSize + a1->Position.y + 10.0;
 	v2 = a2->idk5;
 	if (v9 >= v2)
