@@ -66,11 +66,17 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2
 		a4->Status &= 0xDAFFu;
 		return 1;
 	case 31:
-		if (setGrindingNextAction(a2, a3, a4))
+		if (isRando()) {
+			return 0;
+		}
+		else if (setGrindingNextAction(a2, a3, a4))
 			return 1;
 		else
 			return 0;
 	case 32:
+		if (isRando()) {
+			return 0;
+		}
 		if (!CharacterAnimations[200].Animation)
 		{
 			return 1;
