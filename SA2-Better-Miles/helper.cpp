@@ -705,7 +705,7 @@ void Init_MilesActions() {
 	PrisonLaneDoor_t = new Trampoline((int)PrisonLaneDoor, (int)PrisonLaneDoor + 0x6, CheckPrisonLaneDoor);
 	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
 
-	SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
+	//SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
 
 	DoorIG_t = new Trampoline((int)DoorIG, (int)DoorIG + 0x6, doorIG_r);
 	DoorIG2_t = new Trampoline((int)DoorIG2, (int)DoorIG2 + 0x6, doorIG2_r);
@@ -729,11 +729,11 @@ void Init_MilesActions() {
 	//EE Power suply
 	WriteData<5>((void*)0x7899e8, 0x90); //remove powersupply
 
-	if (isMilesAdventure) {
+	/*if (isMilesAdventure) {
 		//FinalHazard Stuff
 		WriteData<40>((int*)0x498a9d, 0x90); //Remove the game calling super shadow and stuff since we will manually do it.
 		WriteCall((void*)0x498a98, LoadSuperFormFinalBattle); //hook "LoadSuperSonic"
 		WriteData<6>((int*)0x49cf7f, 0x90); //Display super Aura infinitely
 		WriteData<7>((int*)0x49cfc3, 0x90); //Remove super aura math thing for Tails.
-	}
+	}*/
 }

@@ -399,9 +399,6 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Spinning:
 		Miles_DoCollisionAttackStuff(data1);
 		break;
-	case 66:
-		FixAnimationFinalBossOnFrames(co2, data1);
-		break;
 	case Bounce:
 		PlayerResetAngle(data1, co2);
 		PlayerGetAccelerationAir(data1, co2, data2);
@@ -567,7 +564,7 @@ signed char GetCharacterLevel() {
 	return -1;
 }
 
-int BannedMilesLevel[10] = { LevelIDs_SonicVsShadow1, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, LevelIDs_TailsVsEggman2,  LevelIDs_SonicVsShadow2, LevelIDs_KnucklesVsRouge,
+int BannedMilesLevel[11] = { LevelIDs_SonicVsShadow1, LevelIDs_FinalHazard, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, LevelIDs_TailsVsEggman2,  LevelIDs_SonicVsShadow2, LevelIDs_KnucklesVsRouge,
 LevelIDs_BigFoot, LevelIDs_FlyingDog, LevelIDs_HotShot
 };
 
@@ -598,6 +595,7 @@ void SetSpacePhysics(CharObj2Base* co2) {
 
 	return;
 }
+
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
