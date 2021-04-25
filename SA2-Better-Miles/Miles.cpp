@@ -66,26 +66,27 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2
 		a4->Status &= 0xDAFFu;
 		return 1;
 	case 31:
-		if (isRando()) {
-			return 0;
+		if (!isRando()) {
+
+			if (setGrindingNextAction(a2, a3, a4))
+				return 1;
+			else
+				return 0;
 		}
-		else if (setGrindingNextAction(a2, a3, a4))
-			return 1;
-		else
-			return 0;
+		break;
 	case 32:
-		if (isRando()) {
-			return 0;
+		if (!isRando()) {
+			if (!CharacterAnimations[200].Animation) {
+				return 1;
+			}
+			if (SetHandGranding(a1, a3, a4)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
 		}
-		if (!CharacterAnimations[200].Animation)
-		{
-			return 1;
-		}
-		if (SetHandGranding(a1, a3, a4))
-		{
-			return 1;
-		}
-		return 0;
+		break;
 	case 34: //snowboard stuff
 		a4->Action = 79;
 		a3->AnimInfo.Next = 129; //board
@@ -664,4 +665,5 @@ void BetterMiles_Init() {
 	WriteCall((void*)0x750BB8, Miles_DrawTail);
 
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
+	InitLightDashStuff();
 }
