@@ -71,9 +71,10 @@ struct __declspec(align(2)) HomingAttackTarget
 };
 #pragma pack(pop)
 
-void FixAnimationFinalBossOnFrames(CharObj2Base* co2, EntityData1* data1);
+
 bool isRando();
 bool isCharaSelect();
+bool isSA1Tails();
 
 FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
 signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4);

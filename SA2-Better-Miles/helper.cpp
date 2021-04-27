@@ -681,6 +681,16 @@ bool isCharaSelect() {
 	return false;
 }
 
+bool isSA1Tails() {
+
+	HMODULE SA1 = GetModuleHandle(L"sa1-tails");
+
+	if (SA1)
+		return true;
+
+	return false;
+}
+
 bool isSuperForm() {
 	if (MainCharObj2[0]->CharID == Characters_Tails && MainCharObj2[0]->Upgrades & Upgrades_SuperSonic || CurrentLevel == LevelIDs_FinalHazard)
 	{

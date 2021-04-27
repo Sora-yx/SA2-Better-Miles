@@ -158,7 +158,7 @@ signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_R* a2, CharObj2
 	return Tails_CheckActionWindowASM(a1, a2, a3, a4);
 }
 
-int ActionArray[6] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
+int ActionArray[7] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
 
 //Edit the function which checks where it needs to animate Miles's tails to add more actions.
 static const void* const loc_7512F2 = (void*)0x7512F2;
@@ -542,14 +542,18 @@ void Tails_Main_r(ObjectMaster* obj)
 		PlayerResetPosition(data1, data2, co2);
 		break;
 	case VictoryPose:
-		if (isSuperForm())
+		if (isSuperForm()) {
 			co2->AnimInfo.Current = VictorySuperForm;
-		else
+		}
+		else {
 			co2->AnimInfo.Current = VictoryAnim;
+		}
+
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	}
 
+	isSA1Tails();
 	MilesFly(data1, co2);
 }
 
