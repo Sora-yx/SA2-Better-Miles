@@ -56,7 +56,7 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	a3->Speed.x = v23 + 1.0;
 	a4->Action = Grinding;
 
-	if (isCustomAnim && (a3->CharID2 == Characters_Knuckles || a3->CharID2 == Characters_Rouge)) {
+	if (isCustomAnim && (a3->CharID2 == Characters_Tails)) {
 		if ((double)rand() * 0.000030517578125 <= 0.5) {
 			a3->AnimInfo.Next = Anm_Tails_RailFastL; //Anm_RailFastL;
 		}

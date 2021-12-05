@@ -428,7 +428,6 @@ static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2* 
 	}
 }
 
-
 static const void* const sub_754EC0Ptr = (void*)0x754EC0;
 static inline void sub_754EC0(int playernum)
 {
@@ -439,14 +438,12 @@ static inline void sub_754EC0(int playernum)
 }
 
 static const void* const sub_7274F0Ptr = (void*)0x7274F0;
-float* sub_7274F0(EntityData1* a1)
+static inline void sub_7274F0(EntityData1* a1)
 {
-	float* result;
+	
 	__asm
 	{
-		mov eax, [a1] // eax0
+		mov eax, [a1] 
 		call sub_7274F0Ptr
-		fstp result
 	}
-	return result;
 }
