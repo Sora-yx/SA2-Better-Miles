@@ -14,7 +14,6 @@
 #include "IniFile.hpp"
 #include "sa2-util.h"
 #include "mod.h"
-#include "helper.h"
 #include "abilities.h"
 #include "util.h"
 

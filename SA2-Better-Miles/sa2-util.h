@@ -7,6 +7,38 @@ FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2* a3, CharObj2B
 FunctionPointer(void, PlayerGetRotation, (EntityData1* data, EntityData2* a3, CharObj2Base* co2), 0x45FA70);
 FunctionPointer(void, PlayerAfterImage, (NJS_OBJECT* a1, int a2, NJS_TEXLIST* a3, float a4, char a5), 0x476C20);
 
+
+FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
+ObjectFunc(PrisonLaneDoor4, 0x606A10);
+FunctionPointer(int, LoadShEffTex, (), 0x755DE0);
+
+FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
+FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
+
+FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
+
+FunctionPointer(void, DoGrindThing, (EntityData1* data, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), 0x725F30);
+FunctionPointer(double, SomethingAboutHandGrind, (EntityData1* a1, EntityData2* a2, TailsCharObj2* a3), 0x7271D0);
+FunctionPointer(signed int, SomethingAboutHandGrind2, (EntityData1* a1, EntityData2* a2, TailsCharObj2* a3), 0x46D6D0);
+FunctionPointer(int, calcGrindRotationMaybe, (NJS_VECTOR* v, Rotation* rot), 0x4905A0);
+FunctionPointer(int, sub_447580, (NJS_OBJECT* v), 0x447580);
+FunctionPointer(void, SetNewRot, (int a1, int a2, int a3), 0x46C490);
+DataPointer(float, FLOAT_01283704, 0x1283704);
+DataArray(float, flt_25F02A0, 0x25F02A0, 5);
+
+DataPointer(DWORD, dword_267053C, 0x267053C); //something checked for after image
+
+VoidFunc(sub_47BB50, 0x47BB50);
+
+ObjectFunc(RocketIG, 0x6A10A0);
+ObjectFunc(DoorIG, 0x69D1D0);
+ObjectFunc(DoorIG2, 0x69F460);
+ObjectFunc(DoorCCThing, 0x79AFB0);
+ObjectFunc(DoorHB, 0x715560);
+ObjectFunc(MetalBox, 0x6D6490);
+ObjectFunc(MetalBoxGravity, 0x77BB90);
+ObjectFunc(CGTubeGlass, 0x776060);
+
 #pragma pack(push, 1)
 struct __declspec(align(2)) HomingAttackTarget
 {
@@ -104,14 +136,12 @@ static inline void VibeThing(int a1, signed int a2, int a3, signed int a4)
 {
 	__asm
 	{
-		push[a4] // int a4
-		mov ecx, a3 // a3
-		mov edx, a2 // int a2
-		mov eax, a1 // a1
-
-		// Call your __cdecl function here:
+		push[a4] 
+		mov ecx, a3 
+		mov edx, a2 
+		mov eax, a1 
 		call VibeThingPtr
-		add esp, 4 // int a4
+		add esp, 4 
 	}
 }
 
@@ -252,7 +282,6 @@ static inline float SlowDownThing(EntityData1* a1, EntityData2* a2, CharObj2Base
 		mov ebx, a3
 		mov eax, a2
 		mov ecx, a1
-		// Call your __cdecl function here:
 		call SlowDownThingPtr
 		fstp result
 	}
@@ -301,4 +330,71 @@ static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityDat
 		mov result, eax
 	}
 	return result;
+}
+
+
+//bool __usercall Player_CheckBreak@<eax>(int a1@<ecx>, EntityData1* a2@<edi>, CharObj2Base* a3@<esi>)
+static const void* const playerBreakPtr = (void*)0x45ABE0;
+static inline bool PlayerCheckBreak(int a1, EntityData1* a2, CharObj2Base* a3)
+{
+	int result;
+	__asm
+	{
+		mov esi, [a3]
+		mov edi, [a2]
+		mov ecx, [a1]
+
+		call playerBreakPtr
+		mov result, ecx
+	}
+	return result;
+}
+
+
+static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
+static inline signed int PlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2* a4)
+{
+	signed int result;
+	__asm
+	{
+		push[a4]
+		mov esi, [a2] // a2
+		mov eax, [a1] // a1
+
+		// Call your __cdecl function here:
+		call somethingAboutTrick2Ptr
+		add esp, 4
+		mov result, eax
+	}
+	return result;
+}
+
+
+static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
+static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
+{
+	int result;
+	__asm
+	{
+		push[a2]
+		mov ebx, [a1]
+		// Call your __cdecl function here:
+		call somethingAboutTrick3Ptr
+		add esp, 4
+		mov result, eax
+	}
+	return result;
+}
+
+static const void* const sub_4EC330Ptr = (void*)0x4EC330;
+static inline void sub_4EC330(int a1, int a2, int a3)
+{
+	__asm
+	{
+		mov ecx, [a3] // a3
+		mov ebx, [a2] // a2
+		mov edx, [a1] // a1
+		// Call your __cdecl function here:
+		call sub_4EC330Ptr
+	}
 }

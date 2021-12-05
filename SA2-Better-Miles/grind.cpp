@@ -332,78 +332,6 @@ void PlayGrindAnimation(EntityData1* data1, CharObj2Base* co2) {
 	}
 }
 
-static const void* const somethingAboutTrickPtr = (void*)0x45ABE0;
-static inline bool PlayerCheckBreakAsm(int a1, EntityData1* a2, CharObj2Base* a3)
-{
-	int result;
-	__asm
-	{
-		mov esi, [a3] // a3
-		mov edi, [a2] // a2
-		mov ecx, [a1] // a1
-
-		// Call your __cdecl function here:
-		call somethingAboutTrickPtr
-		mov result, ecx
-	}
-	return result;
-}
-
-bool Player_CheckBreakMaybe(int a1, EntityData1* a2, CharObj2Base* a3) {
-	return PlayerCheckBreakAsm(a1, a2, a3);
-}
-
-static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
-static inline signed int CheckPlayerStopASM(EntityData1* a1, CharObj2Base* a2, EntityData2* a4)
-{
-	signed int result;
-	__asm
-	{
-		push[a4]
-		mov esi, [a2] // a2
-		mov eax, [a1] // a1
-
-		// Call your __cdecl function here:
-		call somethingAboutTrick2Ptr
-		add esp, 4
-		mov result, eax
-	}
-	return result;
-}
-
-signed int CheckPlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2* a4)
-{
-	return CheckPlayerStopASM(a1, a2, a4);
-}
-
-static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
-static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
-{
-	int result;
-	__asm
-	{
-		push[a2]
-		mov ebx, [a1]
-		// Call your __cdecl function here:
-		call somethingAboutTrick3Ptr
-		add esp, 4
-		mov result, eax
-	}
-	return result;
-}
-
-static const void* const sub_4EC330Ptr = (void*)0x4EC330;
-static inline void sub_4EC330(int a1, int a2, int a3)
-{
-	__asm
-	{
-		mov ecx, [a3] // a3
-		mov ebx, [a2] // a2
-		mov edx, [a1] // a1
-		// Call your __cdecl function here:
-		call sub_4EC330Ptr
-	}
-}
 
 void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2* data2, TailsCharObj2* MilesCO2) {
 	char getcharID2 = 0;
@@ -434,7 +362,7 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2* data2, 
 		}
 	}
 	PlaySoundProbably(curSound, 0, 0, 0);
-	if (PlayerCheckBreakAsm(idk, data1, co2) && co2->Speed.x > 0.0)
+	if (PlayerCheckBreak(idk, data1, co2) && co2->Speed.x > 0.0)
 	{
 		data1->Action = 12;
 		idk2 = 18;
@@ -444,7 +372,7 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2* data2, 
 	}
 	else
 	{
-		if (CheckPlayerStopASM(data1, co2, data2))
+		if (PlayerStop(data1, co2, data2))
 		{
 			data1->Rotation.x = data2->Forward.x;
 			data1->Rotation.z = data2->Forward.z;
@@ -532,7 +460,7 @@ signed int SetHandGranding(EntityData2* data2, CharObj2Base* co2, EntityData1* d
 
 	CalcVector_PlayerRot(data1, &playerdir);
 
-	njPushUnitMatrix_();
+	njPushMatrixEx();
 	njRotateZ(0, data1->Rotation.z);
 	njRotateX(0, data1->Rotation.x);
 	njCalcPoint_(&playerup, &playerup, 0);
@@ -541,7 +469,7 @@ signed int SetHandGranding(EntityData2* data2, CharObj2Base* co2, EntityData1* d
 	data1->Rotation.x = (asin(-playerup.z) * 10430.38043493439);
 	data1->Rotation.z = (atan2f(-playerup.y, -playerup.x) * -10430.38043493439);
 
-	njPushUnitMatrix_();
+	njPushMatrixEx();
 	njRotateX(0, data1->Rotation.x);
 	njRotateZ(0, data1->Rotation.z);
 	njCalcPoint_(&playerdir, &playerup, 0);

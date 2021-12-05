@@ -90,7 +90,7 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
 	{
 		// PlaySoundProbably(v117, 0, 0, 0);
 
-		if (CheckPlayerStop(data, co2, data2))
+		if (PlayerStop(data, co2, data2))
 		{
 			data->Rotation.x = data2->Forward.x;
 			data->Rotation.z = data2->Forward.z;

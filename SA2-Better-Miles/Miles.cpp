@@ -181,8 +181,6 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 	return;
 }
 
-
-
 void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
 {
 	NJS_OBJECT* v3; // edi
@@ -215,8 +213,6 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 		njPopMatrix(1u);
 	}
 }
-
-
 
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
@@ -376,10 +372,10 @@ void Tails_Main_r(ObjectMaster* obj)
 	ObjectFunc(origin, Tails_Main_t->Target());
 	origin(obj);
 
-	CharObj2Base* co2 = MainCharObj2[0];
-	EntityData1* data1 = MainCharObj1[0];
-	EntityData2* data2 = MainCharData2[0];
-	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
+	CharObj2Base* co2 = obj->Data2.Character;
+	EntityData1* data1 = obj->Data1.Entity;
+	EntityData2* data2 = (EntityData2*)obj->EntityData2;
+	TailsCharObj2* co2Miles = (TailsCharObj2*)obj->Data2.Undefined;
 
 	switch (data1->Action)
 	{

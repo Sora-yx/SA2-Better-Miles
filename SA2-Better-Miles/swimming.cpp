@@ -193,14 +193,14 @@ void CheckDivingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, 
 		}
 		else if ((data->Status & 3) != 0)
 		{
-			if (Player_CheckBreakMaybe(0, data, co2) && co2->Speed.x < 0.0)
+			if (PlayerCheckBreak(0, data, co2) && co2->Speed.x < 0.0)
 			{
 				data->Action = 12;
 				co2->AnimInfo.Next = 18;
 				co2->AnimInfo.field_8 = 0;
 				return;
 			}
-			else if (CheckPlayerStop(data, co2, data2))
+			else if (PlayerStop(data, co2, data2))
 			{
 				data->Rotation.x = data2->Forward.x;
 				data->Rotation.z = data2->Forward.z;

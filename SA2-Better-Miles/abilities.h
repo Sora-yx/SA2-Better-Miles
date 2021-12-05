@@ -69,3 +69,51 @@ bool isSuperForm();
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
 void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data);
 void InitLightDashStuff();
+
+signed int __cdecl Miles_CheckNextActions_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
+
+enum MilesState {
+	Standing,
+	Running,
+	Jumping = 6,
+	ObjectControl = 18,
+	MysticMelody = 45,
+	Pulley = 51,
+	Flying = 59,
+	Spinning,
+	Bounce = 69,
+	BounceFloor,
+	Grinding = 71,
+	HandGrinding,
+	Rolling = 90,
+	LightDash,
+	FloatingOnWater,
+	Swimming,
+	Diving,
+	VictoryPose = 190,
+};
+
+enum MilesAnimation {
+	FlyingAnim = 90,
+	TailAttackAnim = 94,
+	SwapAnim = 216,
+	VictorySuperForm,
+	LightdashAnim,
+	PaddingAnim,
+	BeginDivingAnim,
+	DivingAnim,
+	BegingSurfacingAnim,
+	SurfacingAnim,
+	FloatingWaterAnim,
+	VictoryAnim,
+	Spin1,
+	Spin2,
+	Spin3,
+	Spin4,
+	Spin5,
+	Spin6,
+	Spin7,
+	Spin8,
+	Spin9,
+	Spin10,
+};

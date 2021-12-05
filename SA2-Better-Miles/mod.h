@@ -12,3 +12,7 @@ extern bool isCustomPhysics;
 extern bool flySoundEffect;
 
 void Init_StartEndPos();
+void Init_VoicesFixes();
+void BetterMiles_Init();
+void Init_NewAnimation();
+void Init_MilesActions();
