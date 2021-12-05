@@ -1,7 +1,6 @@
 #include "pch.h"
 
 //Most of the functions here are directly copied pasted from the disassembly from Sonic grinding, with few extra fixes.
-
 int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 	NJS_VECTOR result;
 	int v8 = 0;
@@ -17,10 +16,9 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	float v40 = 0.0;
 	float v41 = 0.0;
 	a4->Status = a4->Status & 0xFAFF | 0x2000;
-	/*(a1[13].field_28) = 0;
-	(a1[13].field_2C) = 0;*/
+
 	result = { 1, 0, 0 };
-	//sub_429710(); //Make the game crash sometimes not sure why
+
 	v21 = (float*)_nj_current_matrix_ptr_;
 	if (_nj_current_matrix_ptr_)
 	{
@@ -58,9 +56,9 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	a3->Speed.x = v23 + 1.0;
 	a4->Action = Grinding;
 
-	if (isCustomAnim) {
+	if (isCustomAnim && (a3->CharID2 == Characters_Knuckles || a3->CharID2 == Characters_Rouge)) {
 		if ((double)rand() * 0.000030517578125 <= 0.5) {
-			a3->AnimInfo.Next = Anm_Tails_RailFastL;
+			a3->AnimInfo.Next = Anm_Tails_RailFastL; //Anm_RailFastL;
 		}
 		else {
 			a3->AnimInfo.Next = Anm_Tails_RailL;
@@ -90,31 +88,25 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	return 1;
 }
 
-
-
 void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	if (data1->NextAction != 0 || data1->Status & Status_DoNextAction) {
+	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
 		return;
 	}
 
 	if ((data1->Status & Status_OnPath) == 0) {
 		co2->AnimInfo.Next = 15;
-		data1->Action = 10; //SA2Action_LaunchJumpOrFalling
+		data1->Action = Action_Fall; 
 		co2->AnimInfo.Current = 15; //Falling
 		data1->Status &= 0xDFFFu;
 		return;
 	}
 
-	/*if (CheckTrickASM(co2Miles, co2, data1))
-	{
-		return;
-	}*/
-
 	if (data1->Status & Status_DisableControl || !Jump_Pressed[co2->PlayerNum] || !sub_45B2C0(co2, co2->PlayerNum, data1) || sub_45B2C0(co2, co2->PlayerNum, data1) > 3) {
+
 		if (TailsJump(co2, data1)) {
 			data1->Status &= 0xDFFFu;
 		}
-		else if (*(WORD*)&co2Miles->field_1BC[420] <= 120) {
+		else if (co2->Speed.x > 0.8) {
 			if (!Action_Held[co2->PlayerNum])
 			{
 				co2->ActionWindowItems[co2->ActionWindowItemCount++ & 7] = 71;
@@ -133,8 +125,8 @@ void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, 
 				co2->Speed.x = co2->PhysData.RunSpeed;
 			}
 
-			data1->Action = 10; //SA2Action_LaunchJumpOrFalling
-			co2->AnimInfo.Current = 15; //Falling
+			data1->Action = Action_Fall;
+			co2->AnimInfo.Current = 15; 
 			data1->Status &= 0xDFFFu;
 		}
 
@@ -142,7 +134,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, 
 	}
 
 	data1->Status &= 0xDFFFu;
-	data1->Action = 10; //SA2Action_LaunchJumpOrFalling
+	data1->Action = Action_Fall; 
 	PlaySoundProbably(8193, 0, 0, 0);
 
 	Angle analog_angle;
@@ -160,51 +152,12 @@ void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, 
 	}
 }
 
-//Math stuff that allow character to move on the rail
-static const void* const sub_46D040Ptr = (void*)0x46D040;
-static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2* a3)
-{
-	__asm
-	{
-		push[a3]
-		mov ebx, [a2]
-		mov eax, [a1]
-		call sub_46D040Ptr
-		add esp, 4 // a3
-	}
-}
-
-static const void* const sub_46D140Ptr = (void*)0x46D140;
-static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2* a3)
-{
-	__asm
-	{
-		push[a3]
-		push[a2]
-		mov eax, [a1]
-
-		// Call your __cdecl function here:
-		call sub_46D140Ptr
-		add esp, 8 // a2
-	}
-}
-
 void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2* a3) {
+
 	sub_46D040(a1, a2, a3);
 	if (a1->Action != 72)
 		getRailAccel(a2, a1, a3);
 	return;
-}
-
-//Sparkles Rail thing
-//void __usercall sub_754EC0(int playernum@<ebx>)
-static const void* const sub_754EC0Ptr = (void*)0x754EC0;
-static inline void sub_754EC0(int playernum)
-{
-	__asm {
-		mov ebx, [playernum]
-		call sub_754EC0Ptr
-	}
 }
 
 void PowderExecute_Rails(TailsCharObj2* sco2, NJS_VECTOR* dir) {
@@ -434,20 +387,6 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2* data2, 
 		//goto LABEL_240;
 	}
 	DeleteObject_(dispScore);
-}
-
-static const void* const sub_7274F0Ptr = (void*)0x7274F0;
-float* sub_7274F0(EntityData1* a1)
-{
-	float* result;
-	__asm
-	{
-		mov eax, [a1] // eax0
-		// Call your __cdecl function here:
-		call sub_7274F0Ptr
-		fstp result
-	}
-	return result;
 }
 
 signed int SetHandGranding(EntityData2* data2, CharObj2Base* co2, EntityData1* data1) {

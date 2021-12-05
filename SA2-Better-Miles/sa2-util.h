@@ -398,3 +398,55 @@ static inline void sub_4EC330(int a1, int a2, int a3)
 		call sub_4EC330Ptr
 	}
 }
+
+//Math stuff that allow character to move on the rail
+static const void* const sub_46D040Ptr = (void*)0x46D040;
+static inline void sub_46D040(EntityData1* a1, CharObj2Base* a2, EntityData2* a3)
+{
+	__asm
+	{
+		push[a3]
+		mov ebx, [a2]
+		mov eax, [a1]
+		call sub_46D040Ptr
+		add esp, 4 // a3
+	}
+}
+
+static const void* const sub_46D140Ptr = (void*)0x46D140;
+static inline void getRailAccel(CharObj2Base* a1, EntityData1* a2, EntityData2* a3)
+{
+	__asm
+	{
+		push[a3]
+		push[a2]
+		mov eax, [a1]
+
+		// Call your __cdecl function here:
+		call sub_46D140Ptr
+		add esp, 8 // a2
+	}
+}
+
+
+static const void* const sub_754EC0Ptr = (void*)0x754EC0;
+static inline void sub_754EC0(int playernum)
+{
+	__asm {
+		mov ebx, [playernum]
+		call sub_754EC0Ptr
+	}
+}
+
+static const void* const sub_7274F0Ptr = (void*)0x7274F0;
+float* sub_7274F0(EntityData1* a1)
+{
+	float* result;
+	__asm
+	{
+		mov eax, [a1] // eax0
+		call sub_7274F0Ptr
+		fstp result
+	}
+	return result;
+}
