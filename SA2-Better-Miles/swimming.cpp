@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 
 bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2)
 {
@@ -9,11 +9,11 @@ bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2)
 	v2 = a1->PlayerNum;
 	result = false;
 	if ((!Action_Held[v2] || Jump_Pressed[v2])
-		&& (a1->SurfaceFlagsBelow & SurfaceFlag_Water) != 0
-		&& a2->Collision->CollisionArray->center.y < (double)a1->idk5
+		&& (a1->SurfaceInfo.TopSurface & SurfaceFlag_Water) != 0
+		&& a2->Collision->CollisionArray->center.y < (double)a1->SurfaceInfo.TopSurfaceDist
 		&& (a2->Status & 3) == 0)
 	{
-		v4 = fabs(a1->idk5 - a1->idk6);
+		v4 = fabs(a1->SurfaceInfo.TopSurfaceDist - a1->SurfaceInfo.BottomSurfaceDist);
 		if (v4 > 7.0)
 		{
 			result = true;
@@ -30,10 +30,10 @@ bool isSwimAllowed(TailsCharObj2* a1, EntityData1* a2)
 	result = false;
 
 	if ((!Jump_Held[a1->base.PlayerNum] || a2->Action != 6 || a1->base.Speed.y <= 0.0)
-		&& (a1->base.SurfaceFlagsBelow & 2) != 0
-		&& (a2->Collision->CollisionArray->center.y + 4.0 < a1->base.idk5 || (a2->Status & 3) == 0))
+		&& (a1->base.SurfaceInfo.TopSurface & 2) != 0
+		&& (a2->Collision->CollisionArray->center.y + 4.0 < a1->base.SurfaceInfo.TopSurfaceDist || (a2->Status & 3) == 0))
 	{
-		v3 = fabs(a1->base.idk5 - a1->base.idk6);
+		v3 = fabs(a1->base.SurfaceInfo.TopSurfaceDist - a1->base.SurfaceInfo.BottomSurfaceDist);
 		if (v3 > 7.0)
 		{
 			result = true;
@@ -53,73 +53,74 @@ signed int Miles_SetNextActionSwim(TailsCharObj2* a1, EntityData1* a2)
 	return 1;
 }
 
-void Miles_GetFloat(EntityData1* a1, CharObj2Base* a2)
+void Miles_GetFloat(EntityData1* data, CharObj2Base* co2)
 {
-	double v2; // st7
+	double TopSurface; // st7
 	double v3; // st7
-	double v4; // st7
-	double v5; // st7
-	EntityData2_R* v6 = EntityData2Ptrs[a2->PlayerNum]; // eax
+	double result; // st7
+	double rng; // st7
+	EntityData2* data2; // eax
 	float v7; // [esp+0h] [ebp-Ch]
-	Float v8; // [esp+0h] [ebp-Ch]
-	float v9; // [esp+4h] [ebp-8h]
-	float v10; // [esp+8h] [ebp-4h]
+	Float copyResult; // [esp+0h] [ebp-Ch]
+	float posCalc; // [esp+4h] [ebp-8h]
+	float posY; // [esp+8h] [ebp-4h]
 
-	v10 = a1->Position.y - 1.0; //Used for Character surface position check. (Knuckles originally uses "+1.0", but since Miles is a bit smaller, we will got for -1.0.)
-	v9 = a2->PhysData.CollisionSize + a1->Position.y + 10.0;
-	v2 = a2->idk5;
-	if (v9 >= v2)
+	posY = data->Position.y - 1.0; //Used for Character surface position check. (Knuckles originally uses "+1.0", but since Miles is a bit smaller, we will got for -1.0.)
+	posCalc = co2->PhysData.Height + data->Position.y + 10.0;
+	TopSurface = co2->SurfaceInfo.TopSurfaceDist;
+	if (posCalc >= TopSurface)
 	{
-		if (v10 <= v2)
+		if (posY <= TopSurface)
 		{
-			v4 = (v9 - v2) * (a2->PhysData.Gravity - 0.07999999821186066) * 0.1000000014901161
-				+ (v2 - v10) * 0.02300000004470348
-				- a2->Speed.y * 0.300000011920929;
+			result = (posCalc - TopSurface) * (co2->PhysData.Weight - 0.07999999821186066) * 0.1000000014901161
+				+ (TopSurface - posY) * 0.02300000004470348
+				- co2->Speed.y * 0.300000011920929;
 		}
 		else
 		{
-			v4 = a2->PhysData.Gravity - 0.07999999821186066;
+			result = co2->PhysData.Weight - 0.07999999821186066;
 		}
 	}
 	else
 	{
-		v3 = a2->Speed.y;
-		if (a1->Action == Swimming)
+		v3 = co2->Speed.y;
+		if (data->Action == Action_SwimMove)
 		{
-			v4 = 0.05999999865889549 - v3 * 0.03999999910593033;
+			result = 0.05999999865889549 - v3 * 0.03999999910593033;
 		}
 		else
 		{
-			v4 = 0.1599999964237213 - v3 * 0.09000000357627869;
+			result = 0.1599999964237213 - v3 * 0.09000000357627869;
 		}
 	}
-	v7 = v4;
-	v5 = (double)rand();
-	v8 = v5 * 0.000030517578125 * 0.00009999999747378752 + v7;
-	v6->acc.x = 0.0;
-	v6->acc.y = v8;
-	v6->acc.z = 0.0;
+	v7 = result;
+	rng = (double)rand();
+	data2 = MainCharData2[co2->PlayerNum];
+	copyResult = rng * 0.000030517578125 * 0.00009999999747378752 + v7;
+	data2->Acceleration.x = 0.0;
+	data2->Acceleration.y = copyResult;
+	data2->Acceleration.z = 0.0;
 }
 
 bool CheckWaterDistanceThing(CharObj2Base* a1)
 {
 	float v2; // [esp+0h] [ebp-4h]
 
-	v2 = fabs(a1->idk5 - a1->idk6);
+	v2 = fabs(a1->SurfaceInfo.TopSurfaceDist - a1->SurfaceInfo.BottomSurfaceDist);
 	return v2 > 7.0;
 }
 
-void CheckFloatingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+void CheckFloatingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
 	{
-		if ((co2->SurfaceFlagsBelow & SurfaceFlag_Water) == 0 || !CheckWaterDistanceThing(co2)) {
+		if ((co2->SurfaceInfo.TopSurface & SurfaceFlag_Water) == 0 || !CheckWaterDistanceThing(co2)) {
 			data->Action = 0;
 			co2->AnimInfo.Next = 1;
 			PlaySoundProbably(28674, 0, 0, 0);
 			return;
 		}
 
-		if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles) && !CheckTailsJump(co2, data))
+		if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles) && !TailsJump(co2, data))
 		{
 			if ((data->Status & 0x2000) == 0)
 			{
@@ -131,7 +132,7 @@ void CheckFloatingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* c
 					return;
 				}
 
-				if (CallGetAnalog(data, co2, 0, 0) || data->Status & Status_DisableControl) {
+				if (GetAnalog(data, co2, 0, 0) || data->Status & Status_DisableControl) {
 					data->Action = Swimming;
 					co2->AnimInfo.Next = 219;
 					return;
@@ -142,13 +143,13 @@ void CheckFloatingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* c
 	return;
 }
 
-void CheckSwimmingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+void CheckSwimmingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
 	{
-		if ((co2->SurfaceFlagsBelow & SurfaceFlag_Water) != 0 && CheckWaterDistanceThing(co2)) {
-			if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles) && !CheckTailsJump(co2, data))
+		if ((co2->SurfaceInfo.TopSurface & SurfaceFlag_Water) != 0 && CheckWaterDistanceThing(co2)) {
+			if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles) && !TailsJump(co2, data))
 			{
-				if ((!CallGetAnalog(data, co2, 0, 0)
+				if ((!GetAnalog(data, co2, 0, 0)
 					|| (data->Status & Status_DisableControl)))
 				{
 					data->Action = FloatingOnWater;
@@ -178,7 +179,7 @@ void CheckSwimmingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* c
 	return;
 }
 
-void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+void CheckDivingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
 	{
 		if (CheckWaterSurface(co2, data))
@@ -201,11 +202,11 @@ void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2
 			}
 			else if (CheckPlayerStop(data, co2, data2))
 			{
-				data->Rotation.x = data2->ang_aim.x;
-				data->Rotation.z = data2->ang_aim.z;
-				if (njScalor(&data2->spd) >= 1.0)
+				data->Rotation.x = data2->Forward.x;
+				data->Rotation.z = data2->Forward.z;
+				if (njScalor(&data2->Velocity) >= 1.0)
 				{
-					if (njScalor(&data2->spd) >= 2.5)
+					if (njScalor(&data2->Velocity) >= 2.5)
 					{
 						co2->AnimInfo.Next = 17;
 					}
@@ -221,8 +222,8 @@ void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2
 			}
 			else
 			{
-				data->Rotation.x = data2->ang_aim.x;
-				data->Rotation.z = data2->ang_aim.z;
+				data->Rotation.x = data2->Forward.x;
+				data->Rotation.z = data2->Forward.z;
 				data->Action = 1;
 				return;
 			}
@@ -233,7 +234,7 @@ void CheckDivingStuff(EntityData2_R* data2, EntityData1* data, CharObj2Base* co2
 		{
 			if (!Action_Held[co2->PlayerNum])
 			{
-				if ((!CallGetAnalog(data, co2, 0, 0)
+				if ((!GetAnalog(data, co2, 0, 0)
 					|| (data->Status & 0x2000) == 0))
 				{
 					data->Action = FloatingOnWater;

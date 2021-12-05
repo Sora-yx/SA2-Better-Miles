@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 
 LevelRankScores Mission1RankScores[] = {
 	{ LevelIDs_CityEscape, 90, 110, 140, 180 },

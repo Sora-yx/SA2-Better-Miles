@@ -1,47 +1,26 @@
-#include "stdafx.h"
+#include "pch.h"
 
 //Restore Miles Physic
 void RestorePhysic(CharObj2Base* co2) {
-	co2->PhysData.CollisionSize = PhysicsArray[0].CollisionSize;
-	co2->PhysData.RippleSize = PhysicsArray[0].RippleSize;
-	co2->PhysData.FloorGrip = PhysicsArray[0].FloorGrip;
-	co2->PhysData.YOff = PhysicsArray[0].YOff;
+	co2->PhysData.Height = PhysicsArray[Characters_Tails].Height;
+	co2->PhysData.Radius = PhysicsArray[Characters_Tails].Radius;
+	co2->PhysData.FloorGrip = PhysicsArray[Characters_Tails].FloorGrip;
+	co2->PhysData.CenterHeight = PhysicsArray[Characters_Tails].CenterHeight;
 	return;
 }
 
-//Apply Somersault physic/collision to Tails
+//Apply Somersault physic/collision 
 void SetPhysicRoll(CharObj2Base* co2, EntityData1* v1) {
-	co2->PhysData.CollisionSize = PhysicsArray[0].CollisionSize * 0.4000000059604645;
-	co2->PhysData.RippleSize = PhysicsArray[0].RippleSize * 0.4000000059604645;
-	co2->PhysData.FloorGrip = PhysicsArray[0].FloorGrip * 0.4000000059604645;
-	co2->PhysData.YOff = PhysicsArray[0].YOff * 0.4000000059604645;
+	co2->PhysData.Height = PhysicsArray[Characters_Tails].Height * 0.4000000059604645;
+	co2->PhysData.Radius = PhysicsArray[Characters_Tails].Radius * 0.4000000059604645;
+	co2->PhysData.FloorGrip = PhysicsArray[Characters_Tails].FloorGrip * 0.4000000059604645;
+	co2->PhysData.CenterHeight = PhysicsArray[Characters_Tails].CenterHeight * 0.4000000059604645;
 	v1->Collision->CollisionArray->push &= ~0x4000u;
 	return;
 }
 
-static const void* const SlowDownThingPtr = (void*)0x45F840;
-static inline float SlowDownThing(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
-{
-	float result;
-	__asm
-	{
-		mov ebx, a3
-		mov eax, a2
-		mov ecx, a1
-		// Call your __cdecl function here:
-		call SlowDownThingPtr
-		fstp result
-	}
-	return result;
-}
-
-float SlowDownThing_r(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
-{
-	return SlowDownThing(a1, a2, a3);
-}
-
-void RollPhysicControlMain(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
-	PlayerGetRotation(a1, a2, a3);
+void RollPhysicControlMain(EntityData1* a1, EntityData2* a2, CharObj2Base* a3) {
+	PGetRotation(a1, a2, a3);
 	SlowDownThing(a1, a2, a3);
 	PlayerMoveStuff(a1, a2, a3);
 }
@@ -95,7 +74,7 @@ double sub_77FBA0(NJS_VECTOR* a1, NJS_VECTOR* a2)
 	v7 = a2->z * a1->z;
 	return (float)(v3 + v7);
 }
-void ResetPlayerSpeed(CharObj2Base* result, EntityData2_R* a2)
+void ResetPlayerSpeed(CharObj2Base* result, EntityData2* a2)
 {
 	if (result)
 	{
@@ -105,14 +84,14 @@ void ResetPlayerSpeed(CharObj2Base* result, EntityData2_R* a2)
 	}
 	if (a2)
 	{
-		a2->spd.z = 0.0;
-		a2->spd.y = 0.0;
-		a2->spd.x = 0.0;
+		a2->Velocity.z = 0.0;
+		a2->Velocity.y = 0.0;
+		a2->Velocity.x = 0.0;
 	}
 }
 
 //Giant mess copied pasted from the disassembly, needed to manage the rolling thing.
-int CheckGravityFallThing(EntityData1* a1, EntityData2_R* a3, CharObj2Base* a4)
+int CheckGravityFallThing(EntityData1* a1, EntityData2* a3, CharObj2Base* a4)
 {
 	__int16 curStatus; // bx
 	char curChar; // al
@@ -123,31 +102,31 @@ int CheckGravityFallThing(EntityData1* a1, EntityData2_R* a3, CharObj2Base* a4)
 	char v16; // [esp-4h] [ebp-18h]
 
 	curStatus = a1->Status;
-	if (((curStatus & (Status_Unknown1 | Status_Ground)) != 0) ||
+	if (((curStatus & (Status_OnObjectColli | Status_Ground)) != 0) ||
 		(CurrentLevel == LevelIDs_CrazyGadget && (a1->Position.x >= -3750 && a1->Position.x <= -3500 || a1->Position.x >= -9400 && a1->Position.x <= -9160))) //hardcoded shit fix for CG somersault
 	{
 		return 0;
 	}
 	if (!ControllerEnabled[a4->PlayerNum]
-		|| (curChar = a4->CharID, curChar == 6)
-		|| curChar == 7
-		|| (curaction = a1->Action, a1->Action != 1) && (curChar && curChar != Characters_Shadow || curaction < 61 || curaction > 68)
-		|| HIWORD(a4->field_12)
-		|| sub_77FBA0(&Gravity, (NJS_VECTOR*)&a4->gap70[12]) >= -0.9847999811172485
-		|| a4->PhysData.RollCancel > (double)a4->Speed.x
-		|| njScalor((const NJS_VECTOR*)a4->gap70) != 0.0)
+		|| (a4->PreviousSurfaceFlags & SurfaceFlag_Dynamic) != 0
+		|| (curaction = a1->Action, a1->Action != 1)
+		|| a4->field_12
+		|| sub_77FBA0(&Gravity, &a4->FloorNormal) >= -0.9847999811172485
+		|| a4->PhysData.JogSpeed > (double)a4->Speed.x
+		|| njScalor(&a4->WallNormal) != 0.0)
 	{
 		if ((curStatus & Status_Ball) != 0)
 		{
 			a1->Action = 6;
 			return 1;
 		}
-		goto LABEL_42;
+		a1->Action = 10;
+		a4->AnimInfo.Next = 15;
+		return 1;
 	}
-	if ((Gravity.y >= -0.9999899864196777 || a1->Position.y - 60.0 < a4->idk6)
-		&& (Gravity.y <= 0.9999899864196777 || a4->idk5 < a1->Position.y + 60.0))
+	if ((Gravity.y >= -0.9999899864196777 || a1->Position.y - 60.0 < a4->SurfaceInfo.BottomSurface)
+		&& (Gravity.y <= 0.9999899864196777 || a4->SurfaceInfo.TopSurface < a1->Position.y + 60.0))
 	{
-	LABEL_42:
 		a1->Action = 10;
 		a4->AnimInfo.Next = 15;
 		return 1;
@@ -155,22 +134,14 @@ int CheckGravityFallThing(EntityData1* a1, EntityData2_R* a3, CharObj2Base* a4)
 	a1->Action = 11;
 	a4->AnimInfo.Next = 61;
 	ResetPlayerSpeed(a4, a3);
-	v8 = a4->CharID;
-	if (v8 == 7 || v8 == 6)
-	{
-		v16 = 3;
-	}
-	else
-	{
-		v16 = 2;
-	}
+	v16 = 2;
 	v9 = &a1->Position;
 	v10 = a4->CharID2;
 	a4->IdleTime = 0;
 	return 1;
 }
 
-void Miles_UnrollCheck(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2) {
+void Miles_UnrollCheck(EntityData1* data1, EntityData2* data2, CharObj2Base* co2) {
 	if (data1->NextAction == 0 || (data1->Status & Status_DoNextAction) == 0)
 	{
 		if (CheckGravityFallThing(data1, data2, co2)) {
@@ -180,14 +151,14 @@ void Miles_UnrollCheck(EntityData1* data1, EntityData2_R* data2, CharObj2Base* c
 		}
 		else
 		{
-			if (CheckTailsJump(co2, data1))
+			if (TailsJump(co2, data1))
 			{
 				RestorePhysic(co2);
 				data1->Status &= Status_Ball;
 				return;
 			}
 
-			if (co2->PhysData.RollCancel > (double)co2->Speed.x && ResetSpeedAction(data1, co2))
+			if (co2->PhysData.JogSpeed > (double)co2->Speed.x && ResetSpeedAction(data1, co2))
 			{
 				RestorePhysic(co2);
 				data1->Status &= ~(Status_Attack | Status_Ball);

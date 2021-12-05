@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 
 StartPosition MilesStartArray[] = {
 	{ LevelIDs_BasicTest, 0, 0, 0, { 0 }, { 0 }, { 0 } },

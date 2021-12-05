@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 
 //Setup a new animation list for Custom Animation. (Adding the SA1 ones mostly, but also extend the list to make Miles being able to use more actions such as Vine, Bar etc.)
 AnimationInfo TailsAnimationList_R[] = {

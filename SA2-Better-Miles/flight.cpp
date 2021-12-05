@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 
 float TailsFlightTime = 0.0000000000; //fatigue
 double flyCustomSpeedValue = 0.11; //used to improve Miles flight speed
@@ -61,7 +61,7 @@ void Tails_FatigueReloadCheck(EntityData1* data1) {
 	if (data1->Action == Flying || TailsFlightTime == 0.0000000000)
 		return;
 
-	if ((data1->Status & (Status_Unknown1 | Status_Ground))) {
+	if ((data1->Status & (Status_OnObjectColli | Status_Ground))) {
 		TailsFlightTime = 0.0000000000;
 	}
 }

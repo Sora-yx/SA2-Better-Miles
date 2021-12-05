@@ -1,8 +1,8 @@
-#include "stdafx.h"
+#include "pch.h"
 
 int FailSafeTimer = 0;
 int spinDelay = 0;
-void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3, EntityData2_R* a4)
+void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3, EntityData2* a4)
 {
 	if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || Miles_CheckNextActions_r(a4, a1, a3, a2)) {
 		spinDelay = 0;
@@ -41,7 +41,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 	{
 		if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
 		{
-			if (CallGetAnalog(a2, a1, 0, 0))
+			if (GetAnalog(a2, a1, 0, 0))
 			{
 				//The animation of the spin attack changes depending on the player direction.
 				v4 = (unsigned __int8)((((int)(4096

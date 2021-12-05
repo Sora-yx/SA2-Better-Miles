@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 
 Trampoline* CheckBreakObject_t;
 Trampoline* MysticMelody_t;
@@ -15,278 +15,17 @@ Trampoline* BrokenDownSmoke_t;
 Trampoline* MetalBox_t;
 Trampoline* MetalBoxGravity_t;
 
-static const void* const GetAnalogPtr2 = (void*)0x45A870;
-inline signed int GetAnalogASM2(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude)
-{
-	signed int result;
-	__asm
-	{
-		push[magnitude]
-		push[angle]
-		push[co2]
-		mov eax, [data]
-		call GetAnalogPtr2
-		mov result, eax
-		add esp, 12
-	}
-	return result;
-}
 
-signed int CallGetAnalog(EntityData1* data, CharObj2Base* co2, Angle* angle, Float* magnitude) {
-	return GetAnalogASM2(data, co2, angle, magnitude);
-}
 
-void DoNextAction_r(int playerNum, char action, int unknown)
-{
-	EntityData1* v3; // eax
-
-	v3 = MainCharObj1[playerNum];
-	if (v3)
-	{
-		v3->Status |= Status_DoNextAction;
-		v3->NextAction = action;
-		MainCharObj2[playerNum]->field_28 = unknown;
-	}
-}
-
-//signed int __usercall njPushMatrix@<eax>(NJS_MATRIX_PTR m@<ecx>)
-static const void* const njPushMatrixPtr = (void*)0x77FE10;
-static inline signed int njPushMatrixMaybe(NJS_MATRIX_PTR m)
-{
-	signed int result;
-	__asm
-	{
-		mov ecx, [m]
-		call njPushMatrixPtr
-		mov result, eax
-	}
-	return result;
-}
-
-static const void* const sub428A30ptr = (void*)0x428A30;
-static inline void njTranslatePosition(NJS_VECTOR* a1)
-{
-	__asm
-	{
-		mov eax, [a1]
-		call sub428A30ptr
-	}
-}
-
-void CheckAndDisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
-{
-	NJS_OBJECT* v3; // edi
-	NJS_MATRIX_PTR v4; // ebx
-
-	if ((FrameCountIngame & 1) == 0 && a2->CharID == Characters_Tails && CharacterModels[208].Model)
-	{
-		v3 = CharacterModels[208].Model;
-		njPushMatrixMaybe(flt_25F02A0);
-
-		njTranslatePosition(&a1->Position);
-		v4 = nj_current_matrix_ptr_;
-		if (a1->Rotation.z)
-		{
-			njRotateZ((float*)nj_current_matrix_ptr_, a1->Rotation.z);
-		}
-		if (a1->Rotation.x)
-		{
-			njRotateX((float*)v4, a1->Rotation.x);
-		}
-		if (a1->Rotation.y != 0x8000)
-		{
-			njRotateY((float*)v4, 0x8000 - a1->Rotation.y);
-		}
-		if (!TwoPlayerMode)
-		{
-			PlayerAfterImageMaybe(v3, 0, a3->TextureList, 0.0, 0);
-			v4 = nj_current_matrix_ptr_;
-		}
-		if ((unsigned int)(v4 - 12) >= dword_267053C)
-		{
-			nj_current_matrix_ptr_ = v4 - 12;
-		}
-	}
-}
-
-static const void* const Sub4372E0Ptr = (void*)0x4372E0;
-static inline char PlaySound3DThingMaybeASM(int id, NJS_VECTOR* pos, int a3, char a4, char a5)
-{
-	char result;
-	__asm
-	{
-		push[a5]
-		push[a4]
-		push[a3]
-		mov esi, [pos]
-		mov edi, [id]
-		call Sub4372E0Ptr
-		add esp, 12
-		mov result, al
-	}
-	return result;
-}
-
-char Play3DSoundPosThing(int id, NJS_VECTOR* pos, int a3, char a4, char a5) {
-	return PlaySound3DThingMaybeASM(id, pos, a3, a4, a5);
-}
-
-static const void* const PGetAccelAirPtr = (void*)0x45D770;
-static inline void PlayerGetAccelerationAirASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
-{
-	__asm
-	{
-		push[data2]
-		mov eax, [co2]
-		mov ecx, a1 // a1
-
-		// Call your __cdecl function here:
-		call PGetAccelAirPtr
-
-		add esp, 4 // a3
-	}
-}
-
-void PlayerGetAccelerationAir(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2) {
-	return PlayerGetAccelerationAirASM(a1, co2, data2);
-}
-
-static const void* const PResetAnglePtr = (void*)0x460260;
-static inline void PlayerResetAngleASM(EntityData1* a1, CharObj2Base* co2)
-{
-	__asm
-	{
-		mov ebx, [co2]
-		mov eax, [a1] // a1
-		call PResetAnglePtr
-	}
-}
-
-void PlayerResetAngle(EntityData1* a1, CharObj2Base* co2)
-{
-	return PlayerResetAngleASM(a1, co2);
-}
-
-void DoNextAction_R(int playerNum, char action, int unknown) {
-	EntityData1* v3 = MainCharObj1[playerNum];
-
-	if (v3)
-	{
-		v3->Status |= Status_DoNextAction;
-		v3->NextAction = action;
-		MainCharObj2[playerNum]->field_28 = unknown;
-	}
-}
-
-static const void* const PGetSpeedPtr = (void*)0x460860;
-static inline void PlayerGetSpeedASM(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
-{
-	__asm
-	{
-		push[data2] // a3
-		mov ebx, co2 // a2
-		mov eax, a1 // a1
-
-		// Call your __cdecl function here:
-		call PGetSpeedPtr
-
-		add esp, 4 // a3
-	}
-}
-
-void PlayerGetSpeed(EntityData1* a1, CharObj2Base* co2, EntityData2_R* data2)
-{
-	PlayerGetSpeedASM(a1, co2, data2);
-}
-
-static const void* const PSetPositionptr = (void*)0x4616E0;
-static inline int PSetPositionASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
-{
-	int result;
-	__asm
-	{
-		push[a3]
-		push[a2]
-		mov eax, [a1]
-		call PSetPositionptr
-		add esp, 8
-		mov result, eax
-	}
-	return result;
-}
-
-int PlayerSetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
-{
-	return PSetPositionASM(a1, a2, a3);
-}
-
-static const void* const sub_469050Ptr = (void*)0x469050;
-static inline void PResetPositionASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3)
-{
-	__asm
-	{
-		push[a3] // a3
-		mov ebx, a2 // a2
-		mov eax, a1 // a1
-		call sub_469050Ptr
-		add esp, 4 // a2
-	}
-}
-
-void PlayerResetPosition(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
-	PResetPositionASM(a1, a2, a3);
-}
-
-void PlayerMoveStuff(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3) {
-	PlayerGetSpeed(a1, a3, a2);
-	PlayerSetPosition(a1, a2, a3);
-	PlayerResetPosition(a1, a2, a3);
+void PlayerMoveStuff(EntityData1* a1, EntityData2* a2, CharObj2Base* a3) {
+	PGetSpeed(a1, a3, a2);
+	PSetPosition(a1, a2, a3);
+	PResetPosition(a1, a2, a3);
 	return;
 }
 
-static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
-static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4)
-{
-	int result;
-	__asm
-	{
-		push[a4] // a4
-		push[a3] // a3
-		mov ecx, [a2] // a1
-		mov eax, [a1]
-		// Call your __cdecl function here:
-		call PlayerCheckFallGravityPtr
-		add esp, 12 // a1<eax> is also used for return value
-		mov result, eax
-	}
-	return result;
-}
 
-int CallPlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2_R* a3, CharObj2Base* a4) {
-	return PlayerCheckFallGravityStuff(a1, a2, a3, a4);
-}
 
-static const void* const VibeThingPtr = (void*)0x438E70;
-static inline void VibeThingASM(int a1, signed int a2, int a3, signed int a4)
-{
-	__asm
-	{
-		push[a4] // int a4
-		mov ecx, a3 // a3
-		mov edx, a2 // int a2
-		mov eax, a1 // a1
-
-		// Call your __cdecl function here:
-		call VibeThingPtr
-		add esp, 4 // int a4
-	}
-}
-
-void CallVibeThing(int a1, signed int a2, int a3, signed int a4)
-{
-	VibeThingASM(a1, a2, a3, a4);
-	return;
-}
 
 void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
 {
@@ -591,12 +330,6 @@ void rocketIG_r(ObjectMaster* obj) {
 }
 
 void Super_Aura_r(ObjectMaster* obj) {
-	if (MainCharacter[1]) {
-		EntityData2* data2 = MainCharacter[1]->Data2.Entity;
-		word_170ACEE = word_170ACEE & 0xC000 | ((int(data2->CharacterData) != 10 ? 0 : 6)
-			+ (data2[13].field_1C)
-			+ 3);
-	}
 
 	ObjectFunc(origin, SuperAura_t->Target());
 	origin(obj);
@@ -614,7 +347,7 @@ void LoadSuperFormFinalBattle() {
 
 	LoadTails(0);
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
-	MainCharacter[0]->SomethingSub = Super_Something;
+	MainCharacter[0]->DisplaySub_Delayed3 = Super_Something;
 	co2Miles->base.Upgrades = Upgrades_SuperSonic;
 	LastBossPlayerManager_Load();
 	InitPlayer(0);
@@ -662,43 +395,7 @@ void MetalBoxGravity_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
-bool isRando() {
-	HMODULE randoMod = GetModuleHandle(L"Rando");
 
-	if (randoMod)
-		return true;
-
-	return false;
-}
-
-bool isCharaSelect() {
-	HMODULE charaMod = GetModuleHandle(L"SA2CharSel");
-	HMODULE charaModPlus = GetModuleHandle(L"CharacterSelectPlus");
-
-	if (charaMod || charaModPlus)
-		return true;
-
-	return false;
-}
-
-bool isSA1Tails() {
-
-	HMODULE SA1 = GetModuleHandle(L"sa1-tails");
-
-	if (SA1)
-		return true;
-
-	return false;
-}
-
-bool isSuperForm() {
-	if (MainCharObj2[0]->CharID == Characters_Tails && MainCharObj2[0]->Upgrades & Upgrades_SuperSonic || CurrentLevel == LevelIDs_FinalHazard)
-	{
-		return true;
-	}
-
-	return false;
-}
 
 void Init_MilesActions() {
 	if (isMechRemoved)

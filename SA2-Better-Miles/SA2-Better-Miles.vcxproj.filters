@@ -13,81 +13,96 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Audio">
-      <UniqueIdentifier>{91272366-f3ad-48ac-a6ac-dca44e1fc8be}</UniqueIdentifier>
+    <Filter Include="Source Files\Miles">
+      <UniqueIdentifier>{4065e793-0ab7-477e-bef3-7892ed501afa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Character">
-      <UniqueIdentifier>{b5151e89-c573-4bd2-9e9a-3caf220a1fd6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Character\abilities">
-      <UniqueIdentifier>{786926ae-a97c-4e4b-8474-649fb1f9e08f}</UniqueIdentifier>
+    <Filter Include="Source Files\Miles\Abilities">
+      <UniqueIdentifier>{f2187b5f-aaf4-42eb-a67a-c27d5af54441}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mod.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="voices.cpp">
-      <Filter>Source Files\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="fly.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="spin.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="roll.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="grind.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="miles.cpp">
-      <Filter>Source Files\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="animations.cpp">
-      <Filter>Source Files\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="startposition.cpp">
-      <Filter>Source Files\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="ranks.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="helper.cpp">
-      <Filter>Source Files\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="lightdash.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="bounce.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="swimming.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-    <ClCompile Include="board.cpp">
-      <Filter>Source Files\Character\abilities</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="helper.h">
+    <ClInclude Include="mod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="abilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="StartPos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sa2-util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="objects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ranks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="startposition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Animations.cpp">
+      <Filter>Source Files\Miles</Filter>
+    </ClCompile>
+    <ClCompile Include="bounce.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="board.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="flight.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="grind.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="lightdash.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Miles.cpp">
+      <Filter>Source Files\Miles</Filter>
+    </ClCompile>
+    <ClCompile Include="roll.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="spin.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="swimming.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="voices.cpp">
+      <Filter>Source Files\Miles</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

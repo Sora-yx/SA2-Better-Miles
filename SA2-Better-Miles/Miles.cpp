@@ -1,6 +1,4 @@
-#include "stdafx.h"
-#include <fstream>
-#include <iostream>
+#include "pch.h"
 
 Trampoline* Tails_Main_t;
 Trampoline* Miles_CheckNextActions_t;
@@ -9,7 +7,7 @@ Trampoline* LoadCharacters_t;
 
 //Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
-signed int Miles_CheckNextActions_original(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+signed int Miles_CheckNextActions_original(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 	const auto MilesCheck_ptr = Miles_CheckNextActions_t->Target();
 
 	signed int result;
@@ -30,7 +28,7 @@ signed int Miles_CheckNextActions_original(EntityData2_R* a1, TailsCharObj2* a2,
 	return result;
 }
 
-signed int __cdecl Miles_CheckNextActions_r(EntityData2_R* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+signed int __cdecl Miles_CheckNextActions_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 	switch (a4->NextAction)
 	{
 	case 1:
@@ -138,7 +136,7 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 	}
 }
 
-static inline signed int Tails_CheckActionWindowASM(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4)
+static inline signed int Tails_CheckActionWindowASM(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4)
 {
 	signed int result;
 	__asm
@@ -154,7 +152,7 @@ static inline signed int Tails_CheckActionWindowASM(EntityData1* a1, EntityData2
 	return result;
 }
 
-signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2_R* a2, CharObj2Base* a3, TailsCharObj2* a4) {
+signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4) {
 	return Tails_CheckActionWindowASM(a1, a2, a3, a4);
 }
 
@@ -183,25 +181,43 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1) {
 	return;
 }
 
-static const void* const TailsJumpPtr = (void*)0x751B80;
-static inline int Tails_JumpStart(CharObj2Base* a1, EntityData1* a2)
+
+
+void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
 {
-	int result;
-	__asm
+	NJS_OBJECT* v3; // edi
+	NJS_MATRIX_PTR v4; // ebx
+
+	if ((FrameCountIngame & 1) == 0 && a2->CharID == Characters_Tails && CharacterModels[208].Model)
 	{
-		mov ecx, [a2]
-		mov eax, [a1]
-		call TailsJumpPtr
-		mov result, eax
+		v3 = CharacterModels[208].Model;
+		njPushMatrix(flt_25F02A0);
+
+		njTranslateEx(&a1->Position);
+		v4 = _nj_current_matrix_ptr_;
+		if (a1->Rotation.z)
+		{
+			njRotateZ((float*)_nj_current_matrix_ptr_, a1->Rotation.z);
+		}
+		if (a1->Rotation.x)
+		{
+			njRotateX((float*)v4, a1->Rotation.x);
+		}
+		if (a1->Rotation.y != 0x8000)
+		{
+			njRotateY((float*)v4, 0x8000 - a1->Rotation.y);
+		}
+		if (!TwoPlayerMode)
+		{
+			PlayerAfterImage(v3, 0, a3->TextureList, 0.0, 0);
+			v4 = _nj_current_matrix_ptr_;
+		}
+		njPopMatrix(1u);
 	}
-
-	return result;
 }
 
-int CheckTailsJump(CharObj2Base* a1, EntityData1* a2)
-{
-	return Tails_JumpStart(a1, a2);
-}
+
+
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 	if (MainCharObj1[0]->Action != Rolling)
@@ -214,8 +230,8 @@ void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles) {
 		*(int*)&co2Miles->field_1BC[436] = -9000;
 }
 
-void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	FunctionPointer(void, original, (EntityData1 * data1, EntityData2_R * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
+void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+	FunctionPointer(void, original, (EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
 
 	CheckAndFixTailsRotation(co2, co2Miles);
@@ -264,7 +280,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		return;
 	case Pulley:
 		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
-			CheckTailsJump(co2, data1);
+			TailsJump(co2, data1);
 		}
 		return;
 	case Action_AirBubble:
@@ -326,8 +342,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2_R* data2, CharOb
 		{
 			co2->Speed.x = 1.0;
 		}
-		data1->Rotation.x = data2->ang_aim.x;
-		data1->Rotation.z = data2->ang_aim.z;
+		data1->Rotation.x = data2->Forward.x;
+		data1->Rotation.z = data2->Forward.z;
 		break;
 	case 80:
 		BoardJumpStuff(data1, co2Miles, co2, data2);
@@ -362,7 +378,7 @@ void Tails_Main_r(ObjectMaster* obj)
 
 	CharObj2Base* co2 = MainCharObj2[0];
 	EntityData1* data1 = MainCharObj1[0];
-	EntityData2_R* data2 = EntityData2Ptrs[0];
+	EntityData2* data2 = MainCharData2[0];
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
 
 	switch (data1->Action)
@@ -370,7 +386,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Standing:
 	case Running:
 
-		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1) && !CheckTailsJump(co2, data1)) {
+		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1) && !TailsJump(co2, data1)) {
 			if (co2->Speed.x < 1.3) {
 				Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 			}
@@ -401,18 +417,18 @@ void Tails_Main_r(ObjectMaster* obj)
 		Miles_DoCollisionAttackStuff(data1);
 		break;
 	case Bounce:
-		PlayerResetAngle(data1, co2);
-		PlayerGetAccelerationAir(data1, co2, data2);
-		PlayerGetSpeed(data1, co2, data2);
-		PlayerSetPosition(data1, data2, co2);
-		PlayerResetPosition(data1, data2, co2);
+		PResetAngle(data1, co2);
+		PGetAccelerationAir(data1, co2, data2);
+		PGetSpeed(data1, co2, data2);
+		PSetPosition(data1, data2, co2);
+		PResetPosition(data1, data2, co2);
 		break;
 	case BounceFloor:
-		PlayerResetAngle(data1, co2);
-		PlayerGetAccelerationAir(data1, co2, data2);
-		PlayerGetSpeed(data1, co2, data2);
-		PlayerSetPosition(data1, data2, co2);
-		PlayerResetPosition(data1, data2, co2);
+		PResetAngle(data1, co2);
+		PGetAccelerationAir(data1, co2, data2);
+		PGetSpeed(data1, co2, data2);
+		PSetPosition(data1, data2, co2);
+		PResetPosition(data1, data2, co2);
 		break;
 	case Grinding:
 		DoGrindThing(data1, data2, co2, co2Miles);
@@ -428,11 +444,11 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Action_Board:
 	{
 		PhysicsBoardStuff(co2, data1, data2, 7.8200002);
-		PlayerGetSpeed(data1, co2, data2);
-		int checkPos = PlayerSetPosition(data1, data2, co2);
+		PGetSpeed(data1, co2, data2);
+		int checkPos = PSetPosition(data1, data2, co2);
 		if (checkPos != 2)
 		{
-			PlayerResetPosition(data1, data2, co2);
+			PResetPosition(data1, data2, co2);
 			BoardSparklesMaybe(data2, data1, co2Miles);
 		}
 		BoardSoundEffect(co2, data1);
@@ -440,11 +456,11 @@ void Tails_Main_r(ObjectMaster* obj)
 	break;
 	case 79:
 	case 80:
-		PlayerResetAngle(data1, co2);
+		PResetAngle(data1, co2);
 		PhysicsBoardStuff2(data1, data2, co2);
-		PlayerGetSpeed(data1, co2, data2);
-		PlayerSetPosition(data1, data2, co2);
-		PlayerResetPosition(data1, data2, co2);
+		PGetSpeed(data1, co2, data2);
+		PSetPosition(data1, data2, co2);
+		PResetPosition(data1, data2, co2);
 		break;
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);
@@ -455,7 +471,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	{
 		CheckRefreshLightDashTimer(co2, data1);
 		Sonic_InitLightDash(data1, co2, data2, co2Miles);
-		int check = PlayerSetPosition(data1, data2, co2);
+		int check = PSetPosition(data1, data2, co2);
 		if (check == 2) {
 			if (((short)CurrentLevel != LevelIDs_GreenHill)) {
 				PlaySoundProbably(0x7f, 0, 0, 0);
@@ -467,39 +483,39 @@ void Tails_Main_r(ObjectMaster* obj)
 
 			//PlaySound3(24, 0x2012);
 			CrashStar_Load();
-			CheckAndDisplayAfterImage(data1, co2, co2Miles);
+			Miles_DisplayAfterImage(data1, co2, co2Miles);
 		}
 		else {
 			if (check == 0)
 			{
-				CheckAndDisplayAfterImage(data1, co2, co2Miles);
-				PlayerResetPosition(data1, data2, co2);
+				Miles_DisplayAfterImage(data1, co2, co2Miles);
+				PResetPosition(data1, data2, co2);
 			}
 			else {
 				data1->Action = 10;
 				co2->AnimInfo.Next = 15;
 				data1->Status &= 0xFBFFu;
-				if (njScalor(&data2->spd) <= 2.0) {
-					if (&data2->spd)
+				if (njScalor(&data2->Velocity) <= 2.0) {
+					if (&data2->Velocity)
 					{
-						data2->spd.z = 0.0;
-						data2->spd.y = 0.0;
-						data2->spd.x = 0.0;
+						data2->Velocity.z = 0.0;
+						data2->Velocity.y = 0.0;
+						data2->Velocity.x = 0.0;
 					}
 				}
 				else {
-					njUnitVector(&data2->spd);
-					data2->spd.x = data2->spd.x * 2.0;
-					data2->spd.y = data2->spd.y * 2.0;
-					data2->spd.z = data2->spd.z * 2.0;
+					njUnitVector(&data2->Velocity);
+					data2->Velocity.x = data2->Velocity.x * 2.0;
+					data2->Velocity.y = data2->Velocity.y * 2.0;
+					data2->Velocity.z = data2->Velocity.z * 2.0;
 				}
-				PlayerResetPosition(data1, data2, co2);
+				PResetPosition(data1, data2, co2);
 
 				if (njScalor(&co2->Speed) <= 2.0) {
 					co2->Speed.x = 0.0;
 					co2->Speed.y = 0.0;
 					co2->Speed.z = 0.0;
-					CheckAndDisplayAfterImage(data1, co2, co2Miles);
+					Miles_DisplayAfterImage(data1, co2, co2Miles);
 				}
 				else {
 					njUnitVector(&co2->Speed);
@@ -513,14 +529,14 @@ void Tails_Main_r(ObjectMaster* obj)
 	break;
 	case FloatingOnWater:
 		Miles_GetFloat(data1, co2);
-		PlayerResetAngle(data1, co2);
-		PlayerGetRotation(data1, data2, co2);
-		PlayerGetAccelerationAir(data1, co2, data2);
-		PlayerGetSpeed(data1, co2, data2);
-		PlayerSetPosition(data1, data2, co2);
-		PlayerResetPosition(data1, data2, co2);
+		PResetAngle(data1, co2);
+		PGetRotation(data1, data2, co2);
+		PGetAccelerationAir(data1, co2, data2);
+		PGetSpeed(data1, co2, data2);
+		PSetPosition(data1, data2, co2);
+		PResetPosition(data1, data2, co2);
 
-		if (co2->PhysData.CameraY + data1->Position.y > co2->idk5)
+		if (co2->PhysData.CameraY + data1->Position.y > co2->SurfaceInfo.TopSurfaceDist)
 		{
 			co2->AnimInfo.Next = FloatingWaterAnim;
 		}
@@ -528,18 +544,18 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case Swimming:
 		Miles_GetFloat(data1, co2);
-		PlayerResetAngle(data1, co2);
-		PlayerGetAccelerationAir(data1, co2, data2);
-		PlayerGetSpeed(data1, co2, data2);
-		PlayerSetPosition(data1, data2, co2);
-		PlayerResetPosition(data1, data2, co2);
+		PResetAngle(data1, co2);
+		PGetAccelerationAir(data1, co2, data2);
+		PGetSpeed(data1, co2, data2);
+		PSetPosition(data1, data2, co2);
+		PResetPosition(data1, data2, co2);
 		break;
 	case Diving:
-		PlayerResetAngle(data1, co2);
-		PlayerGetAccelerationAir(data1, co2, data2);
-		PlayerGetSpeed(data1, co2, data2);
-		PlayerSetPosition(data1, data2, co2);
-		PlayerResetPosition(data1, data2, co2);
+		PResetAngle(data1, co2);
+		PGetAccelerationAir(data1, co2, data2);
+		PGetSpeed(data1, co2, data2);
+		PSetPosition(data1, data2, co2);
+		PResetPosition(data1, data2, co2);
 		break;
 	case VictoryPose:
 		if (isSuperForm()) {
@@ -593,7 +609,7 @@ void SetSpacePhysics(CharObj2Base* co2) {
 	case LevelIDs_MadSpace:
 	case LevelIDs_PlanetQuest:
 	case LevelIDs_CosmicWall2P:
-		co2->PhysData.RollDecel = -0.0070000002;
+		co2->PhysData.AirResist = -0.0070000002;
 		co2->PhysData.AirDecel = -0.018999999;
 		break;
 	}
@@ -641,12 +657,12 @@ void BetterMiles_Init() {
 	//Improve physic
 	if (isCustomPhysics) {
 		PhysicsArray[Characters_Tails].AirAccel = 0.050f;
-		PhysicsArray[Characters_Tails].MaxAccel = 2.0f;
+		PhysicsArray[Characters_Tails].SpeedMaxH = 2.0f;
 		PhysicsArray[Characters_Tails].HangTime = 60;
 		PhysicsArray[Characters_Tails].JumpSpeed = 1.80f;
-		PhysicsArray[Characters_Tails].GroundAccel = 0.05f;
-		PhysicsArray[Characters_Tails].RollDecel = -0.008f;
-		PhysicsArray[Characters_Tails].Run2 = 5.09f;
+		PhysicsArray[Characters_Tails].RunAccel = 0.05f;
+		PhysicsArray[Characters_Tails].AirResist = -0.008f;
+		PhysicsArray[Characters_Tails].DashSpeed = 5.09f;
 	}
 
 	Init_MilesActions();

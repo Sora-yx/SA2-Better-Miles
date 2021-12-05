@@ -1,0 +1,304 @@
+#pragma once
+
+DataPointer(double, MilesFlySpeedValue, 0x9065a8);
+//control/physic functions
+FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2* a3, CharObj2Base* co2), 0x45B610);
+FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2* a3, CharObj2Base* co2), 0x474990);
+FunctionPointer(void, PlayerGetRotation, (EntityData1* data, EntityData2* a3, CharObj2Base* co2), 0x45FA70);
+FunctionPointer(void, PlayerAfterImage, (NJS_OBJECT* a1, int a2, NJS_TEXLIST* a3, float a4, char a5), 0x476C20);
+
+#pragma pack(push, 1)
+struct __declspec(align(2)) HomingAttackTarget
+{
+	EntityData1* entity;
+	float distance;
+};
+#pragma pack(pop)
+
+
+static const void* const sub_45E300Ptr = (void*)0x45E300;
+static inline int  PhysicsBoardStuff(CharObj2Base* a1, EntityData1* a2, EntityData2* a3, float a4)
+{
+	int result;
+	__asm
+	{
+		push[a4]
+		push[a3]
+		mov ecx, [a2]
+		mov eax, [a1]
+		call sub_45E300Ptr
+		add esp, 8
+		mov result, eax
+	}
+	return result;
+}
+
+
+static const void* const boardPtr = (void*)0x727540;
+static inline void BoardSparklesMaybe(EntityData2* a1, EntityData1* a2, TailsCharObj2* a3)
+{
+	__asm
+	{
+		push[a3]
+		push[a2]
+		mov eax, [a1]
+		call boardPtr
+		add esp, 8
+	}
+}
+
+
+static const void* const sub_45E9A0Ptr = (void*)0x45E9A0;
+static inline float PhysicsBoardStuff2(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
+{
+	float result;
+	__asm
+	{
+		push[a3]
+		push[a2]
+		mov eax, a1
+		call sub_45E9A0Ptr
+		add esp, 8
+		fstp result
+	}
+	return result;
+}
+
+
+static const void* const TailsJumpPtr = (void*)0x751B80;
+static inline int TailsJump(CharObj2Base* a1, EntityData1* a2)
+{
+	int result;
+	__asm
+	{
+		mov ecx, [a2]
+		mov eax, [a1]
+		call TailsJumpPtr
+		mov result, eax
+	}
+
+	return result;
+}
+
+
+static const void* const Sub4372E0Ptr = (void*)0x4372E0;
+static inline char Play3DSound2(int id, NJS_VECTOR* pos, int a3, char a4, char a5)
+{
+	char result;
+	__asm
+	{
+		push[a5]
+		push[a4]
+		push[a3]
+		mov esi, [pos]
+		mov edi, [id]
+		call Sub4372E0Ptr
+		add esp, 12
+		mov result, al
+	}
+	return result;
+}
+
+static const void* const VibeThingPtr = (void*)0x438E70;
+static inline void VibeThing(int a1, signed int a2, int a3, signed int a4)
+{
+	__asm
+	{
+		push[a4] // int a4
+		mov ecx, a3 // a3
+		mov edx, a2 // int a2
+		mov eax, a1 // a1
+
+		// Call your __cdecl function here:
+		call VibeThingPtr
+		add esp, 4 // int a4
+	}
+}
+
+static const void* const SetNextAnimPtr = (void*)0x474F80;
+static inline int CheckSpeedAndSetNextAnim(CharObj2Base* a1, EntityData1* a2)
+{
+	int result;
+	__asm
+	{
+		push[a2]
+		mov ebx, [a1]
+		call SetNextAnimPtr
+		add esp, 4
+		mov result, ebx
+	}
+	return result;
+}
+
+static const void* const  sub_4745D0ptr = (void*)0x4745D0;
+static inline int sub_4745D0(CharObj2Base* a1, EntityData1* a2, EntityData2* a3)
+{
+	int result;
+	__asm
+	{
+		push[a3]
+		mov ecx, [a2]
+		mov eax, [a1]
+		call sub_4745D0ptr
+		add esp, 4
+		mov result, eax
+	}
+	return result;
+}
+
+static const void* const  sub_474630ptr = (void*)0x474630;
+static inline void sub_474630(CharObj2Base* a1, EntityData2* a2, EntityData1* a3)
+{
+	__asm
+	{
+		mov ebx, [a3]
+		mov ecx, [a2]
+		mov eax, [a1]
+		call sub_474630ptr
+	}
+}
+
+static const void* const sub_45B2C0Ptr = (void*)0x45B2C0;
+static inline int sub_45B2C0(CharObj2Base* a1, int a2, EntityData1* a3)
+{
+	int result;
+
+	__asm
+	{
+		mov esi, [a3]
+		mov ecx, [a2]
+		mov edx, [a1]
+
+		call sub_45B2C0Ptr
+		mov result, edx
+	}
+
+	return result;
+}
+
+
+
+static const void* const CheckGrindPtr = (void*)0x726D00;
+static inline signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityData1* a3)
+{
+	signed int result;
+
+	__asm
+	{
+		push[a3]
+		mov edi, [a2]
+		mov eax, [a1]
+
+		call CheckGrindPtr
+		add esp, 8 // a2
+		mov result, eax
+	}
+	return result;
+}
+
+
+static const void* const PConvertVPtr = (void*)0x468DF0;
+static inline void PConvertVector_G2PASM(EntityData1* a1, NJS_VECTOR* a2)
+{
+	__asm
+	{
+		mov esi, [a2]
+		mov edi, [a1]
+		call PConvertVPtr
+		add esp, 8
+	}
+}
+
+static const void* const sub721480ptr = (void*)0x721480;
+static inline HomingAttackTarget* sub_721480(CharObj2Base* a1, EntityData1* a2, float a3)
+{
+	HomingAttackTarget* result;
+	__asm
+	{
+		push[a3]
+		push[a2]
+		mov eax, [a1]
+		call sub721480ptr
+		add esp, 8
+		mov result, eax
+	}
+	return result;
+}
+
+static const void* const GetBufferedPositionAndRotPtr = (void*)0x46DBF0;
+static inline signed int GetBufferedPositionAndRot(int a1, int a2, NJS_VECTOR* a3, char a4)
+{
+	signed int result;
+	__asm
+	{
+		push[a4]
+		mov esi, [a3]
+		mov edi, [a2]
+		mov eax, [a1]
+		call GetBufferedPositionAndRotPtr
+		add esp, 4
+		mov result, eax
+	}
+	return result;
+}
+
+
+static const void* const SlowDownThingPtr = (void*)0x45F840;
+static inline float SlowDownThing(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
+{
+	float result;
+	__asm
+	{
+		mov ebx, a3
+		mov eax, a2
+		mov ecx, a1
+		// Call your __cdecl function here:
+		call SlowDownThingPtr
+		fstp result
+	}
+	return result;
+}
+
+static const void* const PResetAnglePtr = (void*)0x460260;
+static inline void PResetAngle(EntityData1* a1, CharObj2Base* co2)
+{
+	__asm
+	{
+		mov ebx, [co2]
+		mov eax, [a1] // a1
+		call PResetAnglePtr
+	}
+}
+
+
+static const void* const lightdashptr = (void*)0x7215D0;
+static inline void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2* data2, TailsCharObj2* a5)
+{
+	__asm
+	{
+		push[a5]
+		push[data2]
+		mov eax, [co2]
+		mov ecx, [data]
+		call lightdashptr
+		add esp, 8
+	}
+}
+
+static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
+static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2* a3, CharObj2Base* a4)
+{
+	int result;
+	__asm
+	{
+		push[a4] // a4
+		push[a3] // a3
+		mov ecx, [a2] // a1
+		mov eax, [a1]
+		// Call your __cdecl function here:
+		call PlayerCheckFallGravityPtr
+		add esp, 12 // a1<eax> is also used for return value
+		mov result, eax
+	}
+	return result;
+}

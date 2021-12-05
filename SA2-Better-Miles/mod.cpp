@@ -1,37 +1,23 @@
-#include "stdafx.h"
-
-bool isCustomPhysics = true;
-bool isCustomAnim = true;
-bool isMechRemoved = false;
-bool isMilesAdventure = false;
-
-bool isInfiniteFly = false;
-bool isLightDash = true;
-bool isBounce = true;
-
-bool flySoundEffect = true;
-bool jumpVoice = false;
+#include "pch.h"
 
 HelperFunctions HelperFunctionsGlobal;
+const char* error = "[Better Miles]: WARNING: Your version of the Mod Loader is old, the mod won't work properly.\nPlease update your Mod Loader for the best experience.";
+
 
 extern "C" {
+
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
 	{
-		const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
-		isCustomPhysics = config->getBool("General", "isCustomPhysics", true);
-		isCustomAnim = config->getBool("General", "isCustomAnim", true);
-		isMechRemoved = config->getBool("General", "isMechRemoved", true);
-		isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
-
-		isInfiniteFly = config->getBool("Abilities", "isInfiniteFly", false);
-		isLightDash = config->getBool("Abilities", "isLightDash", true);
-		isBounce = config->getBool("Abilities", "isBounce", true);
-
-		flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
-		jumpVoice = config->getBool("Audio", "jumpVoice", false);
-		delete config;
+		Sleep(10);
 
 		HelperFunctionsGlobal = helperFunctions;
+
+		if (HelperFunctionsGlobal.Version < 8) {
+			PrintDebug(error);
+			MessageBoxA(MainWindowHandle, error, "Better Miles", MB_ICONWARNING);
+		}
+
+		ReadConfig(path); //get mod settings by the user
 
 		if (HelperFunctionsGlobal.Version < 5)
 			MessageBoxA(MainWindowHandle, "WARNING: Your version of the Mod Loader is old, some functionality of Better Miles will not be available.\N Please update your Mod Loader for best experience.", "Better Miles Mod", MB_ICONWARNING);
@@ -45,17 +31,13 @@ extern "C" {
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\se_ch_te\\2.csb", "Resource\\gd_PC\\Sounds\\se_ch_te\\2.csb");
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\chao_chara_te\\2.csb", "Resource\\gd_PC\\Sounds\\chao_chara_te\\2.csb");
 		BetterMiles_Init();
-
-
-		/*StoryEntry* story = (StoryEntry*)0x173A5E0;
-		story->Type = 1;
-		story->Level = LevelIDs_FinalHazard;
-		story->Character = Characters_Tails;*/
-
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
+
 	}
+
+
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };
 }

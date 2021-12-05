@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 
 void PlayRankVoice_i(int id)
 {
