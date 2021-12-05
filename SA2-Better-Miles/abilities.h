@@ -64,7 +64,6 @@ float PhysicsBoardStuff2(EntityData1* a1, EntityData2* a2, CharObj2Base* a3);
 void BoardSparklesMaybe(EntityData2* a1, EntityData1* a2, TailsCharObj2* a3);
 int PhysicsBoardStuff(CharObj2Base* a1, EntityData1* a2, EntityData2* a3, float a4);
 
-bool isSuperForm();
 
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
 void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data);

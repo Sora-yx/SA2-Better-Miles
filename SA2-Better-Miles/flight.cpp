@@ -33,10 +33,10 @@ void Tails_CheckGetAltitude(CharObj2Base* a1)
 {
 	if (Controllers[a1->PlayerNum].on & Buttons_A) {
 		if (TailsFlightTime < 1.0) {
-			if (!isInfiniteFly && !isSuperForm())
+			if (!isInfiniteFly && !isSuperForm(a1->PlayerNum))
 				TailsFlightTime += 0.0043333338;
 
-			if (isSuperForm() && a1->Speed.y < 4.0)
+			if (isSuperForm(a1->PlayerNum) && a1->Speed.y < 4.0)
 				a1->Speed.y += 0.20;
 			else if (a1->Speed.y < 1.2)
 				a1->Speed.y += 0.03;
@@ -50,7 +50,7 @@ void Miles_CheckLoseAltitude(CharObj2Base* a1, EntityData1* a2) {
 
 	if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
 	{
-		if (isSuperForm() && a1->Speed.y > -9.0)
+		if (isSuperForm(a1->PlayerNum) && a1->Speed.y > -9.0)
 			a1->Speed.y -= 0.20;
 		else if (a1->Speed.y > -9.0)
 			a1->Speed.y -= 0.14;

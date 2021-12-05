@@ -42,8 +42,8 @@ bool isSA1Tails() {
 	return false;
 }
 
-bool isSuperForm() {
-	if (MainCharObj2[0]->CharID == Characters_Tails && MainCharObj2[0]->Upgrades & Upgrades_SuperSonic || CurrentLevel == LevelIDs_FinalHazard)
+bool isSuperForm(char pID) {
+	if (MainCharObj2[pID]->CharID == Characters_Tails && MainCharObj2[pID]->Upgrades & Upgrades_SuperSonic || CurrentLevel == LevelIDs_FinalHazard)
 	{
 		return true;
 	}
@@ -141,4 +141,14 @@ bool isMilesAttackingBox() {
 		return true;
 
 	return false;
+}
+
+int DiffAngle(int ang0, int ang1)
+{
+	int v2; // r11
+
+	v2 = (__int16)(ang1 - ang0);
+	if (v2 < 0)
+		v2 = -v2;
+	return (unsigned __int16)v2;
 }

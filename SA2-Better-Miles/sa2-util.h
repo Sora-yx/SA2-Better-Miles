@@ -228,14 +228,13 @@ static inline signed int CheckTrick(TailsCharObj2* a1, CharObj2Base* a2, EntityD
 
 
 static const void* const PConvertVPtr = (void*)0x468DF0;
-static inline void PConvertVector_G2PASM(EntityData1* a1, NJS_VECTOR* a2)
+static inline void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2)
 {
 	__asm
 	{
 		mov esi, [a2]
 		mov edi, [a1]
 		call PConvertVPtr
-		add esp, 8
 	}
 }
 
@@ -445,5 +444,56 @@ static inline void sub_7274F0(EntityData1* a1)
 	{
 		mov eax, [a1] 
 		call sub_7274F0Ptr
+	}
+}
+
+struct xssunit
+{
+	int findflag;
+	int objatt;
+	int angx;
+	int angz;
+	float onpos;
+	NJS_POINT3 normal;
+};
+
+
+struct zxsdwstr
+{
+	NJS_POINT3 pos;
+	xssunit lower;
+	xssunit upper;
+};
+
+//void __usercall PAdjustAngleY(EntityData1 *data@<eax>, CharObj2Base *co2@<ebx>, int a3)
+static const void* const PadAdjustAngleYPtr = (void*)0x4603D0;
+static inline void PAdjustAngleY(EntityData1* data, CharObj2Base* co2, int a3)
+{
+	__asm
+	{
+		push[a3]
+		mov ebx, [co2]
+		mov eax, [data]
+		call PadAdjustAngleYPtr
+		add esp, 4
+	}
+}
+
+
+
+DataPointer(__int16, ActiveLandTableColCount, 0x1DE9484);
+
+//void __usercall PAdjustAngleY(EntityData1 *data@<eax>, CharObj2Base *co2@<ebx>, int a3)
+static const void* const PAccelFlyPtr = (void*)0x752DF0;
+static inline void PGetAccelFly(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Tails)
+{
+	__asm
+	{
+		push[co2Tails]
+		push[co2]
+		push[data2]
+		push[data1]	
+		call PAccelFlyPtr
+		add esp, 16
 	}
 }

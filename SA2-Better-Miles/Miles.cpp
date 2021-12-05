@@ -286,7 +286,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		if (Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
-		if (isSuperForm() && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
+		if (isSuperForm(co2->PlayerNum) && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
 		{
 			co2->AnimInfo.Next = 15;
 		}
@@ -376,6 +376,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData1* data1 = obj->Data1.Entity;
 	EntityData2* data2 = (EntityData2*)obj->EntityData2;
 	TailsCharObj2* co2Miles = (TailsCharObj2*)obj->Data2.Undefined;
+	char pID = co2->PlayerNum;
 
 	switch (data1->Action)
 	{
@@ -399,7 +400,7 @@ void Tails_Main_r(ObjectMaster* obj)
 			break;
 
 		if (TimerStopped != 0 && (co2->AnimInfo.Next == 54 || co2->AnimInfo.Current == 54)) { //Check if the level is finished
-			if (isSuperForm()) {
+			if (isSuperForm(pID)) {
 				co2->AnimInfo.Next = VictorySuperForm;
 			}
 			else {
@@ -554,7 +555,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		PResetPosition(data1, data2, co2);
 		break;
 	case VictoryPose:
-		if (isSuperForm()) {
+		if (isSuperForm(pID)) {
 			co2->AnimInfo.Current = VictorySuperForm;
 		}
 		else {
@@ -566,7 +567,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	}
 
 	isSA1Tails();
-	MilesFly(data1, co2);
+	//MilesFly(data1, co2);
 }
 
 signed char GetCharacterLevel() {
