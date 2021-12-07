@@ -567,7 +567,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	}
 
 	isSA1Tails();
-	//MilesFly(data1, co2);
+	MilesFly(data1, co2);
 }
 
 signed char GetCharacterLevel() {

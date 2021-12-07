@@ -1,5 +1,7 @@
 #include "pch.h"
 
+Trampoline* PlayWinnerVoice_t;
+
 StartPosition MilesStartArray[] = {
 	{ LevelIDs_BasicTest, 0, 0, 0, { 0 }, { 0 }, { 0 } },
 	{ LevelIDs_GreenForest, 0x4000, 0x4000, 0x4000, { 1.61f, 40, -416 }, { 15, 40, -416 }, { -15, 40, -416 } },
@@ -175,21 +177,23 @@ StartPosition CharacterEndArray[] = {
 	{ LevelIDs_EggGolemE, 0, 0, 0, { 0, 200, 220 }, { 0, 200, 220 }, { 0, 200, 220 } },
 };
 
-static inline void SetEndPosition() {
-	if (CurrentLevel == LevelIDs_Route101280)
+static inline void SetEndPosition(int pnum) {
+
+	if (CurrentLevel == LevelIDs_Route101280 || !MainCharObj2[pnum])
 		return;
 
-	if (MainCharObj2[0]->CharID == Characters_Tails) {
+
+	if (MainCharObj2[pnum]->CharID == Characters_Tails) {
 		int num = -1;
 
 		if (CurrentLevel == LevelIDs_FinalHazard) {
 			num = TailsRankVoices[4];
-			MainCharObj2[0]->CharID = Characters_SuperSonic;
+			MainCharObj2[pnum]->CharID = Characters_SuperSonic;
 			PlayVoice(2, num); //"I did it Sonic"
 		}
 		else {
 			num = CurrentLevel == LevelIDs_TailsVsEggman1 ? 1715 : 1703;
-			MainCharObj2[0]->CharID = Characters_Rouge; //Trick the game to make it thinks we are playing rouge, so we can get good camera and good ending position.
+			MainCharObj2[pnum]->CharID = Characters_Rouge; //Trick the game to make it thinks we are playing rouge, so we can get good camera and good ending position.
 			PlayVoice(2, num); //"I did it"
 		}
 	}
@@ -197,32 +201,44 @@ static inline void SetEndPosition() {
 	return;
 }
 
+static inline void PlayWinnerVoiceProbably_Original(int pnum)
+{
+	const auto target = PlayWinnerVoice_t->Target();
+
+	__asm
+	{
+		mov esi, [pnum]
+		call target
+	}
+}
+
+void PlayWinnerVoice_r(int pnum) {
+
+	SetEndPosition(pnum);
+	return PlayWinnerVoiceProbably_Original(pnum);
+}
+
 static void __declspec(naked) PlayWinnerVoiceProbablyASM()
 {
 	__asm
 	{
-		call SetEndPosition
-		push esi // pnum
-
-		// Call your __cdecl function here:
-		call PlayWinnerVoiceProbablyPtr
-
-		pop esi // pnum
+		push esi
+		call PlayWinnerVoice_r
+		pop esi
 		retn
 	}
 }
 
 void Init_StartEndPos() {
+
+
+	PlayWinnerVoice_t = new Trampoline((int)0x43ECA0, (int)0x43ECAB, PlayWinnerVoiceProbablyASM);
+
 	if (isRando() || isCharaSelect())
 		return;
 
 	WriteData((StartPosition**)0x43d955, MilesStartArray);
 	WriteData((StartPosition**)0x43df89, CharacterEndArray); //Change Rouge End Array with a more complete one (used to trick the game)
 	WriteData((LevelEndPosition**)0x43ddfb, CharacterEndArrayM2M3); //Same with M2 and M3
-
-	//Hack the victory function to fix Character and Camera position
-	WriteCall((void*)0x44f864, PlayWinnerVoiceProbablyASM);
-	WriteCall((void*)0x450816, PlayWinnerVoiceProbablyASM);
-	WriteCall((void*)0x451017, PlayWinnerVoiceProbablyASM);
-	WriteCall((void*)0x4510af, PlayWinnerVoiceProbablyASM);
+	return;
 }
