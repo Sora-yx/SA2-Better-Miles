@@ -33,7 +33,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 27, 208, 4, 0, 1, 1 },
 	{ 28, 208, 3, 28, 0.0625f, 0.2f },
 	{ 29, 208, 3, 29, 0.0625f, 0.2f },
-	{ 30, 208, 3, 30, 0.5f, 1 },
+	//{ 30, 208, 3, 30, 0.5f, 1 },
+	{ 30, 6, 3, 30, 0.5f, 1 },
 	{ 99, 208, 4, 35, 0.5f, 0.3f },
 	{ 117, 208, 11, 32, 0.5f, 1 },
 	{ 33, 208, 4, 35, 0.5f, 1 },
@@ -70,8 +71,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 111, 208, 4, 0, 0.25f, 0.3f },
 	{ 65, 208, 4, 66, 0.25f, 1.4f },
 	{ 66, 208, 3, 66, 0.25f, 1 },
-	{ 107, 208, 4, 68, 0.125f, 0.4f },
-	{ 108, 208, 3, 68, 0.125f, 0.4f },
+	{ 66, 208, 4, 68, 0.125f, 0.4f },
+	{ 66, 208, 3, 68, 0.125f, 0.4f },
 	{ 69, 208, 4, 70, 0.25f, 0.1f },
 	{ 70, 208, 3, 70, 1, 0.2f },
 	{ 71, 208, 9, 0, 0.125f, 0.2f },
@@ -250,6 +251,56 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
 };
+
+AnimationIndex* MilesNewAnimList;
+
+void Delete_MilesAnim() {
+	AnimationIndex* copy = MilesNewAnimList;
+	UnloadAnimation(copy);
+
+	MilesNewAnimList = 0;
+	return;
+}
+
+void Load_MilesNewAnim() {
+
+	if (!isCustomAnim)
+		return;
+
+	int id;
+	AnimationIndex* MilesNewAnim;
+	__int16 animIndex;
+	int indexCopy;
+	__int16 count;
+	NJS_MOTION* anim;
+
+	id = 0;
+
+	MilesNewAnimList = LoadMTNFile((char*)"NewMilesMtn.prs");
+
+	if (MilesNewAnimList[0].Index != 0xFFFF)
+	{
+		MilesNewAnim = MilesNewAnimList;
+		animIndex = MilesNewAnimList[0].Index;
+		do
+		{
+			if (animIndex >= 0 && animIndex < 300)
+			{
+				indexCopy = animIndex;
+				if (!CharacterAnimations[indexCopy].Animation)
+				{
+					count = MilesNewAnim->Count;
+					anim = MilesNewAnim->Animation;
+					CharacterAnimations[indexCopy].Count = count;
+					CharacterAnimations[indexCopy].Animation = anim;
+				}
+			}
+			animIndex = MilesNewAnimList[++id].Index;
+			MilesNewAnim = &MilesNewAnimList[id];
+		} while (animIndex != -1);
+	}
+}
+
 
 
 void Init_NewAnimation() {
