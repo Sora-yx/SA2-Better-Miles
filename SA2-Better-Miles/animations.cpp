@@ -34,7 +34,7 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 28, 208, 3, 28, 0.0625f, 0.2f },
 	{ 29, 208, 3, 29, 0.0625f, 0.2f },
 	//{ 30, 208, 3, 30, 0.5f, 1 },
-	{ 30, 6, 3, 30, 0.5f, 1 },
+	{ 30, jmpBallID, 3, 30, 0.5f, 1 },
 	{ 99, 208, 4, 35, 0.5f, 0.3f },
 	{ 117, 208, 11, 32, 0.5f, 1 },
 	{ 33, 208, 4, 35, 0.5f, 1 },
@@ -71,8 +71,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 111, 208, 4, 0, 0.25f, 0.3f },
 	{ 65, 208, 4, 66, 0.25f, 1.4f },
 	{ 66, 208, 3, 66, 0.25f, 1 },
-	{ 66, 208, 4, 68, 0.125f, 0.4f },
-	{ 66, 208, 3, 68, 0.125f, 0.4f },
+	{ 66, 208, 4, 68, 0.125f, 1.0f },
+	{ 66, 208, 3, 68, 0.125f, 1.0f },
 	{ 69, 208, 4, 70, 0.25f, 0.1f },
 	{ 70, 208, 3, 70, 1, 0.2f },
 	{ 71, 208, 9, 0, 0.125f, 0.2f },
@@ -309,8 +309,11 @@ void Init_NewAnimation() {
 	{
 		TailsAnimationList_R[30].ModelNum = 208;
 		TailsAnimationList_R[66].AnimNum = 66;
+
 		TailsAnimationList_R[67].AnimNum = 107;
 		TailsAnimationList_R[68].AnimNum = 108;
+		TailsAnimationList_R[67].AnimationSpeed = 0.4f;
+		TailsAnimationList_R[68].AnimationSpeed = 0.4f;
 	}
 
 	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
