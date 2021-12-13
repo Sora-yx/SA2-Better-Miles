@@ -135,6 +135,5 @@ void Init_JumpBallhack() {
 
     WriteCall((void*)0x750ABF, DrawMotionAndObject_Hack);
     WriteJump((void*)0x751B80, Tails_JumpStartASM);
-    //WriteJump((void*)0x750A99, DrawMotionAndObject_Hack);
     return;
 }

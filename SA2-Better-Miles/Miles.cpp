@@ -217,9 +217,12 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
+	char pNum = MilesCO2Extern->base.PlayerNum;
 
-	if ( (MainCharObj1[MilesCO2Extern->base.PlayerNum]->Status & Status_Ball) == 0)
-		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
+	if ((isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling)
+		return;
+
+	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
 //Many animations make Miles's tails in a very weird rotation, we force a specific rotation so they look decent here.
