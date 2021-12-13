@@ -101,5 +101,8 @@
     <ClCompile Include="voices.cpp">
       <Filter>Source Files\Miles</Filter>
     </ClCompile>
+    <ClCompile Include="jump-ball.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

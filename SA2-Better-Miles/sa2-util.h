@@ -28,6 +28,8 @@ DataArray(float, flt_25F02A0, 0x25F02A0, 5);
 
 DataPointer(DWORD, dword_267053C, 0x267053C); //something checked for after image
 
+DataPointer(TailsCharObj2*, MilesCO2Extern, 0x1A521EC);
+
 VoidFunc(sub_47BB50, 0x47BB50);
 
 ObjectFunc(RocketIG, 0x6A10A0);
@@ -495,5 +497,15 @@ static inline void PGetAccelFly(EntityData1* data1, EntityData2* data2, CharObj2
 		push[data1]	
 		call PAccelFlyPtr
 		add esp, 16
+	}
+}
+
+static const void* const njScaleExPtr = (void*)0x429740;
+static inline void njScaleEx(NJS_VECTOR* a1)
+{
+	__asm
+	{
+		mov eax, [a1]
+		call njScaleExPtr
 	}
 }

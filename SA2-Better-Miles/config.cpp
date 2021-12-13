@@ -12,6 +12,7 @@ bool isBounce = true;
 bool flySoundEffect = true;
 bool jumpVoice = false;
 
+bool isJumpBall = true;
 
 void ReadConfig(const char* path) {
 
@@ -20,10 +21,12 @@ void ReadConfig(const char* path) {
 	isCustomAnim = config->getBool("General", "isCustomAnim", true);
 	isMechRemoved = config->getBool("General", "isMechRemoved", true);
 	isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
+	isJumpBall = config->getBool("General", "isJumpBall", true);
 
 	isInfiniteFly = config->getBool("Abilities", "isInfiniteFly", false);
 	isLightDash = config->getBool("Abilities", "isLightDash", true);
 	isBounce = config->getBool("Abilities", "isBounce", true);
+
 
 	flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
 	jumpVoice = config->getBool("Audio", "jumpVoice", false);

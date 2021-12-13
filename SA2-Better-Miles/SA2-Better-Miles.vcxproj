@@ -175,6 +175,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="flight.cpp" />
     <ClCompile Include="grind.cpp" />
+    <ClCompile Include="jump-ball.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="lightdash.cpp" />
     <ClCompile Include="Miles.cpp" />

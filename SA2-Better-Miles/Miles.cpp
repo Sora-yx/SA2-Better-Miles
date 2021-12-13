@@ -216,7 +216,9 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
-	if (MainCharObj1[0]->Action != Rolling)
+
+
+	if ( (MainCharObj1[MilesCO2Extern->base.PlayerNum]->Status & Status_Ball) == 0)
 		ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
@@ -377,6 +379,11 @@ void Tails_Main_r(ObjectMaster* obj)
 	EntityData2* data2 = (EntityData2*)obj->EntityData2;
 	TailsCharObj2* co2Miles = (TailsCharObj2*)obj->Data2.Undefined;
 	char pID = co2->PlayerNum;
+
+	if (data1->Status & Status_Ball)
+	{
+		spinTimer++;
+	}
 
 	switch (data1->Action)
 	{
@@ -614,9 +621,11 @@ void SetSpacePhysics(CharObj2Base* co2) {
 	return;
 }
 
+
+
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
-		if (isMilesAdventure || isMechRemoved && GetCharacterLevel() == Characters_MechTails)
+		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
 			CurrentCharacter = Characters_Tails;
 	}
 
@@ -628,9 +637,11 @@ void LoadCharacter_r() {
 			if (MainCharObj2[i]->CharID == Characters_Tails)
 			{
 				if (isCharaSelect()) {
-					MainCharObj2[i]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
+					//MainCharObj2[i]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
+					Load_MilesNewAnim();
 				}
 				SetSpacePhysics(MainCharObj2[i]);
+				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
 			}
 
 			CheckAndSetHackObject(MainCharObj2[i]);
@@ -669,6 +680,8 @@ void BetterMiles_Init() {
 	Init_NewAnimation();
 
 	Init_MilesSpin();
+
+	Init_JumpBallhack();
 
 	if (isCustomAnim) {
 		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckAnimateTailsAction);

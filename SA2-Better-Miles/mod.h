@@ -10,9 +10,13 @@ extern bool isMilesAdventure;
 extern bool jumpVoice;
 extern bool isCustomPhysics;
 extern bool flySoundEffect;
+extern bool isJumpBall;
+
 
 void Init_StartEndPos();
 void Init_VoicesFixes();
 void BetterMiles_Init();
 void Init_NewAnimation();
 void Init_MilesActions();
+void Init_JumpBallhack();
+extern int spinTimer;

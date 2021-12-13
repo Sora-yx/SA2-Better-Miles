@@ -21,3 +21,5 @@ void DoNextAction_r(int playerNum, char action, int unknown);
 int DiffAngle(int ang0, int ang1);
 
 bool isSuperForm(char pID);
+void Load_MilesNewAnim();
+void Miles_LoadJmpBall(TailsCharObj2* mco2);
