@@ -41,6 +41,12 @@ ObjectFunc(MetalBox, 0x6D6490);
 ObjectFunc(MetalBoxGravity, 0x77BB90);
 ObjectFunc(CGTubeGlass, 0x776060);
 
+
+DataPointer(__int16, ActiveLandTableColCount, 0x1DE9484);
+DataPointer(int, DebugMode2_, 0x174AFF9);
+DataPointer(char, byte_1738C69, 0x1738C69);
+DataPointer(__int16, word_1738D58, 0x1738D58);
+
 #pragma pack(push, 1)
 struct __declspec(align(2)) HomingAttackTarget
 {
@@ -481,9 +487,6 @@ static inline void PAdjustAngleY(EntityData1* data, CharObj2Base* co2, int a3)
 	}
 }
 
-
-
-DataPointer(__int16, ActiveLandTableColCount, 0x1DE9484);
 
 //void __usercall PAdjustAngleY(EntityData1 *data@<eax>, CharObj2Base *co2@<ebx>, int a3)
 static const void* const PAccelFlyPtr = (void*)0x752DF0;

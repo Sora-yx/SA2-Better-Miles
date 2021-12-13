@@ -12,6 +12,7 @@ extern bool isCustomPhysics;
 extern bool flySoundEffect;
 extern bool isJumpBall;
 
+const int jmpBallID = 230;
 
 void Init_StartEndPos();
 void Init_VoicesFixes();

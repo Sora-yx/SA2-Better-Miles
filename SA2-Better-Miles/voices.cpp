@@ -1,5 +1,123 @@
 #include "pch.h"
 
+Trampoline* PlayIdle_Voice_t;
+
+static inline void PlayIdle_Voice_origin(CharObj2Base* co2, char a2)
+{
+	const auto target = PlayIdle_Voice_t->Target();
+
+	__asm
+	{
+		push[a2]
+		mov eax, [co2]
+		call target
+	}
+}
+
+
+void PlayIdle_Voice_r(CharObj2Base* co2, char a2)
+{
+	int charID2; // ebx
+	int curLevel; // edi
+	__int16* v4; // ecx
+	__int16 v5; // ax
+	__int16 v6; // ax
+	char v7; // al
+	char* v8; // esi
+	float v9; // [esp+0h] [ebp-4h]
+
+	charID2 = co2->CharID2;
+
+	if (charID2 == Characters_Tails) 
+	{
+		charID2 = Characters_MechTails;
+	}
+	else 
+	{
+		return PlayIdle_Voice_origin(co2, a2);
+	}
+
+	curLevel = CurrentLevel;
+
+	if (co2->PlayerNum != 0 || TwoPlayerMode  || CurrentLevel == LevelIDs_ChaoWorld)
+		return;
+
+	v9 = (double)rand() * 0.000030517578125;
+	if (v9 <= 0.5)
+	{
+		v7 = byte_1738C69;
+		v8 = (char*)0x1738C68;
+		if (byte_1738C69 == 91)
+		{
+			return;
+		}
+		while (v7 != curLevel || *v8 != charID2)
+		{
+			v7 = v8[7];
+			v8 += 6;
+			if (v7 == 91)
+			{
+				return;
+			}
+		}
+		if (((int)(v9 * (double)(unsigned int)FrameCountIngame) & 1) != 0)
+		{
+			v6 = *((WORD*)v8 + 1);
+		}
+		else
+		{
+			v6 = *((WORD*)v8 + 2);
+		}
+	}
+	else
+	{
+		v4 = &word_1738D58;
+		if (*(__int16*)0x1738D58 == -1)
+		{
+			return;
+		}
+		v5 = word_1738D58;
+		while (v5 != charID2)
+		{
+			v5 = v4[3];
+			v4 += 3;
+			if (v5 == -1)
+			{
+				return;
+			}
+		}
+		if ((a2 & 1) != 0)
+		{
+			v6 = v4[2];
+		}
+		else
+		{
+			v6 = v4[1];
+		}
+	}
+	if (v6 != -1)
+	{
+		PlayVoice(2, v6);
+	}
+}
+
+static void __declspec(naked) PlayIdle_VoiceASM()
+{
+	__asm
+	{
+		push[esp + 04h] // a2
+		push eax // co2
+
+		// Call your __cdecl function here:
+		call PlayIdle_Voice_r
+
+		pop eax // co2
+		add esp, 4 // a2
+		retn
+	}
+}
+
+
 void PlayRankVoice_i(int id)
 {
 	int v23 = -1;
@@ -52,4 +170,8 @@ void Init_VoicesFixes() {
 
 	if (!jumpVoice)
 		WriteData<5>((void*)0x751C90, 0x90); //remove tails voice when jumping
+
+	PlayIdle_Voice_t = new Trampoline((int)0x477BB0, (int)0x477BB5, PlayIdle_VoiceASM);
+
+	return;
 }

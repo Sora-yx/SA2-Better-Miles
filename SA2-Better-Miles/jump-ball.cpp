@@ -7,10 +7,11 @@ NJS_TEXLIST MilesBall_Texlist = { arrayptrandlength(MilesBallTex) };
 
 int spinTimer = 0;
 
+
 void Miles_LoadJmpBall(TailsCharObj2* mco2) {
     JumpBallMdl = LoadMDLFile((char*)"jumpball.PRS"); //LoadMDLFile((char*)"SONICMDL.PRS");
-    mco2->ModelList[6].Index = JumpBallMdl[6].Index;
-    mco2->ModelList[6].Model = JumpBallMdl[6].Model;
+    mco2->ModelList[jmpBallID].Index = JumpBallMdl[jmpBallID].Index;
+    mco2->ModelList[jmpBallID].Model = JumpBallMdl[jmpBallID].Model;
     LoadTextureList("ballTex", &MilesBall_Texlist);
     return;
 }
@@ -31,7 +32,6 @@ void __cdecl DoSpinDashRotationModel() {
 }
 
 void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
-
 
     char pID = MilesCO2Extern->base.PlayerNum;
     EntityData1* data1 = MainCharObj1[pID];
