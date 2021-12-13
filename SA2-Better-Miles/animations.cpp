@@ -304,5 +304,14 @@ void Load_MilesNewAnim() {
 
 
 void Init_NewAnimation() {
+
+	if (!isJumpBall)
+	{
+		TailsAnimationList_R[30].ModelNum = 208;
+		TailsAnimationList_R[66].AnimNum = 66;
+		TailsAnimationList_R[67].AnimNum = 107;
+		TailsAnimationList_R[68].AnimNum = 108;
+	}
+
 	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
 }
