@@ -302,7 +302,6 @@ void Load_MilesNewAnim() {
 }
 
 
-
 void Init_NewAnimation() {
 
 	if (!isJumpBall)

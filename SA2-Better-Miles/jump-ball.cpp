@@ -7,28 +7,14 @@ NJS_TEXLIST MilesBall_Texlist = { arrayptrandlength(MilesBallTex) };
 
 int spinTimer = 0;
 
+Trampoline* Tails_JumpStart_t;
 
 void Miles_LoadJmpBall(TailsCharObj2* mco2) {
-    JumpBallMdl = LoadMDLFile((char*)"jumpball.PRS"); //LoadMDLFile((char*)"SONICMDL.PRS");
+    JumpBallMdl = LoadMDLFile((char*)"jumpball.PRS"); 
     mco2->ModelList[jmpBallID].Index = JumpBallMdl[jmpBallID].Index;
     mco2->ModelList[jmpBallID].Model = JumpBallMdl[jmpBallID].Model;
     LoadTextureList("ballTex", &MilesBall_Texlist);
     return;
-}
-
-void __cdecl DoSpinDashRotationModel() {
-
-    NJS_VECTOR spinDashThing = { 0.0f, -1.0f, 0.0f };
-
-    njTranslateEx(&spinDashThing);
-    NJS_MATRIX_PTR v14 = _nj_current_matrix_ptr_;
-    njTranslate(_nj_current_matrix_ptr_, 0.0, 5.0, 0.0);
-    njRotateZ(v14, 0x2000);
-    njTranslate(v14, 0.0, -5.0, 0.0);
-    spinDashThing.x = 0.69999999;
-    spinDashThing.y = 1.1;
-    spinDashThing.z = 0.80000001;
-    njScaleEx(&spinDashThing);
 }
 
 void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
@@ -57,7 +43,6 @@ static void __declspec(naked) DrawMotionAndObject_Hack()
         push[esp + 08h] // obj
         push ecx // mtn
 
-        // Call your __cdecl function here:
         call DrawMiles_JumpBall
 
         pop ecx // mtn
@@ -67,48 +52,33 @@ static void __declspec(naked) DrawMotionAndObject_Hack()
     }
 }
 
+static inline signed int Tails_JumpStart_Origin(CharObj2Base* co2, EntityData1* data)
+{
+    const auto target = Tails_JumpStart_t->Target();
+    signed int result;
+
+    __asm
+    {
+        mov ecx, [data]
+        mov eax, [co2]
+        call target
+        mov result, eax
+    }
+
+    return result;
+}
+
+
 int Tails_JumpStart_r(CharObj2Base* co2, EntityData1* data)
 {
-    int v4; // edx
-    ObjectMaster* dynColTask; // eax
-    float* idk; // eax
-    EntityData2* data2; // ecx
-    int v9; // edx
-    Float v10; // [esp+Ch] [ebp-8h]
-    Float v11; // [esp+10h] [ebp-4h]
+    signed int result = Tails_JumpStart_Origin(co2, data);
 
-    if ((data->Status & Status_DisableControl) != 0 || !Jump_Pressed[co2->PlayerNum])
+    if (result == 1 && data->Action == Action_Jump)
     {
-        return 0;
+        data->Status |= Status_Ball;
     }
-
-    data->Action = Action_Jump;
-    dynColTask = co2->CurrentDyncolTask;
-    co2->Speed.y = co2->PhysData.JumpSpeed;
-    if (dynColTask)
-    {
-        idk = (float*)&dynColTask->UnknownA_ptr->field_0;
-        if (idk)
-        {
-            data2 = MainCharData2[co2->PlayerNum];
-            v10 = idk[5];
-            v11 = idk[6];
-            data2->Acceleration.x = idk[4];
-            data2->Acceleration.y = v10;
-            data2->Acceleration.z = v11;
-        }
-    }
-    co2->AnimInfo.Next = 65;
-    spinTimer = 0;
-    data->Status &= Status_DisableControl | Status_OnPath | Status_DoNextAction | Status_HoldObject | Status_Attack | Status_LightDash | Status_Ball | Status_ObjectInteract | Status_Hurt | Status_Ground | 0x80F0;
-    data->Status |= Status_Ball;
-    co2->field_12 = 0;
-    PlaySoundProbably(0x2000, 0, 0, 0);
-
-    if (jumpVoice)
-        PlayVoice(2, 1627);
-
-    return 1;
+      
+    return result;
 }
 
 static void __declspec(naked) Tails_JumpStartASM()
@@ -134,6 +104,7 @@ void Init_JumpBallhack() {
         return;
 
     WriteCall((void*)0x750ABF, DrawMotionAndObject_Hack);
-    WriteJump((void*)0x751B80, Tails_JumpStartASM);
+
+    Tails_JumpStart_t = new Trampoline((int)0x751B80, (int)0x751B85, Tails_JumpStartASM);
     return;
 }
