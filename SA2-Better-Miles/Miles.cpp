@@ -218,7 +218,7 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 	char pNum = MilesCO2Extern->base.PlayerNum;
 
-	if ((isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling)
+	if ((isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
 		return;
 
 	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
@@ -369,6 +369,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		CheckDivingStuff(data2, data1, co2, co2Miles);
 		break;
 	}
+
+	Tornado_RunsActions(data1, co2);
 }
 
 void Tails_Main_r(ObjectMaster* obj)
@@ -575,8 +577,10 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	}
 
-	isSA1Tails();
 	MilesFly(data1, co2);
+	Tornado_CheckInput(co2, data1);
+	Tornado_MainActions(data1, co2, data2);
+	Cart_CheckInput(co2, data1);
 }
 
 signed char GetCharacterLevel() {
@@ -641,6 +645,7 @@ void LoadCharacter_r() {
 				if (isCharaSelect()) {
 					//MainCharObj2[i]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
 					Load_MilesNewAnim();
+					LoadTornado_ModelAnim();
 				}
 				SetSpacePhysics(MainCharObj2[i]);
 				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
@@ -652,6 +657,7 @@ void LoadCharacter_r() {
 
 	return;
 }
+
 
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
@@ -698,4 +704,5 @@ void BetterMiles_Init() {
 
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
 	InitLightDashStuff();
+
 }

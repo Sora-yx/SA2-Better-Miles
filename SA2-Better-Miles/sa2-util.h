@@ -46,6 +46,7 @@ DataPointer(__int16, ActiveLandTableColCount, 0x1DE9484);
 DataPointer(int, DebugMode2_, 0x174AFF9);
 DataPointer(char, byte_1738C69, 0x1738C69);
 DataPointer(__int16, word_1738D58, 0x1738D58);
+FunctionPointer(double, FloatCalcResult, (float a1, float a2, float a3), 0x447520);
 
 #pragma pack(push, 1)
 struct __declspec(align(2)) HomingAttackTarget
@@ -512,3 +513,5 @@ static inline void njScaleEx(NJS_VECTOR* a1)
 		call njScaleExPtr
 	}
 }
+
+VoidFunc(InitCharacterSound, 0x438B00);

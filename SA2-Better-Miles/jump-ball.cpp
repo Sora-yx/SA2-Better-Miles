@@ -10,7 +10,7 @@ int spinTimer = 0;
 Trampoline* Tails_JumpStart_t;
 
 void Miles_LoadJmpBall(TailsCharObj2* mco2) {
-    JumpBallMdl = LoadMDLFile((char*)"jumpball.PRS"); 
+    JumpBallMdl = LoadMDLFile((char*)"\\Models\\jumpball.PRS"); 
     mco2->ModelList[jmpBallID].Index = JumpBallMdl[jmpBallID].Index;
     mco2->ModelList[jmpBallID].Model = JumpBallMdl[jmpBallID].Model;
     LoadTextureList("ballTex", &MilesBall_Texlist);

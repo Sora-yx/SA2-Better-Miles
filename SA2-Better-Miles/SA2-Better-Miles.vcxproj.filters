@@ -68,7 +68,7 @@
     <ClCompile Include="startposition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animations.cpp">
+    <ClCompile Include="animations.cpp">
       <Filter>Source Files\Miles</Filter>
     </ClCompile>
     <ClCompile Include="bounce.cpp">
@@ -102,6 +102,12 @@
       <Filter>Source Files\Miles</Filter>
     </ClCompile>
     <ClCompile Include="jump-ball.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="tornado.cpp">
+      <Filter>Source Files\Miles\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="cart.cpp">
       <Filter>Source Files\Miles\Abilities</Filter>
     </ClCompile>
   </ItemGroup>

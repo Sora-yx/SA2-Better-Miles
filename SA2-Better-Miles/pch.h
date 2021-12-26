@@ -12,6 +12,8 @@
 #include "SA2ModLoader.h"
 #include "Trampoline.h"
 #include "IniFile.hpp"
+#include "ModelInfo.h"
+#include "AnimationFile.h"
 #include "sa2-util.h"
 #include "mod.h"
 #include "abilities.h"

@@ -1,5 +1,11 @@
 #include "pch.h"
 
+const char* ModelFormatStrings[]{
+	"collision",
+	"chunk",
+	"battle"
+};
+
 void DoNextAction_r(int playerNum, char action, int unknown)
 {
 	EntityData1* v3; // eax
@@ -151,4 +157,117 @@ int DiffAngle(int ang0, int ang1)
 	if (v2 < 0)
 		v2 = -v2;
 	return (unsigned __int16)v2;
+}
+
+//Load Object File
+ModelInfo* LoadMDL(const char* name, ModelFormat format) {
+	std::string fullPath;
+
+	if (format == ModelFormat_Chunk) {
+		fullPath = "resource\\gd_PC\\Models\\";
+	}
+
+	fullPath += name;
+
+	switch (format) {
+	case ModelFormat_Basic:
+		fullPath += ".sa1mdl";
+		break;
+	case ModelFormat_Chunk:
+		fullPath += ".sa2mdl";
+		break;
+	case ModelFormat_SA2B:
+		fullPath += ".sa2bmdl";
+		break;
+	}
+
+	const char* foo = fullPath.c_str();
+
+	ModelInfo* temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
+
+	if (temp->getformat() == format) {
+		PrintDebug("[Better Miles] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+	}
+	else {
+		PrintDebug("[Better Miles] Failed loading %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+	}
+
+	return temp;
+}
+
+void LoadAnimation(AnimationFile** info, const char* name, const HelperFunctions& helperFunctions) {
+	std::string fullPath = "system\\anims\\";
+	fullPath = fullPath + name + ".saanim";
+
+	AnimationFile* anm = new AnimationFile(helperFunctions.GetReplaceablePath(fullPath.c_str()));
+
+	if (anm->getmodelcount() == 0) {
+		delete anm;
+		*info = nullptr;
+	}
+	else {
+		*info = anm;
+	}
+};
+
+AnimationFile* LoadAnim(const char* name) {
+	std::string fullPath = "resource\\gd_PC\\Anim\\";
+
+	fullPath = fullPath + name + ".saanim";
+
+	AnimationFile* file = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+
+	if (file->getmotion() != nullptr) {
+		PrintDebug("[SA1 Amy Mod] Loaded animation: %s.", name);
+	}
+	else {
+		PrintDebug("[SA1 Amy Mod] Failed loading animation: %s.", name);
+	}
+
+	return file;
+}
+
+void FreeMDL(ModelInfo* pointer) {
+	if (pointer) delete(pointer);
+}
+
+void FreeAnim(AnimationFile* pointer) {
+	if (pointer) delete pointer;
+}
+
+void __fastcall njSubVector(NJS_VECTOR* vd, const NJS_VECTOR* vs)
+{
+	vd->x = vd->x - vs->x;
+	vd->y = vd->y - vs->y;
+	vd->z = vd->z - vs->z;
+}
+
+void LookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy) {
+	NJS_VECTOR unit = *to;
+
+
+	njSubVector(&unit, from);
+
+	*outy = static_cast<Angle>(atan2f(unit.x, unit.z) * 65536.0f * 0.1591549762031479f);
+	
+
+	if (outx) {
+		if (from->y == to->y) {
+			*outx = 0;
+		}
+		else {
+			Float len = 1.0f / sqrt(unit.z * unit.z + unit.x * unit.x + unit.y * unit.y);
+
+			*outx = static_cast<Angle>((acos(len * 3.3499999f) * 65536.0f * 0.1591549762031479f)
+				- (acos(-(len * unit.y)) * 65536.0f * 0.1591549762031479f));
+		}
+	}
+}
+
+void PlayerLookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy) {
+	LookAt(from, to, outx, outy);
+
+	if (outy) {
+		*outy = -(*outy) + 0x4000;
+	}
 }

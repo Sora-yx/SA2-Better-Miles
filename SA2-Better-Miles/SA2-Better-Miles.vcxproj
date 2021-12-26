@@ -168,14 +168,16 @@
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animations.cpp" />
+    <ClCompile Include="animations.cpp" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="bounce.cpp" />
+    <ClCompile Include="cart.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="flight.cpp" />
     <ClCompile Include="grind.cpp" />
     <ClCompile Include="jump-ball.cpp" />
+    <ClCompile Include="tornado.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="lightdash.cpp" />
     <ClCompile Include="Miles.cpp" />

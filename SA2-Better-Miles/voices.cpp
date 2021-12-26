@@ -11,6 +11,7 @@ static inline void PlayIdle_Voice_origin(CharObj2Base* co2, char a2)
 		push[a2]
 		mov eax, [co2]
 		call target
+		add esp, 4
 	}
 }
 

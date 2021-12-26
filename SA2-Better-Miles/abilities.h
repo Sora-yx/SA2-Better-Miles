@@ -71,6 +71,11 @@ void InitLightDashStuff();
 
 signed int __cdecl Miles_CheckNextActions_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
 
+void Tornado_CheckInput(CharObj2Base* co2, EntityData1* data1);
+
+void Tornado_RunsActions(EntityData1* data1, CharObj2Base* co2);
+void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* data2);
+
 enum MilesState {
 	Standing,
 	Running,
@@ -89,6 +94,10 @@ enum MilesState {
 	FloatingOnWater,
 	Swimming,
 	Diving,
+	TornadoStanding,
+	TornadoMoving,
+	TornadoAscending,
+	TornadoDescending,
 	VictoryPose = 190,
 };
 
