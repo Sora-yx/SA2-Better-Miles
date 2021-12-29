@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Miles\Abilities">
       <UniqueIdentifier>{f2187b5f-aaf4-42eb-a67a-c27d5af54441}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Miles\Tornado">
+      <UniqueIdentifier>{44f1ea3d-826d-4051-9631-4d208e266753}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -105,10 +108,10 @@
       <Filter>Source Files\Miles\Abilities</Filter>
     </ClCompile>
     <ClCompile Include="tornado.cpp">
-      <Filter>Source Files\Miles\Abilities</Filter>
+      <Filter>Source Files\Miles\Tornado</Filter>
     </ClCompile>
     <ClCompile Include="cart.cpp">
-      <Filter>Source Files\Miles\Abilities</Filter>
+      <Filter>Source Files\Miles\Tornado</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

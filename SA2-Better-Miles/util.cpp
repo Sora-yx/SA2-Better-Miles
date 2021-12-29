@@ -196,7 +196,7 @@ ModelInfo* LoadMDL(const char* name, ModelFormat format) {
 }
 
 void LoadAnimation(AnimationFile** info, const char* name, const HelperFunctions& helperFunctions) {
-	std::string fullPath = "system\\anims\\";
+	std::string fullPath = "resource\\gd_PC\\animations\\";
 	fullPath = fullPath + name + ".saanim";
 
 	AnimationFile* anm = new AnimationFile(helperFunctions.GetReplaceablePath(fullPath.c_str()));
@@ -211,17 +211,17 @@ void LoadAnimation(AnimationFile** info, const char* name, const HelperFunctions
 };
 
 AnimationFile* LoadAnim(const char* name) {
-	std::string fullPath = "resource\\gd_PC\\Anim\\";
+	std::string fullPath = "resource\\gd_PC\\animations\\";
 
 	fullPath = fullPath + name + ".saanim";
 
 	AnimationFile* file = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
 	if (file->getmotion() != nullptr) {
-		PrintDebug("[SA1 Amy Mod] Loaded animation: %s.", name);
+		PrintDebug("[SA2 Better Miles] Loaded animation: %s.", name);
 	}
 	else {
-		PrintDebug("[SA1 Amy Mod] Failed loading animation: %s.", name);
+		PrintDebug("[SA2 Better Miles] Failed loading animation: %s.", name);
 	}
 
 	return file;
@@ -248,8 +248,7 @@ void LookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy) {
 
 	njSubVector(&unit, from);
 
-	*outy = static_cast<Angle>(atan2f(unit.x, unit.z) * 65536.0f * 0.1591549762031479f);
-	
+	//*outy = static_cast<Angle>(atan2f(unit.x, unit.z) * 65536.0f * 0.1591549762031479f);
 
 	if (outx) {
 		if (from->y == to->y) {

@@ -515,3 +515,21 @@ static inline void njScaleEx(NJS_VECTOR* a1)
 }
 
 VoidFunc(InitCharacterSound, 0x438B00);
+
+#pragma pack(push, 1)
+struct cartStruct
+{
+	NJS_POINT3 Velocity;
+	Float idk;
+	Float idk2;
+	NJS_VECTOR Position;
+	Rotation Forward;
+	Float DistanceWall;
+	int KartAction;
+	Float idk3;
+	Float SpeedY;
+	Float SpeedX;
+	Float Accel;
+	Float idk5;
+};
+#pragma pack(pop)

@@ -21,3 +21,5 @@ void Init_NewAnimation();
 void Init_MilesActions();
 void Init_JumpBallhack();
 extern int spinTimer;
+
+#define TARGET_DYNAMIC(name) ((decltype(name##_r)*)name##_t->Target()) //sf94

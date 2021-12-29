@@ -15,10 +15,10 @@ signed int Miles_CheckNextActions_original(EntityData2* a1, TailsCharObj2* a2, C
 
 	__asm
 	{
-		mov esi, a4 
-		mov edi, a3 
-		mov ebx, a2 
-		mov eax, a1 
+		mov esi, a4
+		mov edi, a3
+		mov ebx, a2
+		mov eax, a1
 
 		call MilesCheck_ptr
 
@@ -120,17 +120,17 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 {
 	__asm
 	{
-		push esi 
-		push edi 
-		push ebx 
-		push ecx 
+		push esi
+		push edi
+		push ebx
+		push ecx
 
 		call Miles_CheckNextActions_r
 
-		pop ecx 
-		pop ebx 
-		pop edi 
-		pop esi 
+		pop ecx
+		pop ebx
+		pop edi
+		pop esi
 		retn
 	}
 }
@@ -231,7 +231,7 @@ void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles) {
 }
 
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	FunctionPointer(void, original, (EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles), Tails_RunsAction_t->Target());
+	FunctionPointer(void, original, (EntityData1 * data1, EntityData2 * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
 	original(data1, data2, co2, co2Miles);
 
 	CheckAndFixTailsRotation(co2, co2Miles);
@@ -578,9 +578,8 @@ void Tails_Main_r(ObjectMaster* obj)
 	}
 
 	MilesFly(data1, co2);
-	Tornado_CheckInput(co2, data1);
+	Tornado_CallCheckInput(co2, data1);
 	Tornado_MainActions(data1, co2, data2);
-	Cart_CheckInput(co2, data1);
 }
 
 signed char GetCharacterLevel() {
@@ -628,7 +627,6 @@ void SetSpacePhysics(CharObj2Base* co2) {
 }
 
 
-
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
@@ -642,11 +640,9 @@ void LoadCharacter_r() {
 		if (MainCharObj2[i]) {
 			if (MainCharObj2[i]->CharID == Characters_Tails)
 			{
-				if (isCharaSelect()) {
-					//MainCharObj2[i]->AnimInfo.Animations = TailsAnimationList_R; //Overwrite Tails list animation to fix chara select plus crash.
-					Load_MilesNewAnim();
-					LoadTornado_ModelAnim();
-				}
+				Load_MilesNewAnim();
+				LoadTornado_ModelAnim();
+
 				SetSpacePhysics(MainCharObj2[i]);
 				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
 			}

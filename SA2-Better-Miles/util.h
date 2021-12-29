@@ -32,5 +32,5 @@ void FreeAnim(AnimationFile* pointer);
 void LookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy);
 void PlayerLookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy);
 bool isInTornado(char pNum);
-void LoadTornado(ObjectMaster* obj);
+void Tornado_Main(ObjectMaster* obj);
 void Cart_CheckInput(CharObj2Base* co2, EntityData1* data1);

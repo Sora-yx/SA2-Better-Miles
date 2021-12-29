@@ -25,12 +25,15 @@ extern "C" {
 		if (!flySoundEffect)
 			WriteData<5>((void*)0x752e16, 0x90);
 
+		Cart_HackInit();
+
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\se_ch_te\\2.csb", "Resource\\gd_PC\\Sounds\\se_ch_te\\2.csb");
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\chao_chara_te\\2.csb", "Resource\\gd_PC\\Sounds\\chao_chara_te\\2.csb");
 		BetterMiles_Init();
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame() {
+
 
 	}
 
