@@ -55,7 +55,7 @@ void DeleteAndLoadMech(char pNum) {
 void TransfoMech_Display(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
-
+	float frame = TornadoTransfoMotion->getmotion()->nbFrame;
 	NJS_OBJECT* tornadoMDL = TornadoTransfo->getmodel();
 	NJS_MOTION* TornadoMotion = TornadoTransfoMotion->getmotion();
 	EntityData1* player = MainCharObj1[data->Index];
@@ -70,6 +70,8 @@ void TransfoMech_Display(ObjectMaster* obj) {
 
 	if (data->Action == 2)
 		DrawMotionAndObject(TornadoMotion, tornadoMDL, data->Scale.z);
+	else if (data->Action == 3)
+		DrawMotionAndObject(TornadoMotion, tornadoMDL, frame - 1);
 	else if (data->Action < 4)
 		DrawObject(tornadoMDL);
 
@@ -77,6 +79,7 @@ void TransfoMech_Display(ObjectMaster* obj) {
 	njPopMatrixEx();
 }
 
+DataPointer(NJS_VECTOR, CamPosAgain, 0x1DCFE10);
 void CallMech(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -84,12 +87,16 @@ void CallMech(ObjectMaster* obj) {
 	EntityData1* playerData = MainCharObj1[pNum];
 	CharObj2Base* co2 = MainCharObj2[pNum];
 	float frame = TornadoTransfoMotion->getmotion()->nbFrame;
-
+	DWORD a2[2] = { 0.5f, 0.5f };
 
 	switch (data->Action)
 	{
 	case 0:
 	{	
+		co2->Speed = { 0, 0, 0 };
+		sub_46C6D0(pNum, playerData->Position.x, playerData->Position.y, playerData->Position.z);
+		SetCameraEvent(pNum, 24);
+		DoSomethingWithCam(*(DWORD*)&CameraData.gap1AC[9432 * pNum + 168], 0, 0);
 		data->Scale.z = 0;
 		PlayJingle("tornado2.adx");
 		PlayVoice(2, 2433);
@@ -103,32 +110,33 @@ void CallMech(ObjectMaster* obj) {
 
 		if (++data->field_6 == 20)
 		{
-
 			data->Action++;
 			data->field_6 = 0;
 		}
 	case 2:
 
-		data->Scale.z += 0.8f;
-	if (data->Scale.z >= frame - 1)
+		data->Scale.z++;
+	if (data->Scale.z >= frame)
 	{
+		ResetCam(CameraData.gap1AC[168], 0);
 		data->Action++;
 		data->Scale.z = 0;
 	}
 	break;
-	case 3:
+	case 3:	
 		data->field_6 = 0;
 		DeleteAndLoadMech(pNum);
 		InitCharacterSound();
+		playerData = MainCharObj1[pNum];
 		playerData->Position = SavePos;
 		data->Action++;
 		break;
 	case 4:
-
+		playerData->Position = SavePos;
 		if (++data->field_6 == 7)
 		{
+	
 			PlayVoice(2, 1695);
-			playerData->Position = SavePos;
 			ControllerEnabled[pNum] = 1;
 			data->Action++;
 		}

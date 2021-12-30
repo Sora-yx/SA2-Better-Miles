@@ -394,6 +394,20 @@ static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
 	return result;
 }
 
+static const void* const ResetCamPtr = (void*)0x4EBD30;
+static inline int ResetCam(int a1, int a2)
+{
+	int result;
+	__asm
+	{	
+		mov ecx, [a2]
+		mov eax, [a1]
+		call ResetCamPtr
+		mov result, eax
+	}
+	return result;
+}
+
 static const void* const sub_4EC330Ptr = (void*)0x4EC330;
 static inline void sub_4EC330(int a1, int a2, int a3)
 {
@@ -514,6 +528,45 @@ static inline void njScaleEx(NJS_VECTOR* a1)
 	}
 }
 
+//void __usercall SetCameraEvent(int playerNum@<eax>, _DWORD* a2@<ebx>)
+static const void* const cameventPtr = (void*)0x4EBBE0;
+static inline void SetCameraEvent(int a1, int a2)
+{
+	__asm
+	{
+		mov edx, [a2]
+		mov eax, [a1]
+		call cameventPtr
+	}
+}
+
+//void __usercall DoSomethingWithCam(int a1@<eax>, int a2@<ecx>, int a3@<edi>)
+static const void* const stuffCamPtr = (void*)0x4EBCD0;
+static inline void DoSomethingWithCam(int a1, int a2, int a3)
+{
+	__asm
+	{
+		mov edi, [a3]
+		mov ecx, [a2]
+		mov eax, [a1]
+		call stuffCamPtr
+	}
+}
+
+static const void* const sub_46C6D0PTR = (void*)0x46C6D0;
+static inline void sub_46C6D0(int a1, float a2, float a3, float a4)
+{
+	__asm
+	{
+		push[a4]
+		push[a3]
+		push[a2]
+		mov eax, [a1]
+		call  sub_46C6D0PTR
+		add esp, 12
+	}
+}
+
 VoidFunc(InitCharacterSound, 0x438B00);
 
 #pragma pack(push, 1)
@@ -533,3 +586,23 @@ struct cartStruct
 	Float idk5;
 };
 #pragma pack(pop)
+
+struct _camcontwk
+{
+	char cammode;
+	char camsmode;
+	char bBlank;
+	char btimer;
+	unsigned __int16 wtimer;
+	__int16 ssFlag;
+	float tgtdist;
+	NJS_VECTOR pos;
+	NJS_VECTOR targetpos;
+	Rotation angle;
+	NJS_VECTOR oldcampos;
+	int angx_spd;
+	int angy_spd;
+	int angz_spd;
+	NJS_VECTOR speed;
+	NJS_VECTOR acceleration;
+};

@@ -276,7 +276,7 @@ void Load_MilesNewAnim() {
 
 	id = 0;
 
-	MilesNewAnimList = LoadMTNFile((char*)"NewMilesMtn.prs");
+	MilesNewAnimList = LoadMTNFile((char*)"\\animations\\NewMilesMtn.prs");
 
 	if (MilesNewAnimList[0].Index != 0xFFFF)
 	{
