@@ -1,15 +1,12 @@
 #include "pch.h"
+#include "tornado.h"
+
+extern bool isTransform;
 
 ModelInfo* Tornado = nullptr;
 AnimationFile* TornadoMotion = nullptr;
 
-ModelInfo* TornadoTransfo = nullptr;
-AnimationFile* TornadoTransfoMotion = nullptr;
-
 NJS_TEXLIST* tornadoTex;
-
-NJS_TEXNAME tornadoTransfoTex[150];
-NJS_TEXLIST tornadoTransfoTexList = { arrayptrandlength(tornadoTransfoTex) };
 
 bool isTornadoOn = false;
 
@@ -41,151 +38,7 @@ void DeleteAndLoadMiles(char pNum) {
 	return;
 }
 
-NJS_VECTOR SavePos = { 0, 0, 0 };
 
-void DeleteAndLoadMech(char pNum) {
-
-	DeleteObject_(MainCharacter[pNum]);
-	CurrentCharacter = Characters_MechTails;
-	LoadMechTails(pNum);
-	InitCharacterSound();
-	return;
-}
-
-void TransfoMech_Display(ObjectMaster* obj) {
-
-	EntityData1* data = obj->Data1.Entity;
-	float frame = TornadoTransfoMotion->getmotion()->nbFrame;
-	NJS_OBJECT* tornadoMDL = TornadoTransfo->getmodel();
-	NJS_MOTION* TornadoMotion = TornadoTransfoMotion->getmotion();
-	EntityData1* player = MainCharObj1[data->Index];
-
-	njSetTexture(&tornadoTransfoTexList);
-	njPushMatrixEx();
-
-	njTranslateV(0, &player->Position);
-	njRotateX(0, player->Rotation.x);
-	njRotateY(0, 0x8000 - player->Rotation.y);
-	njRotateZ(0, player->Rotation.z);
-
-	if (data->Action == 2)
-		DrawMotionAndObject(TornadoMotion, tornadoMDL, data->Scale.z);
-	else if (data->Action == 3)
-		DrawMotionAndObject(TornadoMotion, tornadoMDL, frame - 1);
-	else if (data->Action < 4)
-		DrawObject(tornadoMDL);
-
-
-	njPopMatrixEx();
-}
-
-DataPointer(NJS_VECTOR, CamPosAgain, 0x1DCFE10);
-void CallMech(ObjectMaster* obj) {
-
-	EntityData1* data = obj->Data1.Entity;
-	char pNum = data->Index;
-	EntityData1* playerData = MainCharObj1[pNum];
-	CharObj2Base* co2 = MainCharObj2[pNum];
-	float frame = TornadoTransfoMotion->getmotion()->nbFrame;
-	DWORD a2[2] = { 0.5f, 0.5f };
-
-	switch (data->Action)
-	{
-	case 0:
-	{	
-		co2->Speed = { 0, 0, 0 };
-		sub_46C6D0(pNum, playerData->Position.x, playerData->Position.y, playerData->Position.z);
-		SetCameraEvent(pNum, 24);
-		DoSomethingWithCam(*(DWORD*)&CameraData.gap1AC[9432 * pNum + 168], 0, 0);
-		data->Scale.z = 0;
-		PlayJingle("tornado2.adx");
-		PlayVoice(2, 2433);
-		obj->DisplaySub = TransfoMech_Display;
-		SavePos = playerData->Position;
-
-		data->Action++;
-	}
-	break;
-	case 1:
-
-		if (++data->field_6 == 20)
-		{
-			data->Action++;
-			data->field_6 = 0;
-		}
-	case 2:
-
-		data->Scale.z++;
-	if (data->Scale.z >= frame)
-	{
-		ResetCam(CameraData.gap1AC[168], 0);
-		data->Action++;
-		data->Scale.z = 0;
-	}
-	break;
-	case 3:	
-		data->field_6 = 0;
-		DeleteAndLoadMech(pNum);
-		InitCharacterSound();
-		playerData = MainCharObj1[pNum];
-		playerData->Position = SavePos;
-		data->Action++;
-		break;
-	case 4:
-		playerData->Position = SavePos;
-		if (++data->field_6 == 7)
-		{
-	
-			PlayVoice(2, 1695);
-			ControllerEnabled[pNum] = 1;
-			data->Action++;
-		}
-		break;
-	default:
-		DeleteObject_(obj);
-		return;
-
-	}
-}
-
-void Tornado_Display(ObjectMaster* obj) {
-
-	HMODULE** DLL = datadllhandle;
-	EntityData1* data = obj->Data1.Entity;
-
-
-	if (!DLL)
-		return;
-
-	HMODULE dataDll = **DLL;
-
-	if (!dataDll)
-		return;
-
-	FARPROC motion_tornado_3rd = GetProcAddress(dataDll, "motion_tornado_3rd");
-	NJS_MOTION* TornadoMotion = (NJS_MOTION*)motion_tornado_3rd;
-
-	EntityData1* player = MainCharObj1[data->Index];
-
-	njSetTexture(tornadoTex);
-	njPushMatrixEx();
-
-	if (data->Action != tornadoPlayable) {
-		njTranslateV(0, &data->Position);
-		njRotateY(0, data->Rotation.y);
-
-	}
-	else {
-		njTranslateV(0, &player->Position);
-		njRotateX(0, player->Rotation.x);
-		njRotateY(0, 0x8000 - player->Rotation.y);
-		njRotateZ(0, player->Rotation.z);
-	}
-
-
-	DrawMotionAndObject(TornadoMotion, Tornado->getmodel(), FrameCountIngame % TornadoMotion->nbFrame);
-	njPopMatrixEx();
-}
 
 void Mech_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
 
@@ -235,6 +88,47 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 	}
 }
 
+
+
+void Tornado_Display(ObjectMaster* obj) {
+
+	HMODULE** DLL = datadllhandle;
+	EntityData1* data = obj->Data1.Entity;
+
+
+	if (!DLL)
+		return;
+
+	HMODULE dataDll = **DLL;
+
+	if (!dataDll)
+		return;
+
+	FARPROC motion_tornado_3rd = GetProcAddress(dataDll, "motion_tornado_3rd");
+	NJS_MOTION* TornadoMotion = (NJS_MOTION*)motion_tornado_3rd;
+
+	EntityData1* player = MainCharObj1[data->Index];
+
+	njSetTexture(tornadoTex);
+	njPushMatrixEx();
+
+	if (data->Action != tornadoPlayable) {
+		njTranslateV(0, &data->Position);
+		njRotateY(0, data->Rotation.y);
+
+	}
+	else {
+		njTranslateV(0, &player->Position);
+		njRotateX(0, player->Rotation.x);
+		njRotateY(0, 0x8000 - player->Rotation.y);
+		njRotateZ(0, player->Rotation.z);
+	}
+
+
+	DrawMotionAndObject(TornadoMotion, Tornado->getmodel(), FrameCountIngame % TornadoMotion->nbFrame);
+	njPopMatrixEx();
+}
+
 void Tornado_Main(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -251,10 +145,10 @@ void Tornado_Main(ObjectMaster* obj) {
 	switch (data->Action)
 	{
 	case tornadoInit:
+		co2->Powerups |= Powerups_Invincibility;
 		ControllerEnabled[pNum] = 0;
 		player->Action = 0;
 		co2->AnimInfo.Current = 0;
-
 		PlayJingle("tornado.adx");
 		obj->DisplaySub = Tornado_Display;
 		co2->Powerups |= Powerups_Invincibility;
@@ -262,10 +156,10 @@ void Tornado_Main(ObjectMaster* obj) {
 		data->Position = player->Position;
 		data->Position.x += 220;
 		data->Position.y = data->Position.y + 15.0;
+
 		data->Action++;
 		break;
 	case tornadoIntro:
-
 		LookAt(&data->Position, &player->Position, nullptr, &data->Rotation.y + 4000);
 
 		if (data->Position.x > player->Position.x + 50) {
@@ -283,18 +177,21 @@ void Tornado_Main(ObjectMaster* obj) {
 	case tornadoTransition2:
 		data->Position.x -= 3;
 		if (++data->field_6 == 20) {
+
+			player->Rotation = data->Rotation;
+			player->Rotation.y = 0x8000 - data->Rotation.y;
 			data->Action++;
 		}
 		break;
 	case tornadoTransition3:
 
-		LookAt(&data->Position, &player->Position, nullptr, &data->Rotation.y + 4000);
 
 		data->field_6 = 0;
 		player->Action = TornadoStanding;
 		//player->Position.y = data->Position.y + 5;
 		co2->AnimInfo.Next = 35;
 		ControllerEnabled[pNum] = 1;
+		co2->Powerups &= Powerups_Invincibility;
 		data->Action++;
 
 		break;
@@ -541,8 +438,6 @@ void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* dat
 void LoadTornado_ModelAnim() {
 
 	Tornado = LoadMDL("tornadoMDL", ModelFormat_Chunk);
-	TornadoTransfo = LoadMDL("tornadoTransfoMDL", ModelFormat_Chunk);
-	TornadoTransfoMotion = LoadAnim("TornadoTransfo");
 
 	HMODULE** DLL = datadllhandle;
 
@@ -558,6 +453,7 @@ void LoadTornado_ModelAnim() {
 	tornadoTex = (NJS_TEXLIST*)tornado_tex_dll;
 
 	LoadTextureList("LIMTAILS", tornadoTex);
-	LoadTextureList("tornadoTransfoTex", &tornadoTransfoTexList);
+	Load_TornadoTransfo_ModelsTextures();
+
 	return;
 }

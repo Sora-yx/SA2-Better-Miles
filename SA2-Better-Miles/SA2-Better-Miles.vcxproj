@@ -165,6 +165,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="sa2-util.h" />
     <ClInclude Include="StartPos.h" />
+    <ClInclude Include="tornado.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClCompile Include="flight.cpp" />
     <ClCompile Include="grind.cpp" />
     <ClCompile Include="jump-ball.cpp" />
+    <ClCompile Include="mech.cpp" />
     <ClCompile Include="tornado.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="lightdash.cpp" />

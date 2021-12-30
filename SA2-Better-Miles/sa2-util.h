@@ -606,3 +606,7 @@ struct _camcontwk
 	NJS_VECTOR speed;
 	NJS_VECTOR acceleration;
 };
+
+DataPointer(NJS_VECTOR, CamPosAgain, 0x1DCFE10);
+DataPointer(int, CamAngleZ, 0x1DCFDF8);
+DataPointer(int, CamAngleY, 0x1DCFDFC);

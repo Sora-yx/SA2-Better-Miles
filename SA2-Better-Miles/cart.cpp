@@ -1,6 +1,7 @@
 #include "pch.h"
+#include "tornado.h"
 
-//unused, maybe someday though.
+//page unused, maybe someday though.
 
 NJS_VECTOR SavePosCart;
 Trampoline* CartExecuter_Main_t;
@@ -24,10 +25,12 @@ Trampoline* sub_485850_t;
 
 FunctionPointer(unsigned int, sub_485850, (ObjectMaster* a1, int* a2), 0x485850);
 
+bool isTransform = false;
+
 unsigned int __cdecl sub_485850_r(ObjectMaster* a1, int* a2) //fix crash when deleting player
 {
 
-	if (a1->MainSub == nullptr || !a2 || a2 + 52 == nullptr || (a2 + 52) + 44 == nullptr)
+	if (a1->MainSub == nullptr || !a2 || a2 + 52 == nullptr || isTransform)
 		return 0;
 
 

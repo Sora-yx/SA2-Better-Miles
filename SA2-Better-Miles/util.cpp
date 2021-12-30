@@ -270,3 +270,18 @@ void PlayerLookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy) {
 		*outy = -(*outy) + 0x4000;
 	}
 }
+
+void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom)
+{
+	sub_46C6D0(pNum, playerData->Position.x, playerData->Position.y, playerData->Position.z);
+	SetCameraEvent(pNum, 20);
+	DoSomethingWithCam(*(DWORD*)&CameraData.gap1AC[9432 * pNum + 168], 0, 0);
+	*(int*)0x1DCFDE0 = 3;
+	*(int*)0x1DCFDE4 = 0;
+	*(int*)0x1DCFDE8 = 0;
+	*(float*)0x1DCFE1C = zoom; //Zoom
+	CamPosAgain = playerData->Position;
+	CamAngleZ = 63488;
+	CamAngleY = 0x4000 - playerData->Rotation.y;
+
+}
