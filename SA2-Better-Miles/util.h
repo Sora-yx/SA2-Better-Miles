@@ -34,3 +34,4 @@ void PlayerLookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy);
 bool isInTornado(char pNum);
 void Tornado_Main(ObjectMaster* obj);
 void Cart_CheckInput(CharObj2Base* co2, EntityData1* data1);
+void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom);
