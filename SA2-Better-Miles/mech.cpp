@@ -110,7 +110,8 @@ void CallMech(ObjectMaster* obj) {
 		{
 			isTransform = false;
 			co2->Powerups &= Powerups_Invincibility;
-			PlayVoice(2, 1695);
+			int rng = rand() % 2 ? 1695 : 2274;
+			PlayVoice(2, rng);
 			ControllerEnabled[pNum] = 1;
 			data->Action++;
 		}
@@ -127,4 +128,8 @@ void Load_TornadoTransfo_ModelsTextures() {
 	TornadoTransfoMotion = LoadAnim("TornadoTransfo");
 	LoadTextureList("tornadoTransfoTex", &tornadoTransfoTexList);
 	return;
+}
+
+void Init_TailsMechHack() {
+
 }

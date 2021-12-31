@@ -12,7 +12,9 @@ bool isTornadoOn = false;
 
 enum TornadoE {
 	tornadoInit,
-	tornadoIntro,
+	tornadoCall,
+	tornadoMoveToPlayer1,
+	tornadoMoveToPlayer2,
 	tornadoTransition,
 	tornadoTransition2,
 	tornadoTransition3,
@@ -37,7 +39,6 @@ void DeleteAndLoadMiles(char pNum) {
 	InitCharacterSound();
 	return;
 }
-
 
 
 void Mech_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
@@ -88,8 +89,6 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 	}
 }
 
-
-
 void Tornado_Display(ObjectMaster* obj) {
 
 	HMODULE** DLL = datadllhandle;
@@ -129,6 +128,89 @@ void Tornado_Display(ObjectMaster* obj) {
 	njPopMatrixEx();
 }
 
+void tornadoCam_Child(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+	EntityData1* parentData = obj->Parent->Data1.Entity;
+	char pNum = obj->Parent->Data1.Entity->Index;
+
+	EntityData1* player = MainCharObj1[pNum];
+	CharObj2Base* co2 = MainCharObj2[pNum];
+
+	if (data->Action >= 2)
+		CamPosAgain = parentData->Position;
+
+	switch (data->Action)
+	{
+	case 0:
+		SetCameraFacePlayer(pNum, player, 20.0f);
+		data->Action++;
+		break;
+	case 1:
+		if (++data->field_6 == 200)
+		{
+			ResetCam(CameraData.gap1AC[168], 0);
+			data->Action++;
+		}
+		break;
+	case 2:
+		data->field_6 = 0;
+		SetCameraEvent(pNum, 20);
+		DoSomethingWithCam(*(DWORD*)&CameraData.gap1AC[9432 * pNum + 168], 0, 0);
+		*(int*)0x1DCFDE0 = 3;
+		*(int*)0x1DCFDE4 = 0;
+		*(int*)0x1DCFDE8 = 0;
+		*(float*)0x1DCFE1C = 50.0f;
+		CamPosAgain = parentData->Position;
+		CamAngleZ = 63488;
+		CamAngleY = parentData->Rotation.y;
+		data->Action++;
+		break;
+	case 3:
+
+		if (++data->field_6 == 100)
+		{
+			CamAngleY = parentData->Rotation.y + 0x8000;
+			data->Action++;
+			data->field_6 = 0;
+		}
+
+		break;
+	case 4:
+
+		if (++data->field_6 == 100)
+		{
+			CamAngleY = parentData->Rotation.y + 0x4000;
+			data->Action++;
+			data->field_6 = 0;
+		}
+
+		break;
+	case 5:
+
+		if (++data->field_6 == 100)
+		{
+			CamAngleY = parentData->Rotation.y;
+			data->Action++;
+			data->field_6 = 0;
+		}
+		break;
+	case 6:
+
+		if (++data->field_6 == 100)
+		{
+			ResetCam(CameraData.gap1AC[168], 0);
+			data->Action++;
+		}
+		break;
+	default:
+		DeleteObject_(obj);
+		break;
+
+
+	}
+}
+
 void Tornado_Main(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -145,27 +227,54 @@ void Tornado_Main(ObjectMaster* obj) {
 	switch (data->Action)
 	{
 	case tornadoInit:
-		co2->Powerups |= Powerups_Invincibility;
+	
 		ControllerEnabled[pNum] = 0;
-		player->Action = 0;
-		co2->AnimInfo.Current = 0;
 		PlayJingle("tornado.adx");
+		PlayVoice(2, 1786);
+
+		LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
+		co2->Powerups |= Powerups_Invincibility;
+
 		obj->DisplaySub = Tornado_Display;
 		co2->Powerups |= Powerups_Invincibility;
 		player->Rotation = data->Rotation;
+		player->Action = ObjectControl;
+		co2->AnimInfo.Next = 88;
 		data->Position = player->Position;
-		data->Position.x += 220;
-		data->Position.y = data->Position.y + 15.0;
+		data->Position.x += 1020;
+		data->Position.y = data->Position.y + 20.0;
+
+		LookAt(&data->Position, &player->Position, nullptr, &data->Rotation.y + 4000);
+
 
 		data->Action++;
 		break;
-	case tornadoIntro:
-		LookAt(&data->Position, &player->Position, nullptr, &data->Rotation.y + 4000);
+	case tornadoCall:
+		if (++data->field_6 == 200)
+		{
+			data->Action++;
+		}
+		break;
+	case tornadoMoveToPlayer1:
+
+		if (data->Position.x > player->Position.x + 650) {
+			data->Position.x -= 2;
+		}
+		else {
+			data->field_6 = 0;
+
+			data->Action++;
+		}
+		break;
+	case tornadoMoveToPlayer2:
+
 
 		if (data->Position.x > player->Position.x + 50) {
 			data->Position.x -= 3;
 		}
 		else {
+
+			ResetCam(CameraData.gap1AC[168], 0);
 			data->Action++;
 		}
 		break;
