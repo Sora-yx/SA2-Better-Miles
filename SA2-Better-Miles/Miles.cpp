@@ -642,12 +642,16 @@ void LoadCharacter_r() {
 			{
 				Load_MilesNewAnim();
 				LoadTornado_ModelAnim();
-
 				SetSpacePhysics(MainCharObj2[i]);
 				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
 			}
+			else if (MainCharObj2[i]->CharID == Characters_MechTails)
+			{
+				LoadTornado_ModelAnim();
+			}
 
 			CheckAndSetHackObject(MainCharObj2[i]);
+	
 		}
 	}
 
@@ -679,6 +683,7 @@ void BetterMiles_Init() {
 
 	Init_MilesActions();
 	Init_MilesFly();
+	Init_TailsMechHack();
 
 	//Custom anim + new moves
 	Init_NewAnimation();

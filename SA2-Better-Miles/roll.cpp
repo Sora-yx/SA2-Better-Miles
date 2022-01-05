@@ -154,7 +154,7 @@ void Miles_UnrollCheck(EntityData1* data1, EntityData2* data2, CharObj2Base* co2
 			if (TailsJump(co2, data1))
 			{
 				RestorePhysic(co2);
-				data1->Status &= Status_Ball;
+				data1->Status &= ~Status_Ball;
 				return;
 			}
 
