@@ -104,6 +104,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 			data->Action++;
 			data->field_6 = 0;
 		}
+		break;
 	case 2:
 
 		CamAngleY += 320;
