@@ -232,8 +232,8 @@ void Tornado_Main(ObjectMaster* obj) {
 
 		ControllerEnabled[pNum] = 0;
 		PlayJingle("tornado.adx");
-		PlayVoice(2, 1786);
-
+		PlayVoice(2, 2271);
+		displayText(1, "\a Ow! Now I'm serious! ", 120, 1);
 		LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
 		obj->DisplaySub = Tornado_Display;
 		co2->Powerups |= Powerups_Invincibility;

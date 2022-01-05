@@ -47,6 +47,7 @@ DataPointer(int, DebugMode2_, 0x174AFF9);
 DataPointer(char, byte_1738C69, 0x1738C69);
 DataPointer(__int16, word_1738D58, 0x1738D58);
 FunctionPointer(double, FloatCalcResult, (float a1, float a2, float a3), 0x447520);
+FunctionPointer(ObjectMaster*, displayText, (int a1, const char* message, int displayTime, int language), 0x6B6E20);
 
 #pragma pack(push, 1)
 struct __declspec(align(2)) HomingAttackTarget

@@ -195,6 +195,7 @@ void CallMech(ObjectMaster* obj) {
 		data->Scale.z = 0;
 		PlayJingle("tornado2.adx");
 		PlayVoice(2, 2433);
+		displayText(1, "\a Tornado, transformation!", 120, 1);
 		obj->DisplaySub = TransfoMech_Display;
 		SavePos = playerData->Position;
 
@@ -234,7 +235,8 @@ void CallMech(ObjectMaster* obj) {
 			isTransform = false;
 			co2->Powerups &= Powerups_Invincibility;
 			int rng = rand() % 2 ? 1695 : 2274;
-			PlayVoice(2, rng);
+			PlayVoice(2, 2274);
+			displayText(1, "\a I'll show you how powerful my Cyclone is!", 150, 1);
 			ControllerEnabled[pNum] = 1;
 			data->Action++;
 		}
