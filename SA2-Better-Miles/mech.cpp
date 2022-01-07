@@ -14,6 +14,42 @@ Trampoline* MechTails_runsActions_t;
 
 bool isInMech = false;
 
+void SoundEffect_Tornado(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+
+	switch (data->Action)
+	{
+	case 0:
+	{
+		PlayCustomSoundVolume(SE_tornado_Transfo01, 1);
+		data->Action++;
+		break;
+	case 1:
+		if (++data->field_6 == 60)
+		{
+			PlayCustomSoundVolume(SE_tornado_Transfo02, 1);
+			data->Action++;
+			data->field_6 = 0;
+
+		}
+		break;
+	case 2:
+		if (++data->field_2 == 60)
+		{
+			PlayCustomSoundVolume(SE_tornado_Transfo03, 1);
+			data->Action++;
+		}
+		break;
+	default:
+		DeleteObject_(obj);
+		break;
+
+	}
+	}
+}
+
+
 void DeleteAndLoadMech(char pNum) {
 
 	DeleteObject_(MainCharacter[pNum]);
@@ -74,6 +110,8 @@ void Untransform_Mech(ObjectMaster* obj) {
 	{
 	case 0:
 	{
+		LoadChildObject(LoadObj_Data1, SoundEffect_Tornado, obj);
+		displayText(1, "\a Tornado, transformation!", 120, 1);
 		PlayVoice(2, 2433);
 		ControllerEnabled[pNum] = 0;
 		playerData->Action = ObjectControl;
@@ -111,6 +149,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 		data->Scale.z--;
 		if (data->Scale.z <= 0)
 		{
+			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
 			isInMech = true;
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
@@ -129,7 +168,6 @@ void Untransform_Mech(ObjectMaster* obj) {
 		}
 		return;
 	}
-
 }
 
 void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* data) {
@@ -137,7 +175,7 @@ void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* data) {
 	if (GameState != GameStates_Ingame || !co2 || !isInMech)
 		return;
 
-	if (Controllers[co2->PlayerNum].on & Buttons_Y && Controllers[co2->PlayerNum].press & Buttons_Right)
+	if (Controllers[co2->PlayerNum].press & Buttons_Down)
 	{
 		ObjectMaster* tornado = LoadObject(2, "MechUntransfo", Untransform_Mech, LoadObj_Data1);
 		tornado->Data1.Entity->Index = co2->PlayerNum;
@@ -174,7 +212,6 @@ void TransfoMech_Display(ObjectMaster* obj) {
 	njPopMatrixEx();
 }
 
-
 void CallMech(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -205,15 +242,18 @@ void CallMech(ObjectMaster* obj) {
 	break;
 	case 1:
 
-		if (++data->field_6 == 20)
+		if (++data->field_6 == 35)
 		{
+			LoadChildObject(LoadObj_Data1, SoundEffect_Tornado, obj);
 			data->Action++;
 			data->field_6 = 0;
 		}
+		break;
 	case 2:
 
 		CamAngleY += 320;
 		data->Scale.z++;
+
 		if (data->Scale.z >= frame)
 		{
 			ResetCam(CameraData.gap1AC[168], 0);
@@ -225,6 +265,7 @@ void CallMech(ObjectMaster* obj) {
 		data->field_6 = 0;
 		DeleteAndLoadMech(pNum);
 		InitCharacterSound();
+
 		playerData = MainCharObj1[pNum];
 		playerData->Position = SavePos;
 		data->Action++;
@@ -233,6 +274,7 @@ void CallMech(ObjectMaster* obj) {
 		playerData->Position = SavePos;
 		if (++data->field_6 == 7)
 		{
+			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
 			isTransform = false;
 			co2->Powerups &= Powerups_Invincibility;
 			int rng = rand() % 2 ? 1695 : 2274;

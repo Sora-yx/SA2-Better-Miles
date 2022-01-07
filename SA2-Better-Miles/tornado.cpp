@@ -30,15 +30,36 @@ bool isInTornado(char pNum) {
 	return MainCharObj1[pNum]->Action >= TornadoStanding && MainCharObj1[pNum]->Action <= TornadoDescending;
 }
 
-
 void Mech_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
 
 	if (GameState != GameStates_Ingame || !co2 || !isTornadoOn)
 		return;
 
-	if (Controllers[co2->PlayerNum].on & Buttons_Y && Controllers[co2->PlayerNum].press & Buttons_Left)
+	if (Controllers[co2->PlayerNum].press & Buttons_Up)
 	{
 		data1->Action = tornadoTransfoMech;
+		return;
+	}
+}
+
+void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
+
+	if (GameState != GameStates_Ingame || !co2 || !isTornadoOn)
+		return;
+
+	char pNum = co2->PlayerNum;
+
+	if (data->field_6 > 0) {
+		data->field_6--;
+		return;
+	}
+
+	if (Controllers[pNum].press & Buttons_Y && isInTornado(pNum))
+	{
+		data->field_6 = 120;
+		co2->Speed.x += co2->PhysData.SpeedCapH - 2.0f;
+		PlayCustomSoundVolume(SE_tornadoBoost, 2);
+		PlayCustomSoundVolume(Voice_TailsWow, 1);
 		return;
 	}
 }
@@ -48,7 +69,7 @@ void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
 	if (GameState != GameStates_Ingame || !co2 || isTornadoOn)
 		return;
 
-	if (Controllers[co2->PlayerNum].on & Buttons_Y && Controllers[co2->PlayerNum].press & Buttons_Right)
+	if (Controllers[co2->PlayerNum].press & Buttons_Up)
 	{
 		ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
 		tornado->Data1.Entity->Index = co2->PlayerNum;
@@ -65,7 +86,7 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	char pNum = co2->PlayerNum;
 
-	if (Controllers[pNum].on & Buttons_Y && Controllers[pNum].press & Buttons_Right && isInTornado(pNum))
+	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum))
 	{
 		StopMusic();
 		ResetMusic();
@@ -136,7 +157,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 		data->Action++;
 		break;
 	case 1:
-		if (++data->field_6 == 200)
+		if (++data->field_6 == 100)
 		{
 			ResetCam(CameraData.gap1AC[168], 0);
 			data->Action++;
@@ -232,8 +253,8 @@ void Tornado_Main(ObjectMaster* obj) {
 
 		ControllerEnabled[pNum] = 0;
 		PlayJingle("tornado.adx");
-		PlayVoice(2, 2271);
-		displayText(1, "\a Ow! Now I'm serious! ", 120, 1);
+		PlayCustomSound(Voice_TailsTimeToJam);
+		displayText(1, "\a Time to jam!", 120, 1);
 		LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
 		obj->DisplaySub = Tornado_Display;
 		co2->Powerups |= Powerups_Invincibility;
@@ -246,12 +267,12 @@ void Tornado_Main(ObjectMaster* obj) {
 
 		LookAt(&data->Position, &player->Position, nullptr, &data->Rotation.y + 4000);
 
-
 		data->Action++;
 		break;
 	case tornadoCall:
 		if (++data->field_6 == 50)
 		{
+			PlayCustomSound_Entity(SE_tornadoFlying, obj, 500, true);
 			data->Action++;
 		}
 		break;
@@ -262,18 +283,15 @@ void Tornado_Main(ObjectMaster* obj) {
 		}
 		else {
 			data->field_6 = 0;
-
 			data->Action++;
 		}
 		break;
 	case tornadoMoveToPlayer2:
 
-
-		if (data->Position.x > player->Position.x + 50) {
+		if (data->Position.x > player->Position.x + 70) {
 			data->Position.x -= 3;
 		}
 		else {
-
 			ResetCam(CameraData.gap1AC[168], 0);
 			data->Action++;
 		}
@@ -306,7 +324,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		break;
 	case tornadoPlayable:
 		Tornado_AbortCheckInput(co2, player);
-
+		Tornado_BoostCheckInput(co2, data);
 		Mech_CallCheckInput(co2, data);
 
 		if (!isTornadoOn) {
@@ -337,7 +355,6 @@ void Tornado_Main(ObjectMaster* obj) {
 	}
 }
 
-
 void Tornado_CommonPhysics(CharObj2Base* co2, EntityData1* data1, EntityData2* data2)
 {
 	PGetRotation(data1, data2, co2);
@@ -346,7 +363,6 @@ void Tornado_CommonPhysics(CharObj2Base* co2, EntityData1* data1, EntityData2* d
 	PSetPosition(data1, data2, co2);
 	PResetPosition(data1, data2, co2);
 }
-
 
 void Tornado_CommonPhysicsV(CharObj2Base* co2, EntityData1* data1, EntityData2* data2, float A, float B)
 {
@@ -504,7 +520,6 @@ void Tornado_Descending(EntityData1* data1, CharObj2Base* co2)
 
 	return;
 }
-
 
 void Tornado_RunsActions(EntityData1* data1, CharObj2Base* co2) {
 

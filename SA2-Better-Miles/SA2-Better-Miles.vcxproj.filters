@@ -22,6 +22,9 @@
     <Filter Include="Source Files\Miles\Tornado">
       <UniqueIdentifier>{44f1ea3d-826d-4051-9631-4d208e266753}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{3b46698b-761f-4dbf-affa-12b8d94c3185}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -46,6 +49,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tornado.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,9 +110,6 @@
     <ClCompile Include="swimming.cpp">
       <Filter>Source Files\Miles\Abilities</Filter>
     </ClCompile>
-    <ClCompile Include="voices.cpp">
-      <Filter>Source Files\Miles</Filter>
-    </ClCompile>
     <ClCompile Include="jump-ball.cpp">
       <Filter>Source Files\Miles\Abilities</Filter>
     </ClCompile>
@@ -118,6 +121,12 @@
     </ClCompile>
     <ClCompile Include="mech.cpp">
       <Filter>Source Files\Miles\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="voices.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -246,8 +246,6 @@ void LookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy) {
 	NJS_VECTOR unit = *to;
 
 
-	njSubVector(&unit, from);
-
 	//*outy = static_cast<Angle>(atan2f(unit.x, unit.z) * 65536.0f * 0.1591549762031479f);
 
 	if (outx) {

@@ -18,5 +18,6 @@
 #include "mod.h"
 #include "abilities.h"
 #include "util.h"
+#include "Sound.h"
 
 #endif //PCH_H
