@@ -56,27 +56,31 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 
 	if (Controllers[pNum].press & Buttons_Y && isInTornado(pNum))
 	{
+		PlayCustomSoundVolume(SE_tornadoBoost, 2);
 		data->field_6 = 120;
 		co2->Speed.x += co2->PhysData.SpeedCapH - 2.0f;
-		PlayCustomSoundVolume(SE_tornadoBoost, 2);
+
 		int randomVoice = rand() % 2 ? (int)Voice_TailsWow : (int)Voice_TailsYay;
 		PlayCustomSoundVolume(randomVoice, 1);
 		return;
 	}
 }
 
-void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
+void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
-	if (GameState != GameStates_Ingame || !co2 || isTornadoOn)
+	if (GameState != GameStates_Ingame || !co2 || isTornadoOn )
 		return;
 
-	if (Controllers[co2->PlayerNum].press & Buttons_Up)
+	if (playerData->Action <= Action_Run)
 	{
-		ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
-		tornado->Data1.Entity->Index = co2->PlayerNum;
-		isTornadoOn = true;
+		if (Controllers[co2->PlayerNum].press & Buttons_Up)
+		{
+			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
+			tornado->Data1.Entity->Index = co2->PlayerNum;
+			isTornadoOn = true;
 
-		return;
+			return;
+		}
 	}
 }
 
@@ -183,7 +187,6 @@ void tornadoCam_Child(ObjectMaster* obj)
 			data->Action++;
 			data->field_6 = 0;
 		}
-
 		break;
 	case 4:
 
@@ -193,7 +196,6 @@ void tornadoCam_Child(ObjectMaster* obj)
 			data->Action++;
 			data->field_6 = 0;
 		}
-
 		break;
 	case 5:
 
@@ -215,8 +217,6 @@ void tornadoCam_Child(ObjectMaster* obj)
 	default:
 		DeleteObject_(obj);
 		break;
-
-
 	}
 }
 
@@ -247,6 +247,7 @@ void Tornado_Main(ObjectMaster* obj) {
 			player->Action = TornadoStanding;
 			co2->AnimInfo.Next = 35;
 			data->Action = tornadoPlayable;	
+			PlayCustomSound_Entity(SE_tornadoFlying, obj, 500, true);
 			return;
 		}
 
@@ -259,7 +260,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		co2->Powerups |= Powerups_Invincibility;
 		player->Rotation = data->Rotation;
 		player->Action = ObjectControl;
-		co2->AnimInfo.Next = 88;
+		co2->AnimInfo.Next = 50;
 		data->Position = player->Position;
 		data->Position.x += 820;
 		data->Position.y = data->Position.y + 20.0;

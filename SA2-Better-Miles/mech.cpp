@@ -11,6 +11,7 @@ NJS_TEXLIST tornadoTransfoTexList = { arrayptrandlength(tornadoTransfoTex) };
 
 Trampoline* MechTails_main_t;
 Trampoline* MechTails_runsActions_t;
+Trampoline* sub_75DF80_t;
 
 bool isInMech = false;
 
@@ -174,17 +175,20 @@ void Untransform_Mech(ObjectMaster* obj) {
 	}
 }
 
-void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* data) {
+void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData1* playerData) {
 
 	if (GameState != GameStates_Ingame || !co2 || !isInMech)
 		return;
 
-	if (Controllers[co2->PlayerNum].press & Buttons_Down)
-	{
-		ObjectMaster* tornado = LoadObject(2, "MechUntransfo", Untransform_Mech, LoadObj_Data1);
-		tornado->Data1.Entity->Index = co2->PlayerNum;
-		data->Action++;
-		return;
+	if (playerData->Action <= Action_Run) {
+
+		if (Controllers[co2->PlayerNum].press & Buttons_Down)
+		{
+			ObjectMaster* tornado = LoadObject(2, "MechUntransfo", Untransform_Mech, LoadObj_Data1);
+			tornado->Data1.Entity->Index = co2->PlayerNum;
+			data->Action++;
+			return;
+		}
 	}
 }
 
@@ -294,7 +298,7 @@ void CallMech(ObjectMaster* obj) {
 		break;
 
 	case 5:
-		UntransfoMech_CheckInput(co2, data);
+		UntransfoMech_CheckInput(co2, data, playerData);
 		break;
 	default:
 		DeleteObject_(obj);
@@ -309,6 +313,15 @@ void ResetSoundSystem_r() {
 	
 	ResetSoundSystem();
 	return;
+}
+
+
+void sub_75DF80_r(ObjectMaster* obj)
+{
+	if (isTransform)
+		return;
+
+	TARGET_DYNAMIC(sub_75DF80);
 }
 
 
@@ -345,5 +358,6 @@ void Init_TailsMechHack() {
 	MechTails_main_t = new Trampoline((int)MechEggman_Main, (int)MechEggman_Main + 0x6, MechTails_Main_r);
 	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
+	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
 	return;
 }
