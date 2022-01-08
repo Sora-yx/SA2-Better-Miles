@@ -28,5 +28,7 @@ enum CM_SoundList {
 	SE_tornadoBoost,
 	Voice_TailsTimeToJam = 2000,
 	Voice_TailsLetsDoIt,
-	Voice_TailsWow
+	Voice_TailsWow,
+	Voice_TailsYay,
+	Voice_TailsTired,
 };

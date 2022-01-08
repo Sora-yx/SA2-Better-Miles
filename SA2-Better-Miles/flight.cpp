@@ -4,6 +4,10 @@ float TailsFlightTime = 0.0000000000; //fatigue
 double flyCustomSpeedValue = 0.11; //used to improve Miles flight speed
 
 static signed int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
+
+	if (TailsFlightTime >= 1.0 && !isInfiniteFly)
+		return 0;
+
 	a1->Action = Flying;
 	a1->Status &= 0xDAFFu;
 	a2->AnimInfo.Current = FlyingAnim;
@@ -19,7 +23,6 @@ static void __declspec(naked) Tails_FlyStartASM()
 		push edx // a2
 		push eax // a1
 
-		// Call your __cdecl function here:
 		call Tails_FlyStart
 
 		add esp, 4 // a1<eax> is also used for return value
@@ -33,6 +36,7 @@ void Tails_CheckGetAltitude(CharObj2Base* a1)
 {
 	if (Controllers[a1->PlayerNum].on & Buttons_A) {
 		if (TailsFlightTime < 1.0) {
+
 			if (!isInfiniteFly && !isSuperForm(a1->PlayerNum))
 				TailsFlightTime += 0.0043333338;
 
@@ -67,11 +71,17 @@ void Tails_FatigueReloadCheck(EntityData1* data1) {
 }
 
 void Tails_Fatigue(EntityData1* data1, CharObj2Base* co2) {
+
 	if (TailsFlightTime >= 1.0) {
-		if (co2->Speed.y > -8.0)
-			co2->Speed.y -= 0.13;
+		if (data1->Action != Action_Fall) {
+			data1->Action = Action_Fall;
+			co2->AnimInfo.Next = 91;
+			PlayCustomSoundVolume(Voice_TailsTired, 1);
+			return;
+		}
 	}
 }
+
 
 void MilesFly(EntityData1* data1, CharObj2Base* co2) {
 	if (data1->Action == Flying && TailsFlightTime < 1.0) {

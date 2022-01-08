@@ -59,7 +59,8 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 		data->field_6 = 120;
 		co2->Speed.x += co2->PhysData.SpeedCapH - 2.0f;
 		PlayCustomSoundVolume(SE_tornadoBoost, 2);
-		PlayCustomSoundVolume(Voice_TailsWow, 1);
+		int randomVoice = rand() % 2 ? (int)Voice_TailsWow : (int)Voice_TailsYay;
+		PlayCustomSoundVolume(randomVoice, 1);
 		return;
 	}
 }
@@ -252,7 +253,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		ControllerEnabled[pNum] = 0;
 		PlayJingle("tornado.adx");
 		PlayCustomSound(Voice_TailsTimeToJam);
-		displayText(1, "\a Time to jam!", 120, 1);
+		displayText(1, "\a Time to jam!", 100, 1);
 		LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
 		obj->DisplaySub = Tornado_Display;
 		co2->Powerups |= Powerups_Invincibility;
@@ -345,6 +346,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		data->Rotation.y = 0x4000;
 		data->Position.x += 3;
 		data->Position.y += 3;
+
 		if (++data->field_6 == 100) {
 			DeleteObject_(obj);
 		}
@@ -354,6 +356,7 @@ void Tornado_Main(ObjectMaster* obj) {
 
 void Tornado_CommonPhysics(CharObj2Base* co2, EntityData1* data1, EntityData2* data2)
 {
+	PResetAngle(data1, co2);
 	PGetRotation(data1, data2, co2);
 	SuperSonicGetAccel(data1, data2, co2);
 	PGetSpeed(data1, co2, data2);
