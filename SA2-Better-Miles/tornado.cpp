@@ -104,7 +104,6 @@ void Tornado_Display(ObjectMaster* obj) {
 	HMODULE** DLL = datadllhandle;
 	EntityData1* data = obj->Data1.Entity;
 
-
 	if (!DLL)
 		return;
 
@@ -132,7 +131,6 @@ void Tornado_Display(ObjectMaster* obj) {
 		njRotateY(0, 0x8000 - player->Rotation.y);
 		njRotateZ(0, player->Rotation.z);
 	}
-
 
 	DrawMotionAndObject(TornadoMotion, Tornado->getmodel(), FrameCountIngame % TornadoMotion->nbFrame);
 	njPopMatrixEx();
@@ -315,7 +313,6 @@ void Tornado_Main(ObjectMaster* obj) {
 
 		data->field_6 = 0;
 		player->Action = TornadoStanding;
-		//player->Position.y = data->Position.y + 5;
 		co2->AnimInfo.Next = 35;
 		ControllerEnabled[pNum] = 1;
 		co2->Powerups &= Powerups_Invincibility;
@@ -581,3 +578,4 @@ void LoadTornado_ModelAnim() {
 
 	return;
 }
+

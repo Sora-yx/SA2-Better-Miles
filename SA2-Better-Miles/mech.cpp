@@ -112,6 +112,9 @@ void Untransform_Mech(ObjectMaster* obj) {
 	{
 		LoadChildObject(LoadObj_Data1, SoundEffect_Tornado, obj);
 		displayText(1, "\a Tornado, transformation!", 120, 1);
+		playerData->Rotation.x = 0;
+		playerData->Rotation.z = 0;
+		data->Rotation.y = playerData->Rotation.y;
 		PlayVoice(2, 2433);
 		ControllerEnabled[pNum] = 0;
 		playerData->Action = ObjectControl;
@@ -134,6 +137,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 	case 1:
 		playerData->Action = ObjectControl;
 		playerData->Position = SavePos;
+		playerData->Rotation.y = data->Rotation.y;
 
 		if (++data->field_6 == 20)
 		{
@@ -235,14 +239,17 @@ void CallMech(ObjectMaster* obj) {
 		PlayVoice(2, 2433);
 		displayText(1, "\a Tornado, transformation!", 120, 1);
 		obj->DisplaySub = TransfoMech_Display;
+		playerData->Rotation.x = 0;
+		playerData->Rotation.z = 0;
 		SavePos = playerData->Position;
+		data->Rotation.y = playerData->Rotation.y;
 
 		data->Action++;
 	}
 	break;
 	case 1:
 
-		if (++data->field_6 == 35)
+		if (++data->field_6 == 15)
 		{
 			LoadChildObject(LoadObj_Data1, SoundEffect_Tornado, obj);
 			data->Action++;
@@ -272,6 +279,7 @@ void CallMech(ObjectMaster* obj) {
 		break;
 	case 4:
 		playerData->Position = SavePos;
+		playerData->Rotation.y = data->Rotation.y;
 		if (++data->field_6 == 7)
 		{
 			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
@@ -292,6 +300,15 @@ void CallMech(ObjectMaster* obj) {
 		DeleteObject_(obj);
 		return;
 	}
+}
+
+void ResetSoundSystem_r() {
+
+	if (isTransform && GameState == GameStates_Ingame)
+		return;
+	
+	ResetSoundSystem();
+	return;
 }
 
 
@@ -327,4 +344,6 @@ void __cdecl MechTails_Main_r(ObjectMaster* obj)
 void Init_TailsMechHack() {
 	MechTails_main_t = new Trampoline((int)MechEggman_Main, (int)MechEggman_Main + 0x6, MechTails_Main_r);
 	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
+	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
+	return;
 }
