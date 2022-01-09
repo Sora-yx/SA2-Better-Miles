@@ -32,3 +32,5 @@ enum CM_SoundList {
 	Voice_TailsYay,
 	Voice_TailsTired,
 };
+
+void init_BassSound();

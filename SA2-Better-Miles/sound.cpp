@@ -279,3 +279,23 @@ void RunCustomSounds() {
 		}
 	}
 }
+
+VoidFunc(sub_443290, 0x443290);
+void ResumeSound_j() {
+	sub_443290();
+	ResumeCustomSounds();
+}
+
+
+VoidFunc(sub_443250, 0x443250);
+
+void PauseSound_j() {
+	sub_443250();
+	PauseCustomSounds();
+}
+
+void init_BassSound() {
+	WriteCall((void*)0x43602C, PauseSound_j);
+	WriteCall((void*)0x436071, ResumeSound_j);
+	return;
+}

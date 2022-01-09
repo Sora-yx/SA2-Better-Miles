@@ -51,6 +51,8 @@ FunctionPointer(ObjectMaster*, displayText, (int a1, const char* message, int di
 
 ObjectFunc(sub_75DF80, 0x75DF80);
 
+VoidFunc(DeleteLevelStuff, 0x43D510);
+
 #pragma pack(push, 1)
 struct __declspec(align(2)) HomingAttackTarget
 {

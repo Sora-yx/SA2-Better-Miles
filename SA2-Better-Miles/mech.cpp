@@ -192,6 +192,7 @@ void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData1*
 	}
 }
 
+
 void TransfoMech_Display(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -359,5 +360,15 @@ void Init_TailsMechHack() {
 	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
 	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
+	return;
+}
+
+void Delete_TornadoTransform() {
+	FreeMDL(TornadoTransfo);
+	TornadoTransfo = nullptr;
+	FreeTexList(&tornadoTransfoTexList);
+	FreeAnim(TornadoTransfoMotion);
+	TornadoTransfoMotion = nullptr;
+	isInMech = false;
 	return;
 }

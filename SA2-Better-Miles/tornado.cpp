@@ -91,7 +91,7 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	char pNum = co2->PlayerNum;
 
-	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum))
+	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum) || !isInTornado(pNum) && playerData->Action != Action_ObjectControl)
 	{
 		StopMusic();
 		ResetMusic();
@@ -220,6 +220,11 @@ void tornadoCam_Child(ObjectMaster* obj)
 	}
 }
 
+void Tornado_Delete(ObjectMaster* obj)
+{
+	isTornadoOn = false;
+}
+
 void Tornado_Main(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -251,10 +256,11 @@ void Tornado_Main(ObjectMaster* obj) {
 			return;
 		}
 
+		obj->DeleteSub = Tornado_Delete;
 		ControllerEnabled[pNum] = 0;
 		PlayJingle("tornado.adx");
 		PlayCustomSound(Voice_TailsTimeToJam);
-		displayText(1, "\a Time to jam!", 100, 1);
+		displayText(1, "\a Time to jam!", 95, 1);
 		LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
 		obj->DisplaySub = Tornado_Display;
 		co2->Powerups |= Powerups_Invincibility;
@@ -583,3 +589,13 @@ void LoadTornado_ModelAnim() {
 	return;
 }
 
+void Delete_Tornado() {
+	FreeMDL(Tornado);
+	Tornado = nullptr;
+	FreeTexList(tornadoTex);
+	FreeAnim(TornadoMotion);
+	TornadoMotion = nullptr;
+	isTornadoOn = false;
+	isTransform = false;
+	return;
+}

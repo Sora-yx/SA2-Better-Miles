@@ -629,7 +629,7 @@ void SetSpacePhysics(CharObj2Base* co2) {
 
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
-		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
+		if (isMilesAdventure || isMechRemoved && ( GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
 			CurrentCharacter = Characters_Tails;
 	}
 
@@ -645,13 +645,7 @@ void LoadCharacter_r() {
 				SetSpacePhysics(MainCharObj2[i]);
 				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
 			}
-			else if (MainCharObj2[i]->CharID == Characters_MechTails)
-			{
-				LoadTornado_ModelAnim();
-			}
-
-			CheckAndSetHackObject(MainCharObj2[i]);
-	
+				CheckAndSetHackObject(MainCharObj2[i]);
 		}
 	}
 

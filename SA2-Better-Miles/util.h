@@ -36,3 +36,5 @@ void Tornado_Main(ObjectMaster* obj);
 void Cart_CheckInput(CharObj2Base* co2, EntityData1* data1);
 void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom);
 void Init_TailsMechHack();
+void Delete_TornadoTransform();
+void Delete_Tornado();

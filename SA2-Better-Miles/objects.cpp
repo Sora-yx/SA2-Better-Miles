@@ -14,6 +14,7 @@ Trampoline* RocketIG_t;
 Trampoline* BrokenDownSmoke_t;
 Trampoline* MetalBox_t;
 Trampoline* MetalBoxGravity_t;
+Trampoline* DeleteLevelStuff_t;
 
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
@@ -302,12 +303,23 @@ void MetalBoxGravity_r(ObjectMaster* obj) {
 	origin(obj);
 }
 
+void DeleteLevelStuff_r() {
+
+	DeleteLevelStuff();
+	FreeAllCustomSounds();
+	Delete_Tornado();
+	Delete_TornadoTransform();
+}
+
 void Init_MilesActions() {
 	if (isMechRemoved)
 		WriteCall((void*)0x43D6CD, ForceMiles);
 
 	if (isRando())
 		return;
+
+	WriteCall((void*)0x43B364, DeleteLevelStuff_r);
+
 
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
 	MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
