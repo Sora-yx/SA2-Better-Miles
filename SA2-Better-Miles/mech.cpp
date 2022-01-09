@@ -15,6 +15,24 @@ Trampoline* sub_75DF80_t;
 
 bool isInMech = false;
 
+CollisionData SuperLaserCol = { 0, CollisionShape_Cyl1, 7, 0xE1, 0x800400, {0}, 5.0, 40.0, 30.0, 30.0, {0, 0, 0x0 } };
+
+void SuperLaserCol_Hack(ObjectMaster* obj, CollisionData* collision, int count, unsigned __int8 a4) {
+
+	if (TwoPlayerMode || CurrentLevel == LevelIDs_SonicVsShadow1 || 
+		CurrentLevel == LevelIDs_SonicVsShadow2 || CurrentLevel == LevelIDs_TailsVsEggman1 
+		|| CurrentLevel == LevelIDs_TailsVsEggman2 || CurrentLevel == LevelIDs_KnucklesVsRouge)
+	{
+		InitCollision(obj, collision, count, a4);
+		return;
+	}
+
+	InitCollision(obj, &SuperLaserCol, count, 1);
+	EntityData1* data1 = obj->Data1.Entity;
+	data1->Collision->CollisionArray->attr |= 0x40000u;
+	data1->Collision->Flag &= 0xFFBFu;
+}			   
+
 void SoundEffect_Tornado(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
@@ -49,7 +67,6 @@ void SoundEffect_Tornado(ObjectMaster* obj)
 	}
 	}
 }
-
 
 void DeleteAndLoadMech(char pNum) {
 
@@ -325,6 +342,20 @@ void sub_75DF80_r(ObjectMaster* obj)
 	TARGET_DYNAMIC(sub_75DF80);
 }
 
+void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* tailsCO2) {
+
+	if (GameState != GameStates_Ingame || !co2)
+		return;
+
+	if (data->Action <= Action_Run) {
+
+		if (Controllers[co2->PlayerNum].press & Buttons_Y)
+		{
+			TailsEggman_LaserAttack(co2, data, data2, tailsCO2);
+			return;
+		}
+	}
+}
 
 void Load_TornadoTransfo_ModelsTextures() {
 	TornadoTransfo = LoadMDL("tornadoTransfoMDL", ModelFormat_Chunk);
@@ -339,6 +370,7 @@ void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, Cha
 	original(data1, data2, co2, co2Miles);
 
 	Tornado_RunsActions(data1, co2);
+	Tails_SuperAttack_CheckInput(co2, data1, data2, co2Miles);
 }
 
 void __cdecl MechTails_Main_r(ObjectMaster* obj)
@@ -355,12 +387,25 @@ void __cdecl MechTails_Main_r(ObjectMaster* obj)
 	Tornado_MainActions(data1, co2, data2);
 }
 
-void Init_TailsMechHack() {
-	MechTails_main_t = new Trampoline((int)MechEggman_Main, (int)MechEggman_Main + 0x6, MechTails_Main_r);
-	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
-	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
-	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
-	return;
+
+static void __declspec(naked) InitCollision_r()
+{
+	__asm
+	{
+		push[esp + 0Ch] // __int8 a4
+		push[esp + 0Ch] // count
+		push[esp + 0Ch] // collision
+		push eax // obj
+
+		// Call your __cdecl function here:
+		call SuperLaserCol_Hack
+
+		add esp, 4 // obj<eax> is also used for return value
+		add esp, 4 // collision
+		add esp, 4 // count
+		add esp, 4 // __int8 a4
+		retn
+	}
 }
 
 void Delete_TornadoTransform() {
@@ -372,3 +417,13 @@ void Delete_TornadoTransform() {
 	isInMech = false;
 	return;
 }
+
+void Init_TailsMechHack() {
+	MechTails_main_t = new Trampoline((int)MechEggman_Main, (int)MechEggman_Main + 0x6, MechTails_Main_r);
+	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
+	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
+	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
+	WriteCall((void*)0x7607E2, InitCollision_r);
+	return;
+}
+

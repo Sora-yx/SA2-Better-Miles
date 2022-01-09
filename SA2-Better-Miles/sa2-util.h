@@ -41,7 +41,6 @@ ObjectFunc(MetalBox, 0x6D6490);
 ObjectFunc(MetalBoxGravity, 0x77BB90);
 ObjectFunc(CGTubeGlass, 0x776060);
 
-
 DataPointer(__int16, ActiveLandTableColCount, 0x1DE9484);
 DataPointer(int, DebugMode2_, 0x174AFF9);
 DataPointer(char, byte_1738C69, 0x1738C69);
@@ -60,7 +59,6 @@ struct __declspec(align(2)) HomingAttackTarget
 	float distance;
 };
 #pragma pack(pop)
-
 
 static const void* const sub_45E300Ptr = (void*)0x45E300;
 static inline int  PhysicsBoardStuff(CharObj2Base* a1, EntityData1* a2, EntityData2* a3, float a4)
@@ -629,3 +627,19 @@ struct _camcontwk
 DataPointer(NJS_VECTOR, CamPosAgain, 0x1DCFE10);
 DataPointer(int, CamAngleZ, 0x1DCFDF8);
 DataPointer(int, CamAngleY, 0x1DCFDFC);
+
+
+//void __usercall TailsEggman_SpecialAttack(CharObj2Base *a1@<ebx>, EntityData1 *data, EntityData2 *data2, MechEggmanCharObj2 *a4)
+static const void* const TailsEggman_LaserAttack_ptr = (void*)0x749FE0;
+static inline void TailsEggman_LaserAttack(CharObj2Base* a1, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* a4)
+{
+	__asm
+	{
+		push[a4]
+		push[data2]
+		push[data]
+		mov ebx, a1
+		call TailsEggman_LaserAttack_ptr
+		add esp, 12
+	}
+}
