@@ -551,6 +551,9 @@ void Tornado_RunsActions(EntityData1* data1, CharObj2Base* co2) {
 
 void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* data2)
 {
+	if (!co2 || co2->CharID2 != Characters_Tails)
+		return;
+
 	switch (data1->Action)
 	{
 	case TornadoStanding:

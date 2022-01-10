@@ -9,7 +9,6 @@ AnimationFile* TornadoTransfoMotion = nullptr;
 NJS_TEXNAME tornadoTransfoTex[150];
 NJS_TEXLIST tornadoTransfoTexList = { arrayptrandlength(tornadoTransfoTex) };
 
-Trampoline* MechTails_main_t;
 Trampoline* MechTails_runsActions_t;
 Trampoline* sub_75DF80_t;
 
@@ -17,21 +16,6 @@ bool isInMech = false;
 
 CollisionData SuperLaserCol = { 0, CollisionShape_Cyl1, 7, 0xE1, 0x800400, {0}, 5.0, 40.0, 30.0, 30.0, {0, 0, 0x0 } };
 
-void SuperLaserCol_Hack(ObjectMaster* obj, CollisionData* collision, int count, unsigned __int8 a4) {
-
-	if (TwoPlayerMode || CurrentLevel == LevelIDs_SonicVsShadow1 || 
-		CurrentLevel == LevelIDs_SonicVsShadow2 || CurrentLevel == LevelIDs_TailsVsEggman1 
-		|| CurrentLevel == LevelIDs_TailsVsEggman2 || CurrentLevel == LevelIDs_KnucklesVsRouge)
-	{
-		InitCollision(obj, collision, count, a4);
-		return;
-	}
-
-	InitCollision(obj, &SuperLaserCol, count, 1);
-	EntityData1* data1 = obj->Data1.Entity;
-	data1->Collision->CollisionArray->attr |= 0x40000u;
-	data1->Collision->Flag &= 0xFFBFu;
-}			   
 
 void SoundEffect_Tornado(ObjectMaster* obj)
 {
@@ -351,6 +335,7 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 
 		if (Controllers[co2->PlayerNum].press & Buttons_Y)
 		{
+
 			TailsEggman_LaserAttack(co2, data, data2, tailsCO2);
 			return;
 		}
@@ -369,26 +354,30 @@ void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, Cha
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2 * data2, CharObj2Base * co2, MechEggmanCharObj2 * co2Miles), MechTails_runsActions_t->Target());
 	original(data1, data2, co2, co2Miles);
 
-	Tornado_RunsActions(data1, co2);
-	Tails_SuperAttack_CheckInput(co2, data1, data2, co2Miles);
+	if (co2->CharID2 == Characters_MechTails && CurrentLevel != LevelIDs_TailsVsEggman2 && (TimerSeconds > 0 || TimerMinutes > 0)) {
+		WriteData<1>((int*)0x749E90, 0xF8); //remove laser delay lol
+		Tails_SuperAttack_CheckInput(co2, data1, data2, co2Miles);
+	}
 }
 
-void __cdecl MechTails_Main_r(ObjectMaster* obj)
-{
-	ObjectFunc(origin, MechTails_main_t->Target());
-	origin(obj);
+void SuperLaserCol_Hack(ObjectMaster* obj, CollisionData* collision, int count, unsigned __int8 a4) {
 
-	CharObj2Base* co2 = obj->Data2.Character;
+	if (TwoPlayerMode || CurrentLevel == LevelIDs_SonicVsShadow1 ||
+		CurrentLevel == LevelIDs_SonicVsShadow2 || CurrentLevel == LevelIDs_TailsVsEggman1
+		|| CurrentLevel == LevelIDs_TailsVsEggman2 || CurrentLevel == LevelIDs_KnucklesVsRouge)
+	{
+		InitCollision(obj, collision, count, a4); //let the original code handle it
+		return;
+	}
+
+	InitCollision(obj, &SuperLaserCol, count, 1); //change the collision so we can hurt enemies.
 	EntityData1* data1 = obj->Data1.Entity;
-	EntityData2* data2 = (EntityData2*)obj->EntityData2;
-	//TailsCharObj2* co2Miles = (TailsCharObj2*)obj->Data2.Undefined;
-	char pID = co2->PlayerNum;
-
-	Tornado_MainActions(data1, co2, data2);
+	data1->Collision->CollisionArray->attr |= 0x40000u;
+	data1->Collision->Flag &= 0xFFBFu;
 }
 
 
-static void __declspec(naked) InitCollision_r()
+static void __declspec(naked) SuperLaserColHack_ASM()
 {
 	__asm
 	{
@@ -396,14 +385,11 @@ static void __declspec(naked) InitCollision_r()
 		push[esp + 0Ch] // count
 		push[esp + 0Ch] // collision
 		push eax // obj
-
-		// Call your __cdecl function here:
 		call SuperLaserCol_Hack
-
-		add esp, 4 // obj<eax> is also used for return value
-		add esp, 4 // collision
-		add esp, 4 // count
-		add esp, 4 // __int8 a4
+		add esp, 4 
+		add esp, 4 
+		add esp, 4 
+		add esp, 4 
 		retn
 	}
 }
@@ -415,15 +401,15 @@ void Delete_TornadoTransform() {
 	FreeAnim(TornadoTransfoMotion);
 	TornadoTransfoMotion = nullptr;
 	isInMech = false;
+	WriteData<1>((int*)0x749E90, 0xFF); //restore laser delay
 	return;
 }
 
 void Init_TailsMechHack() {
-	MechTails_main_t = new Trampoline((int)MechEggman_Main, (int)MechEggman_Main + 0x6, MechTails_Main_r);
 	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
 	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
-	WriteCall((void*)0x7607E2, InitCollision_r);
+	WriteCall((void*)0x7607E2, SuperLaserColHack_ASM);
 	return;
 }
 

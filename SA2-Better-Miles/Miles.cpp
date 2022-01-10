@@ -626,7 +626,6 @@ void SetSpacePhysics(CharObj2Base* co2) {
 	return;
 }
 
-
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && ( GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
@@ -651,7 +650,6 @@ void LoadCharacter_r() {
 
 	return;
 }
-
 
 void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
@@ -699,5 +697,4 @@ void BetterMiles_Init() {
 
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
 	InitLightDashStuff();
-
 }
