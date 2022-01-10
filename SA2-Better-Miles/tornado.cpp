@@ -42,6 +42,8 @@ void Mech_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
 	}
 }
 
+FunctionPointer(DWORD*, DisplayMessage, (char* a1, int language, __int16 a3, __int16 a4), 0x6B7F40);
+VoidFunc(DisplayBoostMSG, 0x61B130);
 void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 
 	if (GameState != GameStates_Ingame || !co2 || !isTornadoOn)
@@ -141,6 +143,7 @@ void Tornado_Display(ObjectMaster* obj) {
 	njPopMatrixEx();
 }
 
+DataPointer(float, CameraZoom, 0x1DCFE1C);
 void tornadoCam_Child(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
@@ -173,25 +176,27 @@ void tornadoCam_Child(ObjectMaster* obj)
 		*(int*)0x1DCFDE0 = 3;
 		*(int*)0x1DCFDE4 = 0;
 		*(int*)0x1DCFDE8 = 0;
-		*(float*)0x1DCFE1C = 50.0f;
-		CamPosAgain = parentData->Position;
+		CameraZoom = 800.0f;
+		CamPosAgain = player->Position;
 		CamAngleZ = 63488;
-		CamAngleY = parentData->Rotation.y;
+		CamAngleY = parentData->Rotation.y - 0x4000;
+		PlayCustomSoundVolume(SE_tornadoBoost, 2);
 		data->Action++;
 		break;
 	case 3:
-
-		if (++data->field_6 == 100)
+		CameraZoom -= 8;
+		if (++data->field_6 == 130)
 		{
+			CameraZoom = 50.0f;
 			CamAngleY = parentData->Rotation.y + 0x8000;
 			data->Action++;
 			data->field_6 = 0;
 		}
 		break;
 	case 4:
-
-		if (++data->field_6 == 50)
+		if (++data->field_6 == 80)
 		{
+			CamPosAgain = data->Position;
 			CamAngleY = parentData->Rotation.y + 0x4000;
 			data->Action++;
 			data->field_6 = 0;
@@ -266,26 +271,26 @@ void Tornado_Main(ObjectMaster* obj) {
 		co2->Powerups |= Powerups_Invincibility;
 		player->Rotation = data->Rotation;
 		player->Action = ObjectControl;
-		co2->AnimInfo.Next = 50;
+		co2->AnimInfo.Next = 0;
 		data->Position = player->Position;
-		data->Position.x += 820;
+		data->Position.x += 1820;
 		data->Position.y = data->Position.y + 20.0;
 
 		LookAt(&data->Position, &player->Position, nullptr, &data->Rotation.y + 4000);
-
 		data->Action++;
 		break;
 	case tornadoCall:
 		if (++data->field_6 == 50)
 		{
 			PlayCustomSound_Entity(SE_tornadoFlying, obj, 500, true);
+
 			data->Action++;
 		}
 		break;
 	case tornadoMoveToPlayer1:
 
 		if (data->Position.x > player->Position.x + 650) {
-			data->Position.x -= 2;
+			data->Position.x -= 4;
 		}
 		else {
 			data->field_6 = 0;

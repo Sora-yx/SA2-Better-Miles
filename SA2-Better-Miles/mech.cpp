@@ -335,7 +335,6 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 
 		if (Controllers[co2->PlayerNum].press & Buttons_Y)
 		{
-
 			TailsEggman_LaserAttack(co2, data, data2, tailsCO2);
 			return;
 		}
