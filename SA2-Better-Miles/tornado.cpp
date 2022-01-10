@@ -70,7 +70,7 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 
 void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
-	if (GameState != GameStates_Ingame || !co2 || isTornadoOn )
+	if (GameState != GameStates_Ingame || !co2 || isTornadoOn || CurrentLevel >= LevelIDs_BigFoot)
 		return;
 
 	if (playerData->Action <= Action_Run)
@@ -153,7 +153,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 	EntityData1* player = MainCharObj1[pNum];
 	CharObj2Base* co2 = MainCharObj2[pNum];
 
-	if (data->Action >= 2)
+	if (data->Action >= 3 && data->Action <= 6)
 		CamPosAgain = parentData->Position;
 
 	switch (data->Action)
@@ -196,7 +196,6 @@ void tornadoCam_Child(ObjectMaster* obj)
 	case 4:
 		if (++data->field_6 == 80)
 		{
-			CamPosAgain = data->Position;
 			CamAngleY = parentData->Rotation.y + 0x4000;
 			data->Action++;
 			data->field_6 = 0;
@@ -206,6 +205,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 
 		if (++data->field_6 == 50)
 		{
+			CamPosAgain = parentData->Position;
 			CamAngleY = parentData->Rotation.y;
 			data->Action++;
 			data->field_6 = 0;
@@ -215,6 +215,9 @@ void tornadoCam_Child(ObjectMaster* obj)
 
 		if (++data->field_6 == 100)
 		{
+			CamPosAgain = player->Position;
+			CamAngleY = player->Rotation.y;
+			CameraZoom = 30.0f;
 			ResetCam(CameraData.gap1AC[168], 0);
 			data->Action++;
 		}
@@ -283,7 +286,6 @@ void Tornado_Main(ObjectMaster* obj) {
 		if (++data->field_6 == 50)
 		{
 			PlayCustomSound_Entity(SE_tornadoFlying, obj, 500, true);
-
 			data->Action++;
 		}
 		break;
