@@ -46,11 +46,14 @@ DataPointer(int, DebugMode2_, 0x174AFF9);
 DataPointer(char, byte_1738C69, 0x1738C69);
 DataPointer(__int16, word_1738D58, 0x1738D58);
 FunctionPointer(double, FloatCalcResult, (float a1, float a2, float a3), 0x447520);
-FunctionPointer(ObjectMaster*, displayText, (int a1, const char* message, int displayTime, int language), 0x6B6E20);
+FunctionPointer(ObjectMaster*, DrawSubtitles, (int a1, const char* message, int displayTime, int language), 0x6B6E20);
 
 ObjectFunc(sub_75DF80, 0x75DF80);
 
 VoidFunc(DeleteLevelStuff, 0x43D510);
+
+FunctionPointer(DWORD*, DisplayMessage, (char* a1, int language, __int16 a3, __int16 a4), 0x6B7F40);
+FunctionPointer(unsigned int, CCL_CalcColli, (ObjectMaster* a1, int a2), 0x485850);
 
 #pragma pack(push, 1)
 struct __declspec(align(2)) HomingAttackTarget
@@ -362,18 +365,16 @@ static inline bool PlayerCheckBreak(int a1, EntityData1* a2, CharObj2Base* a3)
 }
 
 
-static const void* const somethingAboutTrick2Ptr = (void*)0x475100;
+static const void* const playerStopPtr = (void*)0x475100;
 static inline signed int PlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2* a4)
 {
 	signed int result;
 	__asm
 	{
 		push[a4]
-		mov esi, [a2] // a2
-		mov eax, [a1] // a1
-
-		// Call your __cdecl function here:
-		call somethingAboutTrick2Ptr
+		mov esi, [a2]
+		mov eax, [a1]
+		call playerStopPtr
 		add esp, 4
 		mov result, eax
 	}
@@ -627,6 +628,7 @@ struct _camcontwk
 DataPointer(NJS_VECTOR, CamPosAgain, 0x1DCFE10);
 DataPointer(int, CamAngleZ, 0x1DCFDF8);
 DataPointer(int, CamAngleY, 0x1DCFDFC);
+DataPointer(float, CameraZoom, 0x1DCFE1C);
 
 
 //void __usercall TailsEggman_SpecialAttack(CharObj2Base *a1@<ebx>, EntityData1 *data, EntityData2 *data2, MechEggmanCharObj2 *a4)

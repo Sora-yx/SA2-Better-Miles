@@ -548,7 +548,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		{
 			co2->AnimInfo.Next = FloatingWaterAnim;
 		}
-
 		break;
 	case Swimming:
 		Miles_GetFloat(data1, co2);

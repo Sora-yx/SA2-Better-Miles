@@ -27,15 +27,7 @@ FunctionPointer(unsigned int, sub_485850, (ObjectMaster* a1, int* a2), 0x485850)
 
 bool isTransform = false;
 
-unsigned int __cdecl sub_485850_r(ObjectMaster* a1, int* a2) //fix crash when deleting player
-{
 
-	if (a1->MainSub == nullptr || !a2 || a2 + 52 == nullptr || isTransform)
-		return 0;
-
-
-	TARGET_DYNAMIC(sub_485850)(a1, a2);
-}
 
 
 void __cdecl CartExecuter_Main_r(ObjectMaster* obj)
@@ -155,5 +147,4 @@ void Cart_HackInit() {
 	//WriteCall((void*)0x61D139, Load_CartTimeOver_r);
 
 	CartExecuter_Main_t = new Trampoline((int)CartExecuter_Main, (int)CartExecuter_Main + 0x6, CartExecuter_Main_r);
-	sub_485850_t = new Trampoline((int)sub_485850, (int)sub_485850 + 0x6, sub_485850_r);
 }

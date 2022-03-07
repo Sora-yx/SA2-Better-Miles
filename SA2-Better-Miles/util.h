@@ -38,3 +38,4 @@ void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom);
 void Init_TailsMechHack();
 void Delete_TornadoTransform();
 void Delete_Tornado();
+bool isBossLevel();

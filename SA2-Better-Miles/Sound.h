@@ -20,13 +20,13 @@ void PlayCustomSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, floa
 void PlayCustomSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool loop);
 
 enum CM_SoundList {
-	SE_tornado_Transfo01 = 1000,
+	SE_tornado_Transfo01 = 10000,
 	SE_tornado_Transfo02,
 	SE_tornado_Transfo03,
 	SE_tornadoTransfoFinish,
-	SE_tornadoFlying = 1010,
+	SE_tornadoFlying = 10010,
 	SE_tornadoBoost,
-	Voice_TailsTimeToJam = 2000,
+	Voice_TailsTimeToJam = 20000,
 	Voice_TailsLetsDoIt,
 	Voice_TailsWow,
 	Voice_TailsYay,

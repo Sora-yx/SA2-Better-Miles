@@ -25,7 +25,7 @@ extern "C" {
 		if (!flySoundEffect)
 			WriteData<5>((void*)0x752e16, 0x90);
 
-		Cart_HackInit();
+		//Cart_HackInit();
 		init_BassSound();
 
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\se_ch_te\\2.csb", "Resource\\gd_PC\\Sounds\\se_ch_te\\2.csb");

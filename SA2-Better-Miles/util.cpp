@@ -281,5 +281,10 @@ void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom)
 	CamPosAgain = playerData->Position;
 	CamAngleZ = 63488;
 	CamAngleY = 0x4000 - playerData->Rotation.y;
+}
 
+bool isBossLevel() {
+	return CurrentLevel >= LevelIDs_BigFoot || CurrentLevel == LevelIDs_SonicVsShadow1 ||
+		CurrentLevel == LevelIDs_TailsVsEggman1 || CurrentLevel == LevelIDs_TailsVsEggman2
+		|| CurrentLevel == LevelIDs_SonicVsShadow2;
 }

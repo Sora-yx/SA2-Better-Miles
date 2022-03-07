@@ -16,15 +16,44 @@ static CUSTOM_SOUNDENTRY SoundListEntries[256];
 
 static bool SoundDevice;
 
+VoidFunc(sub_443250, 0x443250);
+
+//we use trampoline to hack 3 functions to pause, unpause and free all custom sounds so every mod that hack those won't conflict.
+Trampoline* PauseSound_t = nullptr;
+Trampoline* ResumeSound_t = nullptr;
+Trampoline* FreeSoundQueue_t = nullptr;
+
 void PauseCustomSounds() {
 	for (int i = 0; i < LengthOfArray(SoundListEntries); ++i) {
 		BASS_ChannelPause(SoundListEntries[i].stream);
 	}
 }
 
+void PauseSound_r() {
+
+	auto original = reinterpret_cast<decltype(PauseSound_r)*>(PauseSound_t->Target());
+	original();
+
+	if (SoundsPaused != 0)
+	{
+		PauseCustomSounds();
+	}
+}
+
 void ResumeCustomSounds() {
 	for (int i = 0; i < LengthOfArray(SoundListEntries); ++i) {
 		BASS_ChannelPlay(SoundListEntries[i].stream, false);
+	}
+}
+
+void ResumeSound_r() {
+
+	auto original = reinterpret_cast<decltype(ResumeSound_r)*>(ResumeSound_t->Target());
+	original();
+
+	if (!SoundsPaused)
+	{
+		ResumeCustomSounds();
 	}
 }
 
@@ -82,6 +111,16 @@ void FreeAllCustomSounds() {
 	}
 }
 
+void __cdecl FreeSoundQueue_r()
+{
+	auto original = reinterpret_cast<decltype(FreeSoundQueue_r)*>(FreeSoundQueue_t->Target());
+	original();
+
+	if (GameState != GameStates_Pause && GameState != GameStates_Ingame)
+		FreeAllCustomSounds();
+}
+
+
 DWORD LoadSoundSteam_LoadFromFile(std::string path) {
 	const char* filename = HelperFunctionsGlobal.GetReplaceablePath(path.c_str());
 
@@ -113,7 +152,6 @@ float GetVolumeRange(NJS_VECTOR* pos, float dist) {
 
 	float playerdist = CheckDistance(&CameraData.Position, pos);
 	return 0.4 - (0.4 * playerdist / dist);
-
 }
 
 void PlaySoundChannelQueue(int ID, int entryID, bool loop) {
@@ -222,6 +260,7 @@ void PlayDelayedCustomSound(int ID, int time, float volumeoverride) {
 }
 
 void RunCustomSounds() {
+
 	if (GameState < GameStates_Ingame || GameState > GameStates_Pause)
 		return;
 
@@ -280,22 +319,10 @@ void RunCustomSounds() {
 	}
 }
 
-VoidFunc(sub_443290, 0x443290);
-void ResumeSound_j() {
-	sub_443290();
-	ResumeCustomSounds();
-}
-
-
-VoidFunc(sub_443250, 0x443250);
-
-void PauseSound_j() {
-	sub_443250();
-	PauseCustomSounds();
-}
 
 void init_BassSound() {
-	WriteCall((void*)0x43602C, PauseSound_j);
-	WriteCall((void*)0x436071, ResumeSound_j);
+	PauseSound_t = new Trampoline((int)sub_443250, (int)sub_443250 + 0x6, PauseSound_r);
+	ResumeSound_t = new Trampoline((int)Menu_Unknown_13, (int)Menu_Unknown_13 + 0x5, ResumeSound_r);
+	FreeSoundQueue_t = new Trampoline((int)FreeSoundQueue, (int)FreeSoundQueue + 0x5, FreeSoundQueue_r);
 	return;
 }

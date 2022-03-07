@@ -9,8 +9,9 @@ AnimationFile* TornadoTransfoMotion = nullptr;
 NJS_TEXNAME tornadoTransfoTex[150];
 NJS_TEXLIST tornadoTransfoTexList = { arrayptrandlength(tornadoTransfoTex) };
 
-Trampoline* MechTails_runsActions_t;
-Trampoline* sub_75DF80_t;
+Trampoline* MechTails_runsActions_t = nullptr;
+Trampoline* sub_75DF80_t = nullptr;
+Trampoline* CCL_CalcColli_t = nullptr;
 
 bool isInMech = false;
 
@@ -112,14 +113,15 @@ void Untransform_Mech(ObjectMaster* obj) {
 	{
 	case 0:
 	{
+		playerData->Action = ObjectControl;
 		LoadChildObject(LoadObj_Data1, SoundEffect_Tornado, obj);
-		displayText(1, "\a Tornado, transformation!", 120, 1);
+		DrawSubtitles(1, "\a Tornado, transformation!", 120, 1);
 		playerData->Rotation.x = 0;
 		playerData->Rotation.z = 0;
 		data->Rotation.y = playerData->Rotation.y;
 		PlayVoice(2, 2433);
 		ControllerEnabled[pNum] = 0;
-		playerData->Action = ObjectControl;
+
 		obj->DeleteSub = DeleteMech;
 		playerData->Position.y += 1;
 		SavePos = playerData->Position;
@@ -176,7 +178,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 	}
 }
 
-void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData1* playerData) {
+void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	if (GameState != GameStates_Ingame || !co2 || !isInMech)
 		return;
@@ -187,7 +189,6 @@ void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData1*
 		{
 			ObjectMaster* tornado = LoadObject(2, "MechUntransfo", Untransform_Mech, LoadObj_Data1);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
-			data->Action++;
 			return;
 		}
 	}
@@ -201,6 +202,7 @@ void TransfoMech_Display(ObjectMaster* obj) {
 	NJS_OBJECT* tornadoMDL = TornadoTransfo->getmodel();
 	NJS_MOTION* TornadoMotion = TornadoTransfoMotion->getmotion();
 	EntityData1* player = MainCharObj1[data->Index];
+
 
 	njSetTexture(&tornadoTransfoTexList);
 	njPushMatrixEx();
@@ -241,9 +243,10 @@ void CallMech(ObjectMaster* obj) {
 		co2->Speed = { 0, 0, 0 };
 		SetCameraFacePlayer(pNum, playerData, 40.0f);
 		data->Scale.z = 0;
+		StopMusic();
 		PlayJingle("tornado2.adx");
 		PlayVoice(2, 2433);
-		displayText(1, "\a Tornado, transformation!", 120, 1);
+		DrawSubtitles(1, "\a Tornado, transformation!", 120, 1);
 		obj->DisplaySub = TransfoMech_Display;
 		playerData->Rotation.x = 0;
 		playerData->Rotation.z = 0;
@@ -277,8 +280,6 @@ void CallMech(ObjectMaster* obj) {
 	case 3:
 		data->field_6 = 0;
 		DeleteAndLoadMech(pNum);
-		InitCharacterSound();
-
 		playerData = MainCharObj1[pNum];
 		playerData->Position = SavePos;
 		data->Action++;
@@ -293,14 +294,10 @@ void CallMech(ObjectMaster* obj) {
 			co2->Powerups &= Powerups_Invincibility;
 			int rng = rand() % 2 ? 1695 : 2274;
 			PlayVoice(2, 2274);
-			displayText(1, "\a I'll show you how powerful my Cyclone is!", 150, 1);
+			DrawSubtitles(1, "\a I'll show you how powerful my Cyclone is!", 150, 1);
 			ControllerEnabled[pNum] = 1;
 			data->Action++;
 		}
-		break;
-
-	case 5:
-		UntransfoMech_CheckInput(co2, data, playerData);
 		break;
 	default:
 		DeleteObject_(obj);
@@ -324,6 +321,16 @@ void sub_75DF80_r(ObjectMaster* obj)
 		return;
 
 	TARGET_DYNAMIC(sub_75DF80);
+}
+
+unsigned int __cdecl CCL_CalcColli_r(ObjectMaster* a1, int* a2) //fix crash when deleting player
+{
+
+	if (a1->MainSub == nullptr || !a2 || a2 + 52 == nullptr || isTransform)
+		return 0;
+
+
+	TARGET_DYNAMIC(CCL_CalcColli)(a1, a2);
 }
 
 void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* tailsCO2) {
@@ -353,17 +360,29 @@ void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, Cha
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2 * data2, CharObj2Base * co2, MechEggmanCharObj2 * co2Miles), MechTails_runsActions_t->Target());
 	original(data1, data2, co2, co2Miles);
 
-	if (co2->CharID2 == Characters_MechTails && CurrentLevel != LevelIDs_TailsVsEggman2 && (TimerSeconds > 0 || TimerMinutes > 0)) {
-		WriteData<1>((int*)0x749E90, 0xF8); //remove laser delay lol
-		Tails_SuperAttack_CheckInput(co2, data1, data2, co2Miles);
+
+	if (!TwoPlayerMode && co2)
+	{
+		if (!data1->Action && !isInMech)
+		{
+			isInMech = true;
+		}
+
+		if (co2->CharID2 == Characters_MechTails && !isBossLevel()) {
+
+			UntransfoMech_CheckInput(co2, data1);
+
+			if ((TimerSeconds > 0 || TimerMinutes > 0)) {
+				WriteData<1>((int*)0x749E90, 0xF8); //remove laser delay lol
+				Tails_SuperAttack_CheckInput(co2, data1, data2, co2Miles);
+			}
+		}
 	}
 }
 
 void SuperLaserCol_Hack(ObjectMaster* obj, CollisionData* collision, int count, unsigned __int8 a4) {
 
-	if (TwoPlayerMode || CurrentLevel == LevelIDs_SonicVsShadow1 ||
-		CurrentLevel == LevelIDs_SonicVsShadow2 || CurrentLevel == LevelIDs_TailsVsEggman1
-		|| CurrentLevel == LevelIDs_TailsVsEggman2 || CurrentLevel == LevelIDs_KnucklesVsRouge)
+	if (TwoPlayerMode || isBossLevel())
 	{
 		InitCollision(obj, collision, count, a4); //let the original code handle it
 		return;
@@ -373,6 +392,9 @@ void SuperLaserCol_Hack(ObjectMaster* obj, CollisionData* collision, int count, 
 	EntityData1* data1 = obj->Data1.Entity;
 	data1->Collision->CollisionArray->attr |= 0x40000u;
 	data1->Collision->Flag &= 0xFFBFu;
+	data1->Collision->Range += 500.0f;
+	data1->Collision->CollisionArray->param3 = 120.0f;
+
 }
 
 
@@ -404,10 +426,12 @@ void Delete_TornadoTransform() {
 	return;
 }
 
+
 void Init_TailsMechHack() {
 	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
 	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
+	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
 	WriteCall((void*)0x7607E2, SuperLaserColHack_ASM);
 	return;
 }
