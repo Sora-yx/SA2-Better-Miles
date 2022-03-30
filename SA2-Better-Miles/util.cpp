@@ -57,8 +57,6 @@ bool isSuperForm(char pID) {
 	return false;
 }
 
-
-
 void PlayerMoveStuff(EntityData1* a1, EntityData2* a2, CharObj2Base* a3) {
 	PGetSpeed(a1, a3, a2);
 	PSetPosition(a1, a2, a3);
@@ -125,11 +123,20 @@ int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 	return player + 1;
 }
 
-bool isMilesAttacking() {
-	if (MainCharObj2[0]->CharID != Characters_Tails)
+bool isMiles()
+{
+	if (!MilesCO2Extern || MainCharObj2[MilesCO2Extern->base.PlayerNum]->CharID != Characters_Tails)
 		return false;
 
-	EntityData1* data1 = MainCharObj1[0];
+	return true;
+}
+
+bool isMilesAttacking() {
+
+	if (!isMiles())
+		return false;
+
+	EntityData1* data1 = MainCharObj1[MilesCO2Extern->base.PlayerNum];
 
 	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
 		return true;
@@ -138,10 +145,11 @@ bool isMilesAttacking() {
 }
 
 bool isMilesAttackingBox() {
-	if (MainCharObj2[0]->CharID != Characters_Tails)
+
+	if (!isMiles())
 		return false;
 
-	EntityData1* data1 = MainCharObj1[0];
+	EntityData1* data1 = MainCharObj1[MilesCO2Extern->base.PlayerNum];
 
 	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
 		return true;
@@ -278,9 +286,9 @@ void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom)
 	*(int*)0x1DCFDE4 = 0;
 	*(int*)0x1DCFDE8 = 0;
 	*(float*)0x1DCFE1C = zoom; //Zoom
-	CamPosAgain = playerData->Position;
-	CamAngleZ = 63488;
-	CamAngleY = 0x4000 - playerData->Rotation.y;
+	CamEventPos = playerData->Position;
+	CamEventAngleZ = 63488;
+	CamEventAngleY = 0x4000 - playerData->Rotation.y;
 }
 
 bool isBossLevel() {

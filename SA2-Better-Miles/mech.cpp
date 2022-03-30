@@ -153,7 +153,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 		break;
 	case 2:
 
-		CamAngleY += 320;
+		CamEventAngleY += 320;
 		data->Scale.z--;
 		if (data->Scale.z <= 0)
 		{
@@ -267,7 +267,7 @@ void CallMech(ObjectMaster* obj) {
 		break;
 	case 2:
 
-		CamAngleY += 320;
+		CamEventAngleY += 320;
 		data->Scale.z++;
 
 		if (data->Scale.z >= frame)

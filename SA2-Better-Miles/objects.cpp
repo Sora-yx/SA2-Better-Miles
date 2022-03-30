@@ -32,12 +32,10 @@ Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 static const void* const loc_776339 = (void*)0x776339;
 static const void* const loc_776580 = (void*)0x776580;
 __declspec(naked) void  CheckBreakCGGlasses() {
+
 	if (MainCharObj1[0]->Action == 13 || isMilesAttacking())
 	{
 		_asm jmp loc_776339
-	}
-	else {
-		_asm jmp loc_776580
 	}
 }
 
@@ -72,24 +70,10 @@ void PlayMysticMelody(ObjectMaster* obj)
 static const void* const loc_776D23 = (void*)0x776D23;
 static const void* const loc_776D5F = (void*)0x776D5F;
 __declspec(naked) void  CheckGravitySwitch() {
-	if (MainCharObj1[0]->Action == 0x53 || (Controllers[0].press & (Buttons_X | Buttons_B)))
+
+	if (MainCharObj1[0]->Action == 0x53 || MainCharObj2[0]->CharID > Characters_Shadow && (Controllers[0].press & (Buttons_X | Buttons_B)))
 	{
 		_asm jmp loc_776D23
-	}
-	else {
-		_asm jmp loc_776D5F
-	}
-}
-
-void ForceMiles(int player) {
-	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
-		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
-		CurrentCharacter = Characters_Tails;
-		LoadTails(player);
-	}
-	else {
-		CurrentCharacter = Characters_MechTails;
-		LoadMechTails(player);
 	}
 }
 
@@ -140,7 +124,8 @@ void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
 	EntityData2* data2 = obj->Data2.Entity;
 
 	if (obj) {
-		if (MainCharObj2[0]->CharID != Characters_Tails)
+
+		if (!isMiles())
 			return;
 
 		if (data->Action == 0 && data->Rotation.x == 3)
@@ -199,7 +184,8 @@ void CheckAndSetHackObject(CharObj2Base* co2) {
 }
 
 void CheckAndOpenIronGateDoor(ObjectMaster* obj) {
-	if (MainCharObj2[0]->CharID != Characters_Tails)
+
+	if (!isMiles())
 		return;
 
 	EntityData1* data = obj->Data1.Entity;
@@ -226,11 +212,9 @@ void doorIG2_r(ObjectMaster* obj) {
 void rocketIG_r(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
 
-	if (MainCharObj2[0]->CharID == Characters_Tails) {
-		if (GetCollidingPlayer(obj) && isMilesAttacking() && data->Action == 5)
-		{
-			data->Action = 6;
-		}
+	if (GetCollidingPlayer(obj) && isMilesAttacking() && data->Action == 5)
+	{
+		data->Action = 6;
 	}
 
 	ObjectFunc(origin, RocketIG_t->Target());
@@ -272,15 +256,26 @@ void BrokenDownSmoke_r(ObjectMaster* a1) {
 }
 
 void MetalBox_r(ObjectMaster* obj) {
+
 	EntityData1* data = obj->Data1.Entity;
 
-	if (GetCollidingPlayer(obj) && isMilesAttackingBox() && data->NextAction < 1)
+	if (data)
 	{
-		data->Collision->CollisionArray->push |= 0x4000u;
-		data->field_6 = 1;
-		AddScore(20);
-		Play3DSound_Pos(4113, &data->Position, 1, 127, 80);
-		data->NextAction = 1;
+		if (data->Collision) {
+
+			if (data->Collision->CollidingObject) {
+
+				char pnum = GetPlayerNumber(data->Collision->CollidingObject->Object);
+
+				if (isMilesAttackingBox() && data->NextAction < 1) {
+					data->Collision->CollisionArray->push |= 0x4000u;
+					data->field_6 = 1;
+					AddScore(20);
+					Play3DSound_Pos(4113, &data->Position, 1, 127, 80);
+					data->NextAction = 1;
+				}
+			}
+		}
 	}
 
 	ObjectFunc(origin, MetalBox_t->Target());
@@ -288,15 +283,26 @@ void MetalBox_r(ObjectMaster* obj) {
 }
 
 void MetalBoxGravity_r(ObjectMaster* obj) {
+
 	EntityData1* data = obj->Data1.Entity;
 
-	if (GetCollidingPlayer(obj) && isMilesAttackingBox() && data->NextAction < 1)
+	if (data)
 	{
-		data->Collision->CollisionArray->push |= 0x4000u;
-		data->field_6 = 1;
-		AddScore(20);
-		Play3DSound_Pos(4113, &data->Position, 1, 127, 80);
-		data->NextAction = 1;
+		if (data->Collision) {
+
+			if (data->Collision->CollidingObject) {
+
+				char pnum = GetPlayerNumber(data->Collision->CollidingObject->Object);
+
+				if (isMilesAttackingBox() && data->NextAction < 1) {
+					data->Collision->CollisionArray->push |= 0x4000u;
+					data->field_6 = 1;
+					AddScore(20);
+					Play3DSound_Pos(4113, &data->Position, 1, 127, 80);
+					data->NextAction = 1;
+				}
+			}
+		}
 	}
 
 	ObjectFunc(origin, MetalBoxGravity_t->Target());
@@ -311,15 +317,13 @@ void DeleteLevelStuff_r() {
 	Delete_TornadoTransform();
 }
 
-void Init_MilesActions() {
-	if (isMechRemoved)
-		WriteCall((void*)0x43D6CD, ForceMiles);
+void Init_ObjectsHacks() {
+
 
 	if (isRando())
 		return;
 
 	WriteCall((void*)0x43B364, DeleteLevelStuff_r);
-	
 
 	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
 	MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);

@@ -39,3 +39,4 @@ void Init_TailsMechHack();
 void Delete_TornadoTransform();
 void Delete_Tornado();
 bool isBossLevel();
+bool isMiles();

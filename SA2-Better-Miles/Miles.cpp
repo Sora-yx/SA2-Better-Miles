@@ -625,6 +625,19 @@ void SetSpacePhysics(CharObj2Base* co2) {
 	return;
 }
 
+
+void ForceMiles(int player) {
+	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
+		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
+		CurrentCharacter = Characters_Tails;
+		LoadTails(player);
+	}
+	else {
+		CurrentCharacter = Characters_MechTails;
+		LoadMechTails(player);
+	}
+}
+
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		if (isMilesAdventure || isMechRemoved && ( GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
@@ -651,6 +664,7 @@ void LoadCharacter_r() {
 }
 
 void BetterMiles_Init() {
+
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
 	Tails_RunsAction_t = new Trampoline((int)Tails_runsAction, (int)Tails_runsAction + 0x7, Tails_runsAction_r);
@@ -660,6 +674,9 @@ void BetterMiles_Init() {
 	}
 
 	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
+
+	if (isMechRemoved)
+		WriteCall((void*)0x43D6CD, ForceMiles);
 
 	//Improve physic
 	if (isCustomPhysics) {
@@ -672,7 +689,7 @@ void BetterMiles_Init() {
 		PhysicsArray[Characters_Tails].DashSpeed = 5.09f;
 	}
 
-	Init_MilesActions();
+	Init_ObjectsHacks();
 	Init_MilesFly();
 	Init_TailsMechHack();
 

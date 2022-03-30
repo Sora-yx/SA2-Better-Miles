@@ -140,7 +140,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 	CharObj2Base* co2 = MainCharObj2[pNum];
 
 	if (data->Action >= 3 && data->Action <= 6)
-		CamPosAgain = parentData->Position;
+		CamEventPos = parentData->Position;
 
 	switch (data->Action)
 	{
@@ -163,9 +163,9 @@ void tornadoCam_Child(ObjectMaster* obj)
 		*(int*)0x1DCFDE4 = 0;
 		*(int*)0x1DCFDE8 = 0;
 		CameraZoom = 800.0f;
-		CamPosAgain = player->Position;
-		CamAngleZ = 63488;
-		CamAngleY = parentData->Rotation.y - 0x4000;
+		CamEventPos = player->Position;
+		CamEventAngleZ = 63488;
+		CamEventAngleY = parentData->Rotation.y - 0x4000;
 		PlayCustomSoundVolume(SE_tornadoBoost, 2);
 		data->Action++;
 		break;
@@ -174,7 +174,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 		if (++data->field_6 == 60)
 		{
 			CameraZoom = 50.0f;
-			CamAngleY = parentData->Rotation.y + 0x8000;
+			CamEventAngleY = parentData->Rotation.y + 0x8000;
 			data->Action++;
 			data->field_6 = 0;
 		}
@@ -182,7 +182,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 	case 4:
 		if (++data->field_6 == 60)
 		{
-			CamAngleY = parentData->Rotation.y + 0x4000;
+			CamEventAngleY = parentData->Rotation.y + 0x4000;
 			data->Action++;
 			data->field_6 = 0;
 		}
@@ -191,8 +191,8 @@ void tornadoCam_Child(ObjectMaster* obj)
 
 		if (++data->field_6 == 100)
 		{
-			CamPosAgain = player->Position;
-			CamAngleY = player->Rotation.y;
+			CamEventPos = player->Position;
+			CamEventAngleY = player->Rotation.y;
 			CameraZoom = 30.0f;
 			ResetCam(CameraData.gap1AC[168], 0);
 			data->Action++;

@@ -18,7 +18,7 @@ void Init_StartEndPos();
 void Init_VoicesFixes();
 void BetterMiles_Init();
 void Init_NewAnimation();
-void Init_MilesActions();
+void Init_ObjectsHacks();
 void Init_JumpBallhack();
 extern int spinTimer;
 
