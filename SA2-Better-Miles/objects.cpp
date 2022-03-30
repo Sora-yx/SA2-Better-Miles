@@ -15,7 +15,7 @@ Trampoline* BrokenDownSmoke_t;
 Trampoline* MetalBox_t;
 Trampoline* MetalBoxGravity_t;
 Trampoline* DeleteLevelStuff_t;
-
+Trampoline* GravitySwitch_t;
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
@@ -70,12 +70,16 @@ void PlayMysticMelody(ObjectMaster* obj)
 static const void* const loc_776D23 = (void*)0x776D23;
 static const void* const loc_776D5F = (void*)0x776D5F;
 __declspec(naked) void  CheckGravitySwitch() {
-
-	if (MainCharObj1[0]->Action == 0x53 || MainCharObj2[0]->CharID > Characters_Shadow && (Controllers[0].press & (Buttons_X | Buttons_B)))
+	if (MainCharObj1[0]->Action == 0x53 || (Controllers[0].press & (Buttons_X | Buttons_B)))
 	{
 		_asm jmp loc_776D23
 	}
+	else {
+		_asm jmp loc_776D5F
+	}
 }
+
+
 
 void CheckBreakDynamite(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1.Entity;
@@ -343,9 +347,10 @@ void Init_ObjectsHacks() {
 
 	MetalBox_t = new Trampoline((int)MetalBox, (int)MetalBox + 0x6, MetalBox_r);
 	MetalBoxGravity_t = new Trampoline((int)MetalBoxGravity, (int)MetalBoxGravity + 0x6, MetalBoxGravity_r);
+	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
 
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
-	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
+
 
 	//WriteJump(reinterpret_cast<void*>(0x473219), FixJump);
 
