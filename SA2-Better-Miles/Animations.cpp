@@ -277,28 +277,6 @@ void Load_MilesNewAnim() {
 	id = 0;
 
 	MilesNewAnimList = LoadMTNFile((char*)"\\animations\\NewMilesMtn.prs");
-
-	if (MilesNewAnimList[0].Index != 0xFFFF)
-	{
-		MilesNewAnim = MilesNewAnimList;
-		animIndex = MilesNewAnimList[0].Index;
-		do
-		{
-			if (animIndex >= 0 && animIndex < 300)
-			{
-				indexCopy = animIndex;
-				if (!CharacterAnimations[indexCopy].Animation)
-				{
-					count = MilesNewAnim->Count;
-					anim = MilesNewAnim->Animation;
-					CharacterAnimations[indexCopy].Count = count;
-					CharacterAnimations[indexCopy].Animation = anim;
-				}
-			}
-			animIndex = MilesNewAnimList[++id].Index;
-			MilesNewAnim = &MilesNewAnimList[id];
-		} while (animIndex != -1);
-	}
 }
 
 

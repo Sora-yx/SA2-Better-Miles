@@ -171,6 +171,10 @@ __declspec(naked) void  CheckAnimateTailsAction() {
 }
 
 void Miles_DoCollisionAttackStuff(EntityData1* data1) {
+
+	if (data1->Index == 1)
+		return;
+
 	data1->Status |= Status_Attack;
 	data1->Collision->CollisionArray[0].damage &= 0xFCu;
 	data1->Collision->CollisionArray[0].damage |= 0xCu;

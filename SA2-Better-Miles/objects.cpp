@@ -15,7 +15,6 @@ Trampoline* BrokenDownSmoke_t;
 Trampoline* MetalBox_t;
 Trampoline* MetalBoxGravity_t;
 Trampoline* DeleteLevelStuff_t;
-Trampoline* GravitySwitch_t;
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
@@ -348,11 +347,8 @@ void Init_ObjectsHacks() {
 	MetalBox_t = new Trampoline((int)MetalBox, (int)MetalBox + 0x6, MetalBox_r);
 	MetalBoxGravity_t = new Trampoline((int)MetalBoxGravity, (int)MetalBoxGravity + 0x6, MetalBoxGravity_r);
 	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
-
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
 
-
-	//WriteJump(reinterpret_cast<void*>(0x473219), FixJump);
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
 	WriteData<3>((int*)0x751d70, 0x90); //Remove path action, we will manually call it (fix RH last loop)
