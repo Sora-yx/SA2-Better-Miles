@@ -39,7 +39,7 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	{
 		njRotateY((float*)v21, -a4->Rotation.y);
 	}
-	njCalcPoint(&result, &result, v21);
+	njCalcVector(&result, &result, v21);
 	v39 = fabs(a3->Speed.y);
 	if (a3->Speed.x < 0.0)
 	{

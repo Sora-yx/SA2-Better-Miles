@@ -73,9 +73,22 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2* a1, TailsCharObj2* a2, 
 		}
 		break;
 	case 32:
+
 		if (!isRando()) {
-			if (!CharacterAnimations[200].Animation) {
-				return 1;
+
+			AnimationIndex* sa2anim = getCharAnim_r();
+
+			if (sa2anim)
+			{
+				if (!sa2anim[200].Animation) {
+					return 1;
+				}
+			}
+			else {
+
+				if (!CharacterAnimations[200].Animation) {
+					return 1;
+				}
 			}
 			if (SetHandGranding(a1, a3, a4)) {
 				return 1;
@@ -482,7 +495,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	case LightDash:
 	{
 		CheckRefreshLightDashTimer(co2, data1);
-		Sonic_InitLightDash(data1, co2, data2, co2Miles);
+		Miles_InitLightDash(data1, co2, data2, co2Miles);
 		int check = PSetPosition(data1, data2, co2);
 		if (check == 2) {
 			if (((short)CurrentLevel != LevelIDs_GreenHill)) {
@@ -652,6 +665,7 @@ void LoadCharacter_r() {
 	original();
 
 	for (int i = 0; i < 2; i++) {
+
 		if (MainCharObj2[i]) {
 			if (MainCharObj2[i]->CharID == Characters_Tails)
 			{

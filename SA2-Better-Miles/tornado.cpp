@@ -23,7 +23,7 @@ void Mech_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
 	if (GameState != GameStates_Ingame || !co2 || !isTornadoOn)
 		return;
 
-	if (Controllers[co2->PlayerNum].press & Buttons_Up)
+	if (Controllers[co2->PlayerNum].press & Buttons_Up && Controllers[co2->PlayerNum].press & Buttons_Y)
 	{
 		data1->Action = tornadoTransfoMech;
 		return;
@@ -37,15 +37,15 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 
 	char pNum = co2->PlayerNum;
 
-	if (data->field_6 > 0) {
-		data->field_6--;
+	if (data->Timer > 0) {
+		data->Timer--;
 		return;
 	}
 
 	if (Controllers[pNum].press & Buttons_Y && isInTornado(pNum))
 	{
 		PlayCustomSoundVolume(SE_tornadoBoost, 2);
-		data->field_6 = 120;
+		data->Timer = 120;
 		co2->Speed.x += co2->PhysData.SpeedCapH - 2.0f;
 
 		int randomVoice = rand() % 2 ? (int)Voice_TailsWow : (int)Voice_TailsYay;
@@ -61,7 +61,7 @@ void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	if (playerData->Action <= Action_Run)
 	{
-		if (Controllers[co2->PlayerNum].press & Buttons_Up)
+		if (Controllers[co2->PlayerNum].press & Buttons_Up && Controllers[co2->PlayerNum].press & Buttons_Y)
 		{
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
@@ -79,7 +79,7 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	char pNum = co2->PlayerNum;
 
-	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum) || !isInTornado(pNum) && playerData->Action != Action_ObjectControl)
+	if (Controllers[pNum].press & Buttons_Down && Controllers[pNum].press & Buttons_Y && isInTornado(pNum) || !isInTornado(pNum) && playerData->Action != Action_ObjectControl)
 	{
 		StopMusic();
 		ResetMusic();
@@ -149,14 +149,14 @@ void tornadoCam_Child(ObjectMaster* obj)
 		data->Action++;
 		break;
 	case 1:
-		if (++data->field_6 == 100)
+		if (++data->Timer == 100)
 		{
 			ResetCam(CameraData.gap1AC[168], 0);
 			data->Action++;
 		}
 		break;
 	case 2:
-		data->field_6 = 0;
+		data->Timer = 0;
 		SetCameraEvent(pNum, 20);
 		DoSomethingWithCam(*(DWORD*)&CameraData.gap1AC[9432 * pNum + 168], 0, 0);
 		*(int*)0x1DCFDE0 = 3;
@@ -171,25 +171,25 @@ void tornadoCam_Child(ObjectMaster* obj)
 		break;
 	case 3:
 		CameraZoom -= 8;
-		if (++data->field_6 == 60)
+		if (++data->Timer == 60)
 		{
 			CameraZoom = 50.0f;
 			CamEventAngleY = parentData->Rotation.y + 0x8000;
 			data->Action++;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		break;
 	case 4:
-		if (++data->field_6 == 60)
+		if (++data->Timer == 60)
 		{
 			CamEventAngleY = parentData->Rotation.y + 0x4000;
 			data->Action++;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		break;
 	case 5:
 
-		if (++data->field_6 == 100)
+		if (++data->Timer == 100)
 		{
 			CamEventPos = player->Position;
 			CamEventAngleY = player->Rotation.y;
@@ -225,7 +225,7 @@ void Tornado_Main(ObjectMaster* obj) {
 	switch (data->Action)
 	{
 	case tornadoInit:
-	
+
 		if (isInMech)
 		{
 			isTornadoOn = true;
@@ -235,7 +235,7 @@ void Tornado_Main(ObjectMaster* obj) {
 			data->Position = player->Position;
 			player->Action = TornadoStanding;
 			co2->AnimInfo.Next = 35;
-			data->Action = tornadoPlayable;	
+			data->Action = tornadoPlayable;
 			PlayCustomSound_Entity(SE_tornadoFlying, obj, 500, true);
 			return;
 		}
@@ -259,7 +259,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		data->Action++;
 		break;
 	case tornadoCall:
-		if (++data->field_6 == 50)
+		if (++data->Timer == 50)
 		{
 			PlayCustomSound_Entity(SE_tornadoFlying, obj, 500, true);
 			data->Action++;
@@ -271,7 +271,7 @@ void Tornado_Main(ObjectMaster* obj) {
 			data->Position.x -= 8;
 		}
 		else {
-			data->field_6 = 0;
+			data->Timer = 0;
 			data->Action++;
 		}
 		break;
@@ -293,7 +293,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		break;
 	case tornadoTransition2:
 		data->Position.x -= 3;
-		if (++data->field_6 == 20) {
+		if (++data->Timer == 20) {
 
 			player->Rotation = data->Rotation;
 			player->Rotation.y = 0x8000 - data->Rotation.y;
@@ -302,7 +302,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		break;
 	case tornadoTransition3:
 
-		data->field_6 = 0;
+		data->Timer = 0;
 		player->Action = TornadoStanding;
 		co2->AnimInfo.Next = 35;
 		ControllerEnabled[pNum] = 1;
@@ -338,7 +338,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		data->Position.x += 3;
 		data->Position.y += 3;
 
-		if (++data->field_6 == 100) {
+		if (++data->Timer == 100) {
 			DeleteObject_(obj);
 		}
 		break;

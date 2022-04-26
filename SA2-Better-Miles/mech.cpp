@@ -30,11 +30,11 @@ void SoundEffect_Tornado(ObjectMaster* obj)
 		data->Action++;
 		break;
 	case 1:
-		if (++data->field_6 == 60)
+		if (++data->Timer == 60)
 		{
 			PlayCustomSoundVolume(SE_tornado_Transfo02, 1);
 			data->Action++;
-			data->field_6 = 0;
+			data->Timer = 0;
 
 		}
 		break;
@@ -143,12 +143,12 @@ void Untransform_Mech(ObjectMaster* obj) {
 		playerData->Position = SavePos;
 		playerData->Rotation.y = data->Rotation.y;
 
-		if (++data->field_6 == 20)
+		if (++data->Timer == 20)
 		{
 			co2->AnimInfo.Next = 35;
 			playerData->Position.y += 5;
 			data->Action++;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		break;
 	case 2:
@@ -170,7 +170,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 		}
 		break;
 	default:
-		if (++data->field_6 == 40)
+		if (++data->Timer == 40)
 		{
 			DeleteObject_(obj);
 		}
@@ -258,11 +258,11 @@ void CallMech(ObjectMaster* obj) {
 	break;
 	case 1:
 
-		if (++data->field_6 == 15)
+		if (++data->Timer == 15)
 		{
 			LoadChildObject(LoadObj_Data1, SoundEffect_Tornado, obj);
 			data->Action++;
-			data->field_6 = 0;
+			data->Timer = 0;
 		}
 		break;
 	case 2:
@@ -278,7 +278,7 @@ void CallMech(ObjectMaster* obj) {
 		}
 		break;
 	case 3:
-		data->field_6 = 0;
+		data->Timer = 0;
 		DeleteAndLoadMech(pNum);
 		playerData = MainCharObj1[pNum];
 		playerData->Position = SavePos;
@@ -287,7 +287,7 @@ void CallMech(ObjectMaster* obj) {
 	case 4:
 		playerData->Position = SavePos;
 		playerData->Rotation.y = data->Rotation.y;
-		if (++data->field_6 == 7)
+		if (++data->Timer == 7)
 		{
 			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
 			isTransform = false;
@@ -309,7 +309,7 @@ void ResetSoundSystem_r() {
 
 	if (isTransform && GameState == GameStates_Ingame)
 		return;
-	
+
 	ResetSoundSystem();
 	return;
 }
@@ -407,10 +407,10 @@ static void __declspec(naked) SuperLaserColHack_ASM()
 		push[esp + 0Ch] // collision
 		push eax // obj
 		call SuperLaserCol_Hack
-		add esp, 4 
-		add esp, 4 
-		add esp, 4 
-		add esp, 4 
+		add esp, 4
+		add esp, 4
+		add esp, 4
+		add esp, 4
 		retn
 	}
 }

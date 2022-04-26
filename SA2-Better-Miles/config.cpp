@@ -32,5 +32,8 @@ void ReadConfig(const char* path) {
 	jumpVoice = config->getBool("Audio", "jumpVoice", false);
 	delete config;
 
+	if (isSA1Char(Characters_Tails))
+		isJumpBall = true;
+
 	return;
 }

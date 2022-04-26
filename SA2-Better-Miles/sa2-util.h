@@ -5,7 +5,6 @@ DataPointer(double, MilesFlySpeedValue, 0x9065a8);
 FunctionPointer(void, sub_45B610, (EntityData1* data, EntityData2* a3, CharObj2Base* co2), 0x45B610);
 FunctionPointer(void, sub_474990, (EntityData1* data, EntityData2* a3, CharObj2Base* co2), 0x474990);
 FunctionPointer(void, PlayerGetRotation, (EntityData1* data, EntityData2* a3, CharObj2Base* co2), 0x45FA70);
-FunctionPointer(void, PlayerAfterImage, (NJS_OBJECT* a1, int a2, NJS_TEXLIST* a3, float a4, char a5), 0x476C20);
 
 
 FunctionPointer(void, Tails_runsAction, (EntityData1* data1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4), 0x74DC60);
@@ -28,18 +27,10 @@ DataArray(float, flt_25F02A0, 0x25F02A0, 5);
 
 DataPointer(DWORD, dword_267053C, 0x267053C); //something checked for after image
 
-DataPointer(TailsCharObj2*, MilesCO2Extern, 0x1A521EC);
 
 VoidFunc(sub_47BB50, 0x47BB50);
 
-ObjectFunc(RocketIG, 0x6A10A0);
-ObjectFunc(DoorIG, 0x69D1D0);
-ObjectFunc(DoorIG2, 0x69F460);
-ObjectFunc(DoorCCThing, 0x79AFB0);
-ObjectFunc(DoorHB, 0x715560);
-ObjectFunc(MetalBox, 0x6D6490);
-ObjectFunc(MetalBoxGravity, 0x77BB90);
-ObjectFunc(CGTubeGlass, 0x776060);
+
 
 DataPointer(__int16, ActiveLandTableColCount, 0x1DE9484);
 DataPointer(int, DebugMode2_, 0x174AFF9);
@@ -55,13 +46,6 @@ VoidFunc(DeleteLevelStuff, 0x43D510);
 FunctionPointer(DWORD*, DisplayMessage, (char* a1, int language, __int16 a3, __int16 a4), 0x6B7F40);
 FunctionPointer(unsigned int, CCL_CalcColli, (ObjectMaster* a1, int a2), 0x485850);
 
-#pragma pack(push, 1)
-struct __declspec(align(2)) HomingAttackTarget
-{
-	EntityData1* entity;
-	float distance;
-};
-#pragma pack(pop)
 
 static const void* const sub_45E300Ptr = (void*)0x45E300;
 static inline int  PhysicsBoardStuff(CharObj2Base* a1, EntityData1* a2, EntityData2* a3, float a4)
@@ -112,21 +96,6 @@ static inline float PhysicsBoardStuff2(EntityData1* a1, EntityData2* a2, CharObj
 }
 
 
-static const void* const TailsJumpPtr = (void*)0x751B80;
-static inline int TailsJump(CharObj2Base* a1, EntityData1* a2)
-{
-	int result;
-	__asm
-	{
-		mov ecx, [a2]
-		mov eax, [a1]
-		call TailsJumpPtr
-		mov result, eax
-	}
-
-	return result;
-}
-
 
 static const void* const Sub4372E0Ptr = (void*)0x4372E0;
 static inline char Play3DSound2(int id, NJS_VECTOR* pos, int a3, char a4, char a5)
@@ -146,19 +115,6 @@ static inline char Play3DSound2(int id, NJS_VECTOR* pos, int a3, char a4, char a
 	return result;
 }
 
-static const void* const VibeThingPtr = (void*)0x438E70;
-static inline void VibeThing(int a1, signed int a2, int a3, signed int a4)
-{
-	__asm
-	{
-		push[a4] 
-		mov ecx, a3 
-		mov edx, a2 
-		mov eax, a1 
-		call VibeThingPtr
-		add esp, 4 
-	}
-}
 
 static const void* const SetNextAnimPtr = (void*)0x474F80;
 static inline int CheckSpeedAndSetNextAnim(CharObj2Base* a1, EntityData1* a2)
@@ -302,31 +258,6 @@ static inline float SlowDownThing(EntityData1* a1, EntityData2* a2, CharObj2Base
 	return result;
 }
 
-static const void* const PResetAnglePtr = (void*)0x460260;
-static inline void PResetAngle(EntityData1* a1, CharObj2Base* co2)
-{
-	__asm
-	{
-		mov ebx, [co2]
-		mov eax, [a1] // a1
-		call PResetAnglePtr
-	}
-}
-
-
-static const void* const lightdashptr = (void*)0x7215D0;
-static inline void Sonic_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2* data2, TailsCharObj2* a5)
-{
-	__asm
-	{
-		push[a5]
-		push[data2]
-		mov eax, [co2]
-		mov ecx, [data]
-		call lightdashptr
-		add esp, 8
-	}
-}
 
 static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
 static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2* a3, CharObj2Base* a4)
@@ -398,19 +329,6 @@ static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
 	return result;
 }
 
-static const void* const ResetCamPtr = (void*)0x4EBD30;
-static inline int ResetCam(int a1, int a2)
-{
-	int result;
-	__asm
-	{	
-		mov ecx, [a2]
-		mov eax, [a1]
-		call ResetCamPtr
-		mov result, eax
-	}
-	return result;
-}
 
 static const void* const sub_4EC330Ptr = (void*)0x4EC330;
 static inline void sub_4EC330(int a1, int a2, int a3)
@@ -492,35 +410,8 @@ struct zxsdwstr
 	xssunit upper;
 };
 
-//void __usercall PAdjustAngleY(EntityData1 *data@<eax>, CharObj2Base *co2@<ebx>, int a3)
-static const void* const PadAdjustAngleYPtr = (void*)0x4603D0;
-static inline void PAdjustAngleY(EntityData1* data, CharObj2Base* co2, int a3)
-{
-	__asm
-	{
-		push[a3]
-		mov ebx, [co2]
-		mov eax, [data]
-		call PadAdjustAngleYPtr
-		add esp, 4
-	}
-}
 
 
-//void __usercall PAdjustAngleY(EntityData1 *data@<eax>, CharObj2Base *co2@<ebx>, int a3)
-static const void* const PAccelFlyPtr = (void*)0x752DF0;
-static inline void PGetAccelFly(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Tails)
-{
-	__asm
-	{
-		push[co2Tails]
-		push[co2]
-		push[data2]
-		push[data1]	
-		call PAccelFlyPtr
-		add esp, 16
-	}
-}
 
 static const void* const njScaleExPtr = (void*)0x429740;
 static inline void njScaleEx(NJS_VECTOR* a1)
@@ -532,17 +423,6 @@ static inline void njScaleEx(NJS_VECTOR* a1)
 	}
 }
 
-//void __usercall SetCameraEvent(int playerNum@<eax>, _DWORD* a2@<ebx>)
-static const void* const cameventPtr = (void*)0x4EBBE0;
-static inline void SetCameraEvent(int a1, int a2)
-{
-	__asm
-	{
-		mov edx, [a2]
-		mov eax, [a1]
-		call cameventPtr
-	}
-}
 
 //void __usercall DoSomethingWithCam(int a1@<eax>, int a2@<ecx>, int a3@<edi>)
 static const void* const stuffCamPtr = (void*)0x4EBCD0;
@@ -585,7 +465,6 @@ static inline void PoseEffectMan_Load_(int a1, int a2)
 }
 
 
-VoidFunc(InitCharacterSound, 0x438B00);
 
 #pragma pack(push, 1)
 struct cartStruct
@@ -631,17 +510,15 @@ DataPointer(int, CamEventAngleY, 0x1DCFDFC);
 DataPointer(float, CameraZoom, 0x1DCFE1C);
 
 
-//void __usercall TailsEggman_SpecialAttack(CharObj2Base *a1@<ebx>, EntityData1 *data, EntityData2 *data2, MechEggmanCharObj2 *a4)
-static const void* const TailsEggman_LaserAttack_ptr = (void*)0x749FE0;
-static inline void TailsEggman_LaserAttack(CharObj2Base* a1, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* a4)
+static inline void Miles_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2* data2, TailsCharObj2* a5)
 {
 	__asm
 	{
-		push[a4]
+		push[a5]
 		push[data2]
-		push[data]
-		mov ebx, a1
-		call TailsEggman_LaserAttack_ptr
-		add esp, 12
+		mov eax, [co2]
+		mov ecx, [data]
+		call lightdashptr
+		add esp, 8
 	}
 }

@@ -11,7 +11,7 @@ void BoardSoundEffect(CharObj2Base* co2, EntityData1* data);
 
 bool isRando();
 bool isCharaSelect();
-bool isSA1Tails();
+bool isSA1Char(uint8_t charID);
 
 signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4);
 
@@ -40,3 +40,5 @@ void Delete_TornadoTransform();
 void Delete_Tornado();
 bool isBossLevel();
 bool isMiles();
+AnimationIndex* getCharAnim_r();
+void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);

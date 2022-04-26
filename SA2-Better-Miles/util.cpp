@@ -38,15 +38,6 @@ bool isCharaSelect() {
 	return false;
 }
 
-bool isSA1Tails() {
-
-	HMODULE SA1 = GetModuleHandle(L"sa1-tails");
-
-	if (SA1)
-		return true;
-
-	return false;
-}
 
 bool isSuperForm(char pID) {
 	if (MainCharObj2[pID]->CharID == Characters_Tails && MainCharObj2[pID]->Upgrades & Upgrades_SuperSonic || CurrentLevel == LevelIDs_FinalHazard)
@@ -295,4 +286,58 @@ bool isBossLevel() {
 	return CurrentLevel >= LevelIDs_BigFoot || CurrentLevel == LevelIDs_SonicVsShadow1 ||
 		CurrentLevel == LevelIDs_TailsVsEggman1 || CurrentLevel == LevelIDs_TailsVsEggman2
 		|| CurrentLevel == LevelIDs_SonicVsShadow2;
+}
+
+typedef AnimationIndex* (CALLBACK* anim) (void);
+
+AnimationIndex* getCharAnim_r()
+{
+	if (!SA2Anim)
+		return nullptr;
+
+	anim Obj = (anim)GetProcAddress(SA2Anim, "GetCharacterAnim_r");
+
+	if (Obj)
+	{
+		AnimationIndex* Result = Obj();
+		return Result;
+	}
+
+	return nullptr;
+}
+
+
+typedef void(__cdecl* func)(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
+
+void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation)
+{
+	if (!SA2Anim)
+		return;
+
+	func Obj = reinterpret_cast<func>(::GetProcAddress(SA2Anim, "SetCharacterAnim"));
+
+	if (Obj)
+	{
+		(*Obj)(Index, Count, Animation);
+		PrintDebug("Added new anim to charAnimR");
+	}
+
+	return;
+}
+
+typedef bool (*isChar) (uint8_t charID);
+
+bool isSA1Char(uint8_t charID) {
+
+	if (!SA1Char)
+		return false;
+
+	isChar Obj = (isChar)GetProcAddress(SA1Char, "isSA1Char");
+
+	if (Obj)
+	{
+		return Obj(charID);
+	}
+
+	return false;
 }

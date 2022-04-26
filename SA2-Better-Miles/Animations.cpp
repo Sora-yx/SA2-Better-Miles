@@ -267,18 +267,8 @@ void Load_MilesNewAnim() {
 	if (!isCustomAnim)
 		return;
 
-	int id;
-	AnimationIndex* MilesNewAnim;
-	__int16 animIndex;
-	int indexCopy;
-	__int16 count;
-	NJS_MOTION* anim;
-
-	id = 0;
-
 	MilesNewAnimList = LoadMTNFile((char*)"\\animations\\NewMilesMtn.prs");
 }
-
 
 void Init_NewAnimation() {
 
@@ -291,6 +281,22 @@ void Init_NewAnimation() {
 		TailsAnimationList_R[68].AnimNum = 108;
 		TailsAnimationList_R[67].AnimationSpeed = 0.4f;
 		TailsAnimationList_R[68].AnimationSpeed = 0.4f;
+	}
+
+	if (isSA1Char(Characters_Tails))
+	{
+		TailsAnimationList_R[0].AnimationSpeed = 0.50f;
+		TailsAnimationList_R[0].TransitionSpeed = 0.0625f;
+		TailsAnimationList_R[65].ModelNum = 255;
+		TailsAnimationList_R[66].ModelNum = 255;
+		TailsAnimationList_R[67].ModelNum = 255;
+		TailsAnimationList_R[68].AnimNum = 15;
+		TailsAnimationList_R[95].AnimationSpeed = TailsAnimList[0].AnimationSpeed;
+		TailsAnimationList_R[95].TransitionSpeed = TailsAnimList[0].TransitionSpeed;
+		TailsAnimationList_R[18].AnimationSpeed = 1.0f;
+		TailsAnimationList_R[18].TransitionSpeed = 0.25f;
+
+		TailsAnimationList_R[18].TransitionSpeed = 0.25f;
 	}
 
 	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);

@@ -2,6 +2,9 @@
 
 void ReadConfig(const char* path);
 
+extern HMODULE SA2Anim;
+extern HMODULE SA1Char;
+
 extern HelperFunctions HelperFunctionsGlobal;
 extern AnimationInfo TailsAnimationList_R[];
 extern bool isCustomAnim;

@@ -113,7 +113,7 @@ void CallCart(ObjectMaster* obj) {
 	break;
 	case 1:
 
-		if (++data->field_6 == 8)
+		if (++data->Timer == 8)
 		{
 			//playerData->Position = SavePosCart;
 			PlayVoice(2, 2433);
