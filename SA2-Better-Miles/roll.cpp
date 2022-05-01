@@ -35,7 +35,7 @@ signed int Miles_RollCheckInput(EntityData1* a1, CharObj2Base* a2)
 		a2->Speed.x += 0.5;
 		a1->Action = Rolling;
 		a2->AnimInfo.Next = 12;
-		a1->Status |= Status_Ball;
+		a1->Status |= Status_Ball | Status_Attack;
 		SetPhysicRoll(a2, a1);
 		return 1;
 	}

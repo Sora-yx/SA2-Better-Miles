@@ -5,7 +5,7 @@ Trampoline* Miles_CheckNextActions_t;
 Trampoline* Tails_RunsAction_t;
 Trampoline* LoadCharacters_t;
 
-//Trampoline Usercall Function to get the control of "Check Next Actions" this need 3 functions to work.
+//Trampoline Usercall Function to get the control of "Tails Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
 signed int Miles_CheckNextActions_original(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 
@@ -183,18 +183,76 @@ __declspec(naked) void  CheckAnimateTailsAction() {
 	}
 }
 
-void Miles_DoCollisionAttackStuff(EntityData1* data1) {
+void Miles_DoCollisionAttackStuff(EntityData1* data1, CharObj2Base* co2) {
 
-	if (data1->Index == 1)
+
+	CollisionInfo* col = data1->Collision;
+	CollisionData* colArray;
+	unsigned int attrCol;
+	int colFlag1 = 0;
+	int colFlag2 = 0;
+
+	if (!col)
 		return;
 
-	data1->Status |= Status_Attack;
-	data1->Collision->CollisionArray[0].damage &= 0xFCu;
-	data1->Collision->CollisionArray[0].damage |= 0xCu;
-	data1->Collision->CollisionArray[0].damage |= 0xEF;
-	data1->Collision->CollisionArray[1].center = data1->Position;
-	data1->Collision->CollisionArray[1].attr &= 0xFFFFFFEF;
-	return;
+	colArray = col->CollisionArray;
+	colArray->attr &= 0xFFFFBFFF;
+	attrCol = colArray->attr;
+
+	if (co2->Powerups >= 0)
+	{
+		if ((co2->Upgrades & Upgrades_SuperSonic) != 0)
+		{
+			colFlag1 = 3;
+			colFlag2 = 3;
+		}
+		else
+		{
+			switch (data1->Action)
+			{
+			case LightDash:
+				colFlag1 = 1;
+				colFlag2 = 3;
+				break;
+			case Bounce:
+				colFlag1 = 2;
+				colFlag2 = 1;
+				colArray->attr = attrCol | 0x4000;
+				break;
+			case Spinning:
+				colArray[2].param1 = 8.0;
+				break;
+			default:
+				if ((data1->Status & Status_Attack) != 0)
+				{
+					colFlag1 = 1;
+					colFlag2 = 1;
+					if (data1->Action == Rolling)
+					{
+						colArray->attr = attrCol | 0x4000;
+					}
+				}
+				else
+				{
+					colFlag1 = 0;
+					colFlag2 = 0;
+				}
+				break;
+			}
+		}
+	}
+	else
+	{
+		colFlag1 = 3;
+		colFlag2 = 3;
+		if (data1->Action == Bounce)
+		{
+			colArray->attr = attrCol | 0x4000;
+		}
+	}
+
+	colArray->damage = colArray->damage & 0xF0 | colFlag1 & 3 | (4 * (colFlag2 & 3));
+	colArray[1].attr |= 0x10u;
 }
 
 void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
@@ -264,6 +322,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	case Jumping:
 		if (Miles_CheckBounceAttack(co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
 			return;
+
+		data1->Status |= Status_Attack;
 
 		break;
 	case 7:
@@ -406,6 +466,8 @@ void Tails_Main_r(ObjectMaster* obj)
 		spinTimer++;
 	}
 
+	Miles_DoCollisionAttackStuff(data1, co2);
+
 	switch (data1->Action)
 	{
 	case Standing:
@@ -420,9 +482,6 @@ void Tails_Main_r(ObjectMaster* obj)
 			}
 		}
 		break;
-	case Jumping:
-		Miles_DoCollisionAttackStuff(data1);
-		break;
 	case ObjectControl:
 		if (!isCustomAnim)
 			break;
@@ -436,10 +495,6 @@ void Tails_Main_r(ObjectMaster* obj)
 			}
 			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
 		}
-		break;
-	case Flying:
-	case Spinning:
-		Miles_DoCollisionAttackStuff(data1);
 		break;
 	case Bounce:
 		PResetAngle(data1, co2);
@@ -489,7 +544,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);
-		Miles_DoCollisionAttackStuff(data1);
 		Miles_UnrollCheckInput(data1, co2);
 		break;
 	case LightDash:
@@ -657,7 +711,7 @@ void ForceMiles(int player) {
 
 void LoadCharacter_r() {
 	if (!TwoPlayerMode && !isLevelBanned()) {
-		if (isMilesAdventure || isMechRemoved && ( GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
+		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
 			CurrentCharacter = Characters_Tails;
 	}
 
@@ -674,7 +728,7 @@ void LoadCharacter_r() {
 				SetSpacePhysics(MainCharObj2[i]);
 				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
 			}
-				CheckAndSetHackObject(MainCharObj2[i]);
+			CheckAndSetHackObject(MainCharObj2[i]);
 		}
 	}
 

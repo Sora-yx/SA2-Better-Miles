@@ -295,8 +295,9 @@ void Init_NewAnimation() {
 		TailsAnimationList_R[95].TransitionSpeed = TailsAnimList[0].TransitionSpeed;
 		TailsAnimationList_R[18].AnimationSpeed = 1.0f;
 		TailsAnimationList_R[18].TransitionSpeed = 0.25f;
-
 		TailsAnimationList_R[18].TransitionSpeed = 0.25f;
+
+		TailsAnimationList_R[12].ModelNum = 255;
 	}
 
 	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
