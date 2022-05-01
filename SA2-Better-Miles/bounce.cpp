@@ -10,7 +10,7 @@ signed int Miles_CheckBounceAttack(CharObj2Base* a1, EntityData1* a2)
 	}
 	a1->AnimInfo.Next = 66;
 	a2->Action = Bounce;
-	a2->Status |= Status_Ball;
+	a2->Status |= Status_Attack | Status_Ball;
 	a1->Speed.y = -5.0;
 	rebound = false;
 	//PlaySoundProbably(8202, 0, 0, 0);
@@ -24,7 +24,7 @@ signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
 		return 0;
 	}
 	a1->AnimInfo.Next = 66;
-	a2->Status |= Status_Ball;
+	a2->Status |= Status_Attack | Status_Ball;
 	a2->Action = Bounce;
 	a1->Speed.y = -7.0;
 	//PlaySoundProbably(8202, 0, 0, 0);

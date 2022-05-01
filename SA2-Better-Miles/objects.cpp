@@ -18,8 +18,6 @@ Trampoline* DeleteLevelStuff_t;
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
-	CharObj2Base* co2 = MainCharObj2[0];
-	EntityData1* data1 = MainCharObj1[0];
 
 	if (isMilesAttackingBox() && GetCollidingPlayer(obj))
 		return 1;
@@ -51,8 +49,8 @@ static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 
 void PlayMysticMelody(ObjectMaster* obj)
 {
-	CharObj2Base* co2 = MainCharObj2[0];
-	EntityData1* data = MainCharObj1[0];
+	CharObj2Base* co2 = &MilesCO2Extern->base;
+	EntityData1* data = MainCharObj1[co2->PlayerNum];
 
 	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15))
 	{

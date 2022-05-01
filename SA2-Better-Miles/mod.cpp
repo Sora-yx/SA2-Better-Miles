@@ -30,9 +30,6 @@ extern "C" {
 		if (HelperFunctionsGlobal.Version < 5)
 			MessageBoxA(MainWindowHandle, "WARNING: Your version of the Mod Loader is old, some functionality of Better Miles will not be available.\N Please update your Mod Loader for best experience.", "Better Miles Mod", MB_ICONWARNING);
 
-		if (!flySoundEffect)
-
-
 		//Cart_HackInit();
 		init_BassSound();
 
