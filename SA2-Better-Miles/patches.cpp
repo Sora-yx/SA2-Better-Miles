@@ -191,10 +191,12 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
-	char pNum = MilesCO2Extern->base.PlayerNum;
+	if (MilesCO2Extern) {
+		char pNum = MilesCO2Extern->base.PlayerNum;
 
-	if ((isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
-		return;
+		if ((isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
+			return;
+	}
 
 	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }

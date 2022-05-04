@@ -41,3 +41,4 @@ bool isBossLevel();
 bool isMiles();
 AnimationIndex* getCharAnim_r();
 void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
+bool isTailsAI();

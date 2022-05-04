@@ -161,7 +161,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 			isInMech = true;
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
-			ResetCam(CameraData.gap1AC[168], 0);
+			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
 			isTransform = false;
 			co2->Powerups &= Powerups_Invincibility;
 			ControllerEnabled[pNum] = 1;
@@ -272,7 +272,7 @@ void CallMech(ObjectMaster* obj) {
 
 		if (data->Scale.z >= frame)
 		{
-			ResetCam(CameraData.gap1AC[168], 0);
+			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
 			data->Action++;
 			data->Scale.z = 0;
 		}

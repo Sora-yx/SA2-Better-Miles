@@ -150,7 +150,7 @@ DWORD LoadSoundStream(int ID) {
 
 float GetVolumeRange(NJS_VECTOR* pos, float dist) {
 
-	float playerdist = CheckDistance(&CameraData.Position, pos);
+	float playerdist = CheckDistance(&CameraData[0].location.pos, pos);
 	return 0.4 - (0.4 * playerdist / dist);
 }
 

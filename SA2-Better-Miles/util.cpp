@@ -271,8 +271,8 @@ void PlayerLookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy) {
 void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom)
 {
 	sub_46C6D0(pNum, playerData->Position.x, playerData->Position.y, playerData->Position.z);
-	SetCameraEvent(pNum, 20);
-	DoSomethingWithCam(*(DWORD*)&CameraData.gap1AC[9432 * pNum + 168], 0, 0);
+	RegisterCameraMode(pNum, 20);
+	SetAdjustMode(CameraData[0].currentCameraSlot, 0, 0);
 	*(int*)0x1DCFDE0 = 3;
 	*(int*)0x1DCFDE4 = 0;
 	*(int*)0x1DCFDE8 = 0;
@@ -337,6 +337,20 @@ bool isSA1Char(uint8_t charID) {
 	if (Obj)
 	{
 		return Obj(charID);
+	}
+
+	return false;
+}
+
+bool isTailsAI()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (!MainCharObj1[i] || MainCharObj1[i]->field_2 != 3)
+			continue;
+
+		if (MainCharObj2[i]->CharID == Characters_Tails)
+			return true;
 	}
 
 	return false;

@@ -151,18 +151,20 @@ void tornadoCam_Child(ObjectMaster* obj)
 	case 1:
 		if (++data->Timer == 100)
 		{
-			ResetCam(CameraData.gap1AC[168], 0);
+
+			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
 			data->Action++;
 		}
 		break;
 	case 2:
 		data->Timer = 0;
-		SetCameraEvent(pNum, 20);
-		DoSomethingWithCam(*(DWORD*)&CameraData.gap1AC[9432 * pNum + 168], 0, 0);
+
+		RegisterCameraMode(pNum, 20);
+		SetAdjustMode(CameraData[pNum].currentCameraSlot, 0, 0);
 		*(int*)0x1DCFDE0 = 3;
 		*(int*)0x1DCFDE4 = 0;
 		*(int*)0x1DCFDE8 = 0;
-		CameraZoom = 800.0f;
+		CameraEventZoom = 800.0f;
 		CamEventPos = player->Position;
 		CamEventAngleZ = 63488;
 		CamEventAngleY = parentData->Rotation.y - 0x4000;
@@ -170,10 +172,10 @@ void tornadoCam_Child(ObjectMaster* obj)
 		data->Action++;
 		break;
 	case 3:
-		CameraZoom -= 8;
+		CameraEventZoom -= 8;
 		if (++data->Timer == 60)
 		{
-			CameraZoom = 50.0f;
+			CameraEventZoom = 50.0f;
 			CamEventAngleY = parentData->Rotation.y + 0x8000;
 			data->Action++;
 			data->Timer = 0;
@@ -193,8 +195,8 @@ void tornadoCam_Child(ObjectMaster* obj)
 		{
 			CamEventPos = player->Position;
 			CamEventAngleY = player->Rotation.y;
-			CameraZoom = 30.0f;
-			ResetCam(CameraData.gap1AC[168], 0);
+			CameraEventZoom = 30.0f;
+			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
 			data->Action++;
 		}
 		break;
@@ -281,7 +283,7 @@ void Tornado_Main(ObjectMaster* obj) {
 			data->Position.x -= 3;
 		}
 		else {
-			ResetCam(CameraData.gap1AC[168], 0);
+			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
 			data->Action++;
 		}
 		break;

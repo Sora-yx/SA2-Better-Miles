@@ -555,18 +555,13 @@ void ForceMiles(int player) {
 	}
 }
 
-void LoadCharacter_r() {
-	if (!TwoPlayerMode && !isLevelBanned()) {
-		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
-			CurrentCharacter = Characters_Tails;
-	}
-
-	auto original = reinterpret_cast<decltype(LoadCharacter_r)*>(LoadCharacters_t->Target());
-	original();
+void LoadExtra_MilesAnimModel()
+{
 
 	for (int i = 0; i < 2; i++) {
 
 		if (MainCharObj2[i]) {
+
 			if (MainCharObj2[i]->CharID == Characters_Tails)
 			{
 				Load_MilesNewAnim();
@@ -575,11 +570,22 @@ void LoadCharacter_r() {
 				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
 				spinTimer = 0;
 			}
+
 			CheckAndSetHackObject(MainCharObj2[i]);
 		}
 	}
 
-	return;
+	sub_47BB50();
+}
+
+void LoadCharacter_r() {
+	if (!TwoPlayerMode && !isLevelBanned()) {
+		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
+			CurrentCharacter = Characters_Tails;
+	}
+
+	auto original = reinterpret_cast<decltype(LoadCharacter_r)*>(LoadCharacters_t->Target());
+	original();
 }
 
 void BetterMiles_Init() {
@@ -622,6 +628,8 @@ void BetterMiles_Init() {
 	Init_StartEndPos();
 	Init_VoicesFixes();
 	init_Patches();
+
+	WriteCall((void*)0x439B18, LoadExtra_MilesAnimModel);
 
 
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);

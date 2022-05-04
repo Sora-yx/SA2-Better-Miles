@@ -3,31 +3,33 @@
 float TailsFlightTime = 0.0000000000; //fatigue
 double flyCustomSpeedValue = 0.11; //used to improve Miles flight speed
 
-static signed int Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
+static void Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //rewrite the function to remove the vertical speed nerf since writedata doesn't work.
 
 	if (TailsFlightTime >= 1.0 && !isInfiniteFly)
-		return 0;
+		return;
 
 	a1->Action = Flying;
 	a1->Status &= 0xDAFFu;
 	a2->AnimInfo.Current = FlyingAnim;
 	a3->field_1BC[418] |= 1u; //idk
-	return PlayVoice(2, 1629);
+
+	if (!isTailsAI())
+		PlayVoice(2, 1629);
+
+	return;
 }
 
 static void __declspec(naked) Tails_FlyStartASM()
 {
 	__asm
 	{
-		push ecx // a3
-		push edx // a2
-		push eax // a1
-
+		push ecx
+		push edx
+		push eax
 		call Tails_FlyStart
-
-		add esp, 4 // a1<eax> is also used for return value
-		pop edx // a2
-		pop ecx // a3
+		add esp, 4 
+		pop edx
+		pop ecx
 		retn
 	}
 }
@@ -49,10 +51,11 @@ void Tails_CheckGetAltitude(CharObj2Base* a1)
 }
 
 void Miles_CheckLoseAltitude(CharObj2Base* a1, EntityData1* a2) {
-	if (a2->Action != Flying || Controllers[a1->PlayerNum].on & Buttons_A || Controllers[a1->PlayerNum].press & Buttons_A || TailsFlightTime >= 1.0)
+
+	if (a2->Action != Flying || Action_Held[a1->PlayerNum] || Action_Pressed[a1->PlayerNum] || TailsFlightTime >= 1.0)
 		return;
 
-	if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
+	if (Action_Held[a1->PlayerNum])
 	{
 		if (isSuperForm(a1->PlayerNum) && a1->Speed.y > -9.0)
 			a1->Speed.y -= 0.20;
@@ -76,7 +79,10 @@ void Tails_Fatigue(EntityData1* data1, CharObj2Base* co2) {
 		if (data1->Action != Action_Fall) {
 			data1->Action = Action_Fall;
 			co2->AnimInfo.Next = 91;
-			PlayCustomSoundVolume(Voice_TailsTired, 1);
+
+			if (!isTailsAI())
+				PlayCustomSoundVolume(Voice_TailsTired, 1);
+
 			return;
 		}
 	}

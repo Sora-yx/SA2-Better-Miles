@@ -49,14 +49,16 @@ static inline void SetMysticMelodyAction(CharObj2Base* a1, EntityData1* a2)
 
 void PlayMysticMelody(ObjectMaster* obj)
 {
-	CharObj2Base* co2 = &MilesCO2Extern->base;
-	EntityData1* data = MainCharObj1[co2->PlayerNum];
+	if (MilesCO2Extern) {
+		CharObj2Base* co2 = &MilesCO2Extern->base;
+		EntityData1* data = MainCharObj1[co2->PlayerNum];
 
-	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15))
-	{
-		if (data->NextAction == 0 && co2->CharID == Characters_Tails) {
-			if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && (data->Action == 0 || data->Action == 60))
-				SetMysticMelodyAction(co2, data);
+		if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15))
+		{
+			if (data->NextAction == 0 && co2->CharID == Characters_Tails) {
+				if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && (data->Action == 0 || data->Action == 60))
+					SetMysticMelodyAction(co2, data);
+			}
 		}
 	}
 

@@ -278,41 +278,6 @@ static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityDat
 }
 
 
-//bool __usercall Player_CheckBreak@<eax>(int a1@<ecx>, EntityData1* a2@<edi>, CharObj2Base* a3@<esi>)
-static const void* const playerBreakPtr = (void*)0x45ABE0;
-static inline bool PlayerCheckBreak(int a1, EntityData1* a2, CharObj2Base* a3)
-{
-	int result;
-	__asm
-	{
-		mov esi, [a3]
-		mov edi, [a2]
-		mov ecx, [a1]
-
-		call playerBreakPtr
-		mov result, ecx
-	}
-	return result;
-}
-
-
-static const void* const playerStopPtr = (void*)0x475100;
-static inline signed int PlayerStop(EntityData1* a1, CharObj2Base* a2, EntityData2* a4)
-{
-	signed int result;
-	__asm
-	{
-		push[a4]
-		mov esi, [a2]
-		mov eax, [a1]
-		call playerStopPtr
-		add esp, 4
-		mov result, eax
-	}
-	return result;
-}
-
-
 static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
 static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
 {
@@ -402,15 +367,12 @@ struct xssunit
 	NJS_POINT3 normal;
 };
 
-
 struct zxsdwstr
 {
 	NJS_POINT3 pos;
 	xssunit lower;
 	xssunit upper;
 };
-
-
 
 
 static const void* const njScaleExPtr = (void*)0x429740;
@@ -424,18 +386,6 @@ static inline void njScaleEx(NJS_VECTOR* a1)
 }
 
 
-//void __usercall DoSomethingWithCam(int a1@<eax>, int a2@<ecx>, int a3@<edi>)
-static const void* const stuffCamPtr = (void*)0x4EBCD0;
-static inline void DoSomethingWithCam(int a1, int a2, int a3)
-{
-	__asm
-	{
-		mov edi, [a3]
-		mov ecx, [a2]
-		mov eax, [a1]
-		call stuffCamPtr
-	}
-}
 
 static const void* const sub_46C6D0PTR = (void*)0x46C6D0;
 static inline void sub_46C6D0(int a1, float a2, float a3, float a4)
@@ -463,7 +413,6 @@ static inline void PoseEffectMan_Load_(int a1, int a2)
 		add esp, 4
 	}
 }
-
 
 
 #pragma pack(push, 1)
@@ -504,11 +453,6 @@ struct _camcontwk
 	NJS_VECTOR acceleration;
 };
 
-DataPointer(NJS_VECTOR, CamEventPos, 0x1DCFE10);
-DataPointer(int, CamEventAngleZ, 0x1DCFDF8);
-DataPointer(int, CamEventAngleY, 0x1DCFDFC);
-DataPointer(float, CameraZoom, 0x1DCFE1C);
-
 
 static inline void Miles_InitLightDash(EntityData1* data, CharObj2Base* co2, EntityData2* data2, TailsCharObj2* a5)
 {
@@ -522,3 +466,5 @@ static inline void Miles_InitLightDash(EntityData1* data, CharObj2Base* co2, Ent
 		add esp, 8
 	}
 }
+
+VoidFunc(sub_48BDF0, 0x48BDF0);

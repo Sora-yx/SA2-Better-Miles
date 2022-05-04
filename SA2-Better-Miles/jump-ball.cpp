@@ -1,57 +1,61 @@
 #include "pch.h"
 
-ModelInfo* JumpBallMdl;
+ModelInfo* JumpBallMdl = nullptr;
 
 NJS_TEXNAME MilesBallTex[2];
+
 NJS_TEXLIST MilesBall_Texlist = { arrayptrandlength(MilesBallTex) };
+
+NJS_TEXLIST MilesBall1_Texlist = { arrayptrandlength(MilesBallTex) };
 
 int spinTimer = 0;
 
-Trampoline* Tails_JumpStart_t;
+Trampoline* Tails_JumpStart_t = nullptr;
 
 void Miles_LoadJmpBall(TailsCharObj2* mco2) {
 
 	if (!isSA1Char(Characters_Tails)) {
-
 		JumpBallMdl = LoadMDL("230", ModelFormat_Chunk);
-		mco2->ModelList[jmpBallID].Index = jmpBallID;
-		mco2->ModelList[jmpBallID].Model = JumpBallMdl->getmodel();
-		CharacterModels[jmpBallID].Index = jmpBallID;
 		CharacterModels[jmpBallID].Model = JumpBallMdl->getmodel();
 	}
 
-	LoadTextureList("ballTex", &MilesBall_Texlist);
+	LoadTextureList("ballTex", &MilesBall1_Texlist);
 	return;
 }
 
 void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
 
-	char pID = MilesCO2Extern->base.PlayerNum;
-	EntityData1* data1 = MainCharObj1[pID];
-	TailsCharObj2* mCO2 = MilesCO2Extern;
-	NJS_VECTOR scale = { 0.9f, 0.9f, 0.9f };
+	if (MilesCO2Extern) {
 
-	AnimationIndex* sa2anim = getCharAnim_r();
+		char pID = MilesCO2Extern->base.PlayerNum;
+		EntityData1* data1 = MainCharObj1[pID];
+		TailsCharObj2* mCO2 = MilesCO2Extern;
+		NJS_VECTOR scale = { 0.9f, 0.9f, 0.9f };
 
-	int curAnim = mCO2->base.AnimInfo.Current;
+		AnimationIndex* sa2anim = getCharAnim_r();
 
-	if ((data1->Status & Status_Ball) != 0 && (spinTimer & 0x11) != 0 && mCO2->base.AnimInfo.AnimationFrame != 2)
-	{
-		mdl = CharacterModels[mCO2->base.AnimInfo.Animations[30].ModelNum].Model;// ball form
-		if (!isSA1Char(Characters_Tails))
-			njSetTexture(&MilesBall_Texlist);
-		njScaleV_(&scale);
-		curAnim = 30;
+		int curAnim = mCO2->base.AnimInfo.Current;
 
-		if (sa2anim)
+		if ((data1->Status & Status_Ball) != 0 && (spinTimer & 0x11) != 0 && mCO2->base.AnimInfo.AnimationFrame != 2)
 		{
-			motion = sa2anim[mCO2->base.AnimInfo.Animations[mCO2->base.AnimInfo.Animations[curAnim].AnimNum].AnimNum].Animation;
-		}
-		else {
-			motion = CharacterAnimations[mCO2->base.AnimInfo.Animations[mCO2->base.AnimInfo.Animations[curAnim].AnimNum].AnimNum].Animation;
+			mdl = CharacterModels[jmpBallID].Model;
+
+			if (!isSA1Char(Characters_Tails)) {
+				njSetTexture(&MilesBall1_Texlist);
+			}
+
+			njScaleV_(&scale);
+			curAnim = 30;
+
+			if (sa2anim)
+			{
+				motion = sa2anim[mCO2->base.AnimInfo.Animations[curAnim].AnimNum].Animation;
+			}
+			else {
+				motion = CharacterAnimations[mCO2->base.AnimInfo.Animations[mCO2->base.AnimInfo.Animations[curAnim].AnimNum].AnimNum].Animation;
+			}
 		}
 	}
-
 
 	return DrawMotionAndObject(motion, mdl, frame);
 }
@@ -106,14 +110,11 @@ static void __declspec(naked) Tails_JumpStartASM()
 {
 	__asm
 	{
-		push ecx // data
-		push eax // co2
-
-		// Call your __cdecl function here:
+		push ecx 
+		push eax 
 		call Tails_JumpStart_r
-
-		add esp, 4 // co2<eax> is also used for return value
-		pop ecx // data
+		add esp, 4 
+		pop ecx
 		retn
 	}
 }
