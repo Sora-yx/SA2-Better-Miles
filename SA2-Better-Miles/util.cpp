@@ -116,10 +116,12 @@ int IsPlayerInsideSphere(NJS_VECTOR* position, float a2)
 
 bool isMiles()
 {
-	if (!MilesCO2Extern || MainCharObj2[MilesCO2Extern->base.PlayerNum]->CharID != Characters_Tails)
-		return false;
+	if (MilesCO2Extern) {
+		if (MainCharObj2[MilesCO2Extern->base.PlayerNum]->CharID == Characters_Tails)
+			return true;
+	}
 
-	return true;
+	return false;
 }
 
 bool isMilesAttacking() {
@@ -144,6 +146,22 @@ bool isMilesAttackingBox() {
 
 	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
 		return true;
+
+	return false;
+}
+
+bool isAttackingKBB() {
+
+	EntityData1* data1 = MainCharObj1[0];
+
+	if (!data1)
+		return false;
+
+	if (isMilesAttacking() || data1->Action == Action_BounceUp || data1->Action == Action_Jump
+		|| data1->Action == Action_SpinCharge || data1->Action == 95)
+	{
+		return true;
+	}
 
 	return false;
 }
@@ -304,25 +322,6 @@ AnimationIndex* getCharAnim_r()
 	}
 
 	return nullptr;
-}
-
-
-typedef void(__cdecl* func)(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
-
-void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation)
-{
-	if (!SA2Anim)
-		return;
-
-	func Obj = reinterpret_cast<func>(::GetProcAddress(SA2Anim, "SetCharacterAnim"));
-
-	if (Obj)
-	{
-		(*Obj)(Index, Count, Animation);
-		PrintDebug("Added new anim to charAnimR");
-	}
-
-	return;
 }
 
 typedef bool (*isChar) (uint8_t charID);

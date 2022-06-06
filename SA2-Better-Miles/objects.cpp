@@ -1,24 +1,86 @@
 #include "pch.h"
 
-Trampoline* CheckBreakObject_t;
-Trampoline* MysticMelody_t;
-Trampoline* Dynamite_t;
-Trampoline* DynamiteHiddenBase_t;
-Trampoline* DynamiteSandOcean_t;
-Trampoline* PrisonLaneDoor_t;
-Trampoline* PrisonLaneDoor4_t;
-Trampoline* SuperAura_t;
-Trampoline* DoorIG_t;
-Trampoline* DoorIG2_t;
-Trampoline* RocketIG_t;
-Trampoline* BrokenDownSmoke_t;
-Trampoline* MetalBox_t;
-Trampoline* MetalBoxGravity_t;
-Trampoline* DeleteLevelStuff_t;
+static Trampoline* CheckBreakObject_t = nullptr;
+static Trampoline* MysticMelody_t = nullptr;
+static Trampoline* Dynamite_t = nullptr;
+static Trampoline* DynamiteHiddenBase_t = nullptr;
+static Trampoline* DynamiteSandOcean_t = nullptr;
+static Trampoline* PrisonLaneDoor_t = nullptr;
+static Trampoline* PrisonLaneDoor4_t = nullptr;
+static Trampoline* SuperAura_t = nullptr;
+static Trampoline* DoorIG_t = nullptr;
+static Trampoline* DoorIG2_t = nullptr;
+static Trampoline* RocketIG_t = nullptr;
+static Trampoline* BrokenDownSmoke_t = nullptr;
+static Trampoline* MetalBox_t = nullptr;
+static Trampoline* MetalBoxGravity_t = nullptr;
+static Trampoline* IronBoxEggman_t = nullptr;
+static Trampoline* DeleteLevelStuff_t = nullptr;
+static Trampoline* Turtle_Function_t = nullptr;
+static Trampoline* PowerSupply_event_t = nullptr;
+static Trampoline* sub_6129C0_t = nullptr;
+
+void __cdecl PowerSupply_EventTask(ObjectMaster* a1)
+{
+	if (CurrentCharacter != Characters_MechEggman && CurrentCharacter != Characters_MechTails)
+	{
+		DeleteObject_(a1);
+		return;
+	}
+
+	ObjectFunc(origin, PowerSupply_event_t->Target());
+	origin(a1);
+}
+
+void PatchTurtleAnimation()
+{
+	if (CurrentLevel != LevelIDs_DryLagoon)
+		return;
+
+	if (CurrentCharacter != Characters_Knuckles && CurrentCharacter != Characters_Rouge)
+	{
+		WriteData<1>((int*)0x642c98, 0x0);
+	}
+	else
+	{
+		WriteData<1>((int*)0x642c98, 0xD7);
+	}
+}
+
+void Turtle_Function_r(ObjectMaster* obj)
+{
+	EntityData1* data = obj->Data1.Entity;
+
+	if (isMiles()) {
+
+		if (data->Action == 5) {
+
+			if (MilesCO2Extern) {
+
+				char pnum = MilesCO2Extern->base.PlayerNum;
+
+				if (MainCharObj2[pnum])
+				{
+					if (((MainCharObj1[pnum]->Status & 1) != 0) && (MainCharObj2[pnum]->CurrentDyncolTask != nullptr))
+					{
+
+						if (MainCharObj2[pnum]->CurrentDyncolTask->Data1.Entity->field_2 == 25) {
+
+							if (Action_Pressed[pnum])
+								MainCharObj1[pnum]->Action = 86;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	ObjectFunc(origin, Turtle_Function_t->Target());
+	origin(obj);
+}
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
-
 	if (isMilesAttackingBox() && GetCollidingPlayer(obj))
 		return 1;
 
@@ -78,6 +140,20 @@ __declspec(naked) void  CheckGravitySwitch() {
 	}
 }
 
+
+static const void* const loc_6109eb = (void*)0x6109eb;
+static const void* const loc_610b62 = (void*)0x610b62;
+__declspec(naked) void  KBB_DamageChk() {
+	if ( (CurrentCharacter == Characters_Knuckles || CurrentCharacter == Characters_Rouge)
+		&& (MainCharObj1[0]->Action == Action_DigFinish || MainCharObj1[0]->Action == Action_DigFinishOnWall)
+		|| isAttackingKBB() )
+	{
+		_asm jmp loc_6109eb
+	}
+	else {
+		_asm jmp loc_610b62
+	}
+}
 
 
 void CheckBreakDynamite(ObjectMaster* obj) {
@@ -258,9 +334,8 @@ void BrokenDownSmoke_r(ObjectMaster* a1) {
 	}
 }
 
-void MetalBox_r(ObjectMaster* obj) {
-
-	EntityData1* data = obj->Data1.Entity;
+void breaBoxCheck(EntityData1* data)
+{
 
 	if (data)
 	{
@@ -280,6 +355,13 @@ void MetalBox_r(ObjectMaster* obj) {
 			}
 		}
 	}
+
+}
+void MetalBox_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	breaBoxCheck(data);
 
 	ObjectFunc(origin, MetalBox_t->Target());
 	origin(obj);
@@ -288,27 +370,19 @@ void MetalBox_r(ObjectMaster* obj) {
 void MetalBoxGravity_r(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
-
-	if (data)
-	{
-		if (data->Collision) {
-
-			if (data->Collision->CollidingObject) {
-
-				char pnum = GetPlayerNumber(data->Collision->CollidingObject->Object);
-
-				if (isMilesAttackingBox() && data->NextAction < 1) {
-					data->Collision->CollisionArray->push |= 0x4000u;
-					data->Timer = 1;
-					AddScore(20);
-					Play3DSound_Pos(4113, &data->Position, 1, 127, 80);
-					data->NextAction = 1;
-				}
-			}
-		}
-	}
+	breaBoxCheck(data);
 
 	ObjectFunc(origin, MetalBoxGravity_t->Target());
+	origin(obj);
+}
+
+void IronBoxEggman_r(ObjectMaster* obj) {
+
+	EntityData1* data = obj->Data1.Entity;
+
+	breaBoxCheck(data);
+
+	ObjectFunc(origin, IronBoxEggman_t->Target());
 	origin(obj);
 }
 
@@ -320,8 +394,20 @@ void DeleteLevelStuff_r() {
 	Delete_TornadoTransform();
 }
 
-void Init_ObjectsHacks() {
+ObjectMaster* __cdecl sub_6129C0(ObjectMaster* a1)
+{
+	EntityData1* data = a1->Data1.Entity;
+	
+	FunctionPointer(ObjectMaster*, origin, (ObjectMaster * a1), sub_6129C0_t->Target());
+	ObjectMaster* obj = origin(a1);
 
+	data->Action = data->Action;
+	return obj;
+}
+
+
+
+void Init_ObjectsHacks() {
 
 	if (isRando())
 		return;
@@ -346,17 +432,22 @@ void Init_ObjectsHacks() {
 
 	MetalBox_t = new Trampoline((int)MetalBox, (int)MetalBox + 0x6, MetalBox_r);
 	MetalBoxGravity_t = new Trampoline((int)MetalBoxGravity, (int)MetalBoxGravity + 0x6, MetalBoxGravity_r);
+	PowerSupply_event_t = new Trampoline((int)0x78A450, (int)0x78A455, PowerSupply_EventTask);
 	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
-	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);
+	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);	
 
+	//KingBoomBoo
+	WriteJump(reinterpret_cast<void*>(0x6109d5), KBB_DamageChk);
+	WriteData<17>((int*)0x6109da, 0x90); //need 5 bytes to jump so we nop the rest and will add this code manually
 
 	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
 	WriteData<3>((int*)0x751d70, 0x90); //Remove path action, we will manually call it (fix RH last loop)
-
 	WriteData<2>((int*)0x4cd255, 0x90); //remove chara sonic check in cannon core (fix softlock after the first rail)
 
-	//EE Power suply
-	WriteData<5>((void*)0x7899e8, 0x90); //remove powersupply
+	Turtle_Function_t = new Trampoline((int)0x642B10, (int)0x642B16, Turtle_Function_r);
+	IronBoxEggman_t = new Trampoline((int)0x6FBC20, (int)0x6FBC26, IronBoxEggman_r);
+
+	sub_6129C0_t = new Trampoline((int)0x6129C0, (int)0x6129C6, sub_6129C0);
 
 	/*if (isMilesAdventure) {
 		//FinalHazard Stuff

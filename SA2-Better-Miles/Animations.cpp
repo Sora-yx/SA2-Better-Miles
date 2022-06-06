@@ -252,7 +252,7 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
 };
 
-AnimationIndex* MilesNewAnimList;
+AnimationIndex* MilesNewAnimList = nullptr;
 
 void Delete_MilesAnim() {
 	AnimationIndex* copy = MilesNewAnimList;
@@ -267,38 +267,27 @@ void Load_MilesNewAnim() {
 	if (!isCustomAnim)
 		return;
 
-	MilesNewAnimList = LoadMTNFile((char*)"\\animations\\NewMilesMtn.prs");
+	if (!isSA1Char(Characters_Tails) && !MilesNewAnimList)
+		MilesNewAnimList = LoadMTNFile((char*)"\\animations\\NewMilesMtn.prs");
 }
+
 
 void Init_NewAnimation() {
 
-	if (!isJumpBall)
-	{
-		TailsAnimationList_R[30].ModelNum = 208;
-		TailsAnimationList_R[66].AnimNum = 66;
+	//sa1 tails as its own animation list and jumpball
+	if (!isSA1Char(Characters_Tails)) {
 
-		TailsAnimationList_R[67].AnimNum = 107;
-		TailsAnimationList_R[68].AnimNum = 108;
-		TailsAnimationList_R[67].AnimationSpeed = 0.4f;
-		TailsAnimationList_R[68].AnimationSpeed = 0.4f;
+		if (!isJumpBall)
+		{
+			TailsAnimationList_R[30].ModelNum = 208;
+			TailsAnimationList_R[66].AnimNum = 66;
+
+			TailsAnimationList_R[67].AnimNum = 107;
+			TailsAnimationList_R[68].AnimNum = 108;
+			TailsAnimationList_R[67].AnimationSpeed = 0.4f;
+			TailsAnimationList_R[68].AnimationSpeed = 0.4f;
+		}
+
+		WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
 	}
-
-	if (isSA1Char(Characters_Tails))
-	{
-		TailsAnimationList_R[0].AnimationSpeed = 0.50f;
-		TailsAnimationList_R[0].TransitionSpeed = 0.0625f;
-		TailsAnimationList_R[65].ModelNum = 255;
-		TailsAnimationList_R[66].ModelNum = 255;
-		TailsAnimationList_R[67].ModelNum = 255;
-		TailsAnimationList_R[68].AnimNum = 15;
-		TailsAnimationList_R[95].AnimationSpeed = TailsAnimList[0].AnimationSpeed;
-		TailsAnimationList_R[95].TransitionSpeed = TailsAnimList[0].TransitionSpeed;
-		TailsAnimationList_R[18].AnimationSpeed = 1.0f;
-		TailsAnimationList_R[18].TransitionSpeed = 0.25f;
-		TailsAnimationList_R[18].TransitionSpeed = 0.25f;
-
-		TailsAnimationList_R[12].ModelNum = 255;
-	}
-
-	WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
 }

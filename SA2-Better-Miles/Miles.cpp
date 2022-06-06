@@ -5,6 +5,7 @@ Trampoline* Tails_Main_t;
 Trampoline* Miles_CheckNextActions_t;
 Trampoline* Tails_RunsAction_t;
 Trampoline* LoadCharacters_t;
+Trampoline* LoadMechTails_t = nullptr;
 
 //Trampoline Usercall Function to get the control of "Tails Check Next Actions" this need 3 functions to work.
 static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
@@ -289,6 +290,12 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	case 80:
 		BoardJumpStuff(data1, co2Miles, co2, data2);
 		break;
+	case Action_TurtleDive:
+
+		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+			return;
+
+		break;
 	case Rolling:
 		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
 			return;
@@ -528,8 +535,8 @@ signed char GetCharacterLevel() {
 	return -1;
 }
 
-int BannedMilesLevel[11] = { LevelIDs_SonicVsShadow1, LevelIDs_FinalHazard, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, LevelIDs_TailsVsEggman2,  LevelIDs_SonicVsShadow2, LevelIDs_KnucklesVsRouge,
-LevelIDs_BigFoot, LevelIDs_FlyingDog, LevelIDs_HotShot
+int BannedMilesLevel[5] = {  LevelIDs_FinalHazard, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, 
+LevelIDs_TailsVsEggman2, 
 };
 
 bool isLevelBanned() {
@@ -543,21 +550,21 @@ bool isLevelBanned() {
 }
 
 
-void ForceMiles(int player) {
+void RemoveMech(int player) {
+
 	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
 		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
 		CurrentCharacter = Characters_Tails;
 		LoadTails(player);
+		return;
 	}
-	else {
-		CurrentCharacter = Characters_MechTails;
-		LoadMechTails(player);
-	}
+
+	FunctionPointer(void, origin, (int player), LoadMechTails_t->Target());
+	origin(player);
 }
 
 void LoadExtra_MilesAnimModel()
 {
-
 	for (int i = 0; i < 2; i++) {
 
 		if (MainCharObj2[i]) {
@@ -579,7 +586,9 @@ void LoadExtra_MilesAnimModel()
 }
 
 void LoadCharacter_r() {
+
 	if (!TwoPlayerMode && !isLevelBanned()) {
+		
 		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
 			CurrentCharacter = Characters_Tails;
 	}
@@ -593,25 +602,30 @@ void BetterMiles_Init() {
 	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
 	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
 	Tails_RunsAction_t = new Trampoline((int)Tails_runsAction, (int)Tails_runsAction + 0x7, Tails_runsAction_r);
+	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
+
+	if (isMechRemoved) {
+		LoadMechTails_t = new Trampoline((int)LoadMechTails, (int)LoadMechTails + 0x6, RemoveMech);
+	}
 
 	if (isMilesAdventure || isMechRemoved) {
 		init_RankScore();
 	}
 
-	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
-
-	if (isMechRemoved)
-		WriteCall((void*)0x43D6CD, ForceMiles);
-
 	//Improve physic
 	if (isCustomPhysics) {
-		PhysicsArray[Characters_Tails].AirAccel = 0.050f;
-		PhysicsArray[Characters_Tails].SpeedMaxH = 2.0f;
-		PhysicsArray[Characters_Tails].HangTime = 60;
-		PhysicsArray[Characters_Tails].JumpSpeed = 1.80f;
-		PhysicsArray[Characters_Tails].RunAccel = 0.05f;
-		PhysicsArray[Characters_Tails].AirResist = -0.008f;
-		PhysicsArray[Characters_Tails].DashSpeed = 5.09f;
+		//copy knux physics since it's more closer to sadx tails
+		PhysicsArray[Characters_Tails] = PhysicsArray[Characters_Knuckles];
+
+		//adjust to sadx Tails physics
+		PhysicsArray[Characters_Tails].FloorGrip = 1.5f;
+		PhysicsArray[Characters_Tails].JogSpeed = 0.49f;
+		PhysicsArray[Characters_Tails].RunSpeed = 2.8f;
+		PhysicsArray[Characters_Tails].RunAccel = 0.06f;
+		PhysicsArray[Characters_Tails].Radius = 3.5f;
+		PhysicsArray[Characters_Tails].Height = 9.0f;
+		PhysicsArray[Characters_Tails].CameraY = 6.0f;
+		PhysicsArray[Characters_Tails].CenterHeight = 4.5f;
 	}
 
 	Init_ObjectsHacks();
@@ -630,8 +644,8 @@ void BetterMiles_Init() {
 	init_Patches();
 
 	WriteCall((void*)0x439B18, LoadExtra_MilesAnimModel);
-
-
 	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
 	InitLightDashStuff();
+
+
 }

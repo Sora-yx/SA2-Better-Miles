@@ -57,6 +57,7 @@ void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
 		}
 	}
 
+
 	return DrawMotionAndObject(motion, mdl, frame);
 }
 
@@ -98,9 +99,10 @@ int Tails_JumpStart_r(CharObj2Base* co2, EntityData1* data)
 {
 	signed int result = Tails_JumpStart_Origin(co2, data);
 
-	if (result == 1 && data->Action == Action_Jump)
-	{
-		data->Status |= Status_Ball;
+	if (result == 1 && data->Action == Action_Jump && (co2->SurfaceInfo.PrevTopSurface & (SurfaceFlag_WaterNoAlpha | SurfaceFlag_Water)) == 0) {
+		{
+			data->Status |= Status_Ball;
+		}
 	}
 
 	return result;
@@ -110,10 +112,10 @@ static void __declspec(naked) Tails_JumpStartASM()
 {
 	__asm
 	{
-		push ecx 
-		push eax 
+		push ecx
+		push eax
 		call Tails_JumpStart_r
-		add esp, 4 
+		add esp, 4
 		pop ecx
 		retn
 	}

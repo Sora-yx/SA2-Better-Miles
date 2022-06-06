@@ -6,6 +6,7 @@ const char* error = "[Better Miles]: WARNING: Your version of the Mod Loader is 
 HMODULE SA2Anim = NULL;
 HMODULE SA1Char = NULL;
 
+
 extern "C" {
 
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helperFunctions)
@@ -27,6 +28,7 @@ extern "C" {
 
 		ReadConfig(path); //get mod settings by the user
 
+	
 		if (HelperFunctionsGlobal.Version < 5)
 			MessageBoxA(MainWindowHandle, "WARNING: Your version of the Mod Loader is old, some functionality of Better Miles will not be available.\N Please update your Mod Loader for best experience.", "Better Miles Mod", MB_ICONWARNING);
 
@@ -41,8 +43,20 @@ extern "C" {
 	__declspec(dllexport) void __cdecl OnFrame() {
 
 		RunCustomSounds();
+
+		if (Controllers[0].on & Buttons_L && Controllers[0].press & Buttons_X)
+		{
+			AwardWin(0);
+		}
 	}
 
+
+	__declspec(dllexport) void __cdecl OnInitEnd()
+	{
+		FreeAllCustomSounds();
+		Delete_Tornado();
+		Delete_TornadoTransform();
+	}
 
 
 	__declspec(dllexport) ModInfo SA2ModInfo = { ModLoaderVer };

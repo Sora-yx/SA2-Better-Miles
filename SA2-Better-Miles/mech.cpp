@@ -349,8 +349,12 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 }
 
 void Load_TornadoTransfo_ModelsTextures() {
-	TornadoTransfo = LoadMDL("tornadoTransfoMDL", ModelFormat_Chunk);
-	TornadoTransfoMotion = LoadAnim("TornadoTransfo");
+	if (!TornadoTransfo)
+		TornadoTransfo = LoadMDL("tornadoTransfoMDL", ModelFormat_Chunk);
+
+	if (!TornadoTransfoMotion)
+		TornadoTransfoMotion = LoadAnim("TornadoTransfo");
+
 	LoadTextureList("tornadoTransfoTex", &tornadoTransfoTexList);
 	return;
 }

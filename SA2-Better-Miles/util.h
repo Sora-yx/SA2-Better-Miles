@@ -42,3 +42,5 @@ bool isMiles();
 AnimationIndex* getCharAnim_r();
 void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
 bool isTailsAI();
+void Draw_MilesWrapper(NJS_OBJECT* object, int(__cdecl* callback)(NJS_CNK_MODEL*));
+bool isAttackingKBB();

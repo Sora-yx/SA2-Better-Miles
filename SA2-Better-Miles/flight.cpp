@@ -27,7 +27,7 @@ static void __declspec(naked) Tails_FlyStartASM()
 		push edx
 		push eax
 		call Tails_FlyStart
-		add esp, 4 
+		add esp, 4
 		pop edx
 		pop ecx
 		retn
@@ -52,16 +52,15 @@ void Tails_CheckGetAltitude(CharObj2Base* a1)
 
 void Miles_CheckLoseAltitude(CharObj2Base* a1, EntityData1* a2) {
 
-	if (a2->Action != Flying || Action_Held[a1->PlayerNum] || Action_Pressed[a1->PlayerNum] || TailsFlightTime >= 1.0)
+	if (a2->Action != Flying || !Action_Held[a1->PlayerNum] && !Action_Pressed[a1->PlayerNum] || TailsFlightTime >= 1.0)
 		return;
 
-	if (Action_Held[a1->PlayerNum])
-	{
-		if (isSuperForm(a1->PlayerNum) && a1->Speed.y > -9.0)
-			a1->Speed.y -= 0.20;
-		else if (a1->Speed.y > -9.0)
-			a1->Speed.y -= 0.14;
-	}
+
+	if (isSuperForm(a1->PlayerNum) && a1->Speed.y > -9.0)
+		a1->Speed.y -= 0.20;
+	else if (a1->Speed.y > -9.0)
+		a1->Speed.y -= 0.14;
+
 }
 
 void Tails_FatigueReloadCheck(EntityData1* data1) {

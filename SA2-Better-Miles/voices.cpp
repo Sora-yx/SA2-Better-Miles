@@ -166,11 +166,14 @@ __declspec(naked) void PlayRankVoice()
 }
 
 void Init_VoicesFixes() {
+
 	if (!isCharaSelect())
 		WriteJump((void*)0x44FC5E, PlayRankVoice);
 
-	if (!jumpVoice)
+	if (!jumpVoice) {
 		WriteData<5>((void*)0x751C90, 0x90); //remove tails voice when jumping
+		WriteData<5>((void*)0x751BFA, 0x90);
+	}
 
 	PlayIdle_Voice_t = new Trampoline((int)0x477BB0, (int)0x477BB5, PlayIdle_VoiceASM);
 

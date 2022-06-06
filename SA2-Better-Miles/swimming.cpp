@@ -48,6 +48,7 @@ signed int Miles_SetNextActionSwim(TailsCharObj2* a1, EntityData1* a2)
 	{
 		return 0;
 	}
+	a2->Status &= ~Status_Ball;
 	a2->Action = FloatingOnWater;
 	a1->base.AnimInfo.Next = 224;
 	return 1;

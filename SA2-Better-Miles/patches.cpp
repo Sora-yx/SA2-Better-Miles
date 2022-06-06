@@ -40,9 +40,9 @@ static void __declspec(naked) CheckAndSetPlayerSpeed()
 {
 	__asm
 	{
-		push esi 
+		push esi
 		call CheckAndSetPlayerSpeed_r
-		pop esi 
+		pop esi
 		retn
 	}
 }
@@ -192,10 +192,15 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 	if (MilesCO2Extern) {
-		char pNum = MilesCO2Extern->base.PlayerNum;
 
-		if ((isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
+		char pNum = MilesCO2Extern->base.PlayerNum;
+		char curAnim = MainCharObj2[pNum]->AnimInfo.Current;
+
+		int model = MilesCO2Extern->base.AnimInfo.Animations[curAnim].ModelNum;
+
+		if ((model == jmpBallID || isSA1Char(Characters_Tails) && model == 255 || isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
 			return;
+
 	}
 
 	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);

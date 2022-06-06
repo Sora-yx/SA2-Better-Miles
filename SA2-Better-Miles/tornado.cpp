@@ -557,7 +557,8 @@ void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* dat
 
 void LoadTornado_ModelAnim() {
 
-	Tornado = LoadMDL("tornadoMDL", ModelFormat_Chunk);
+	if (!Tornado)
+		Tornado = LoadMDL("tornadoMDL", ModelFormat_Chunk);
 
 	HMODULE** DLL = datadllhandle;
 
