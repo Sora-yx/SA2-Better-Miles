@@ -34,7 +34,7 @@ signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
 float getGrav = 0.0;
 
 void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2* data2) {
-	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, data2, co2, co2Miles)) {
+	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindow_(data, data2, co2, co2Miles)) {
 		return;
 	}
 	if ((data->Status & 3) != 0)
@@ -82,7 +82,7 @@ void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, Ent
 }
 
 void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2* data2) {
-	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindowR(data, data2, co2, co2Miles)) {
+	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindow_(data, data2, co2, co2Miles)) {
 		return;
 	}
 

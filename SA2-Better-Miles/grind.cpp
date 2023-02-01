@@ -183,19 +183,19 @@ void LoadRailParticules(TailsCharObj2* co2, EntityData2* data2) {
 void TailsRailAnim_ToNormal(CharObj2Base* co2) {
 	switch (co2->AnimInfo.Current) {
 	case Anm_Tails_RailCrouchL:
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		co2->AnimInfo.Next = Anm_Tails_RailL;
 		break;
 	case Anm_Tails_RailCrouchR:
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		co2->AnimInfo.Next = Anm_Tails_RailR;
 		break;
 	case Anm_Tails_RailFastCL:
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		co2->AnimInfo.Next = Anm_Tails_RailFastL;
 		break;
 	case Anm_Tails_RailFastCR:
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		co2->AnimInfo.Next = Anm_Tails_RailFastR;
 		break;
 	}
@@ -205,19 +205,19 @@ void TailsRailAnim_ToCrouch(CharObj2Base* co2) {
 	switch (co2->AnimInfo.Current) {
 	case Anm_Tails_RailL:
 		co2->AnimInfo.Next = Anm_Tails_RailCrouchL;
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		break;
 	case Anm_Tails_RailR:
 		co2->AnimInfo.Next = Anm_Tails_RailCrouchR;
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		break;
 	case Anm_Tails_RailFastL:
 		co2->AnimInfo.Next = Anm_Tails_RailFastCL;
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		break;
 	case Anm_Tails_RailFastR:
 		co2->AnimInfo.Next = Anm_Tails_RailFastCR;
-		co2->AnimInfo.field_18 = co2->AnimInfo.field_10;
+		co2->AnimInfo.field_18 = co2->AnimInfo.nframe;
 		break;
 	}
 }

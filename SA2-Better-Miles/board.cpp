@@ -50,7 +50,7 @@ void BoardJumpStuff(EntityData1* data, TailsCharObj2* co2Miles, CharObj2Base* co
 	{
 		data->Action = 76;
 		co2->AnimInfo.Next = 121;
-		co2->AnimInfo.field_10 = 0.0;
+		co2->AnimInfo.nframe = 0.0;
 		if (co2->Speed.x <= 0.30000001)
 		{
 			co2->Speed.x = 1.0;

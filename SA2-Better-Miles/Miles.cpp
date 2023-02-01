@@ -150,25 +150,7 @@ static void __declspec(naked) Miles_CheckNextActionsASM()
 	}
 }
 
-static inline signed int Tails_CheckActionWindowASM(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4)
-{
-	signed int result;
-	__asm
-	{
-		push[a4]
-		mov ecx, [a3]
-		mov edx, [a2]
-		mov eax, [a1]
-		call Tails_CheckActionWindowPtr
-		add esp, 4
-		mov result, eax
-	}
-	return result;
-}
 
-signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4) {
-	return Tails_CheckActionWindowASM(a1, a2, a3, a4);
-}
 
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
 	FunctionPointer(void, original, (EntityData1 * data1, EntityData2 * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
@@ -279,7 +261,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		PlaySoundProbably(8195, 0, 0, 0);
 		data1->Action = 76;
 		co2->AnimInfo.Next = 121;
-		co2->AnimInfo.field_10 = 0.0;
+		co2->AnimInfo.nframe = 0.0f;
 		if (co2->Speed.x <= 0.30000001)
 		{
 			co2->Speed.x = 1.0;
@@ -357,15 +339,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		if (!isCustomAnim)
 			break;
 
-		if (TimerStopped != 0 && (co2->AnimInfo.Next == 54 || co2->AnimInfo.Current == 54)) { //Check if the level is finished
-			if (isSuperForm(pID)) {
-				co2->AnimInfo.Next = VictorySuperForm;
-			}
-			else {
-				co2->AnimInfo.Next = VictoryAnim;
-			}
-			data1->Action = VictoryPose; //SA2 spams the animation 54 every frame, so we force the game to an action which doesn't exist so we can play the animation needed.
-		}
 		break;
 	case Bounce:
 		PResetAngle(data1, co2);
@@ -507,12 +480,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		PResetPosition(data1, data2, co2);
 		break;
 	case VictoryPose:
-		if (isSuperForm(pID)) {
-			co2->AnimInfo.Current = VictorySuperForm;
-		}
-		else {
-			co2->AnimInfo.Current = VictoryAnim;
-		}
 
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
@@ -589,7 +556,7 @@ void LoadCharacter_r() {
 
 	if (!TwoPlayerMode && !isLevelBanned()) {
 		
-		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails || CurrentCharacter == Characters_MechTails))
+		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails && CurrentCharacter == Characters_MechTails))
 			CurrentCharacter = Characters_Tails;
 	}
 
@@ -644,7 +611,7 @@ void BetterMiles_Init() {
 	init_Patches();
 
 	WriteCall((void*)0x439B18, LoadExtra_MilesAnimModel);
-	WriteData((int**)0x7952fa, ShadowActionWindowTextIndexes);
+	WriteData((int**)0x7952fa, &ShadowActionWindowTextIndexes);
 	InitLightDashStuff();
 
 

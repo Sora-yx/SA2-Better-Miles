@@ -92,9 +92,12 @@ static const void* const loc_776339 = (void*)0x776339;
 static const void* const loc_776580 = (void*)0x776580;
 __declspec(naked) void  CheckBreakCGGlasses() {
 
-	if (MainCharObj1[0]->Action == 13 || isMilesAttacking())
+	if (MainCharObj1[0]->Action == 13 || CurrentCharacter > Characters_Shadow && isAttacking())
 	{
 		_asm jmp loc_776339
+	}
+	else {
+		_asm jmp loc_776580
 	}
 }
 
@@ -131,7 +134,7 @@ void PlayMysticMelody(ObjectMaster* obj)
 static const void* const loc_776D23 = (void*)0x776D23;
 static const void* const loc_776D5F = (void*)0x776D5F;
 __declspec(naked) void  CheckGravitySwitch() {
-	if (MainCharObj1[0]->Action == 0x53 || (Controllers[0].press & (Buttons_X | Buttons_B)))
+	if (MainCharObj1[0]->Action == 0x53 || CurrentCharacter > Characters_Shadow && (Controllers[0].press & (Buttons_X | Buttons_B)))
 	{
 		_asm jmp loc_776D23
 	}
@@ -146,7 +149,7 @@ static const void* const loc_610b62 = (void*)0x610b62;
 __declspec(naked) void  KBB_DamageChk() {
 	if ( (CurrentCharacter == Characters_Knuckles || CurrentCharacter == Characters_Rouge)
 		&& (MainCharObj1[0]->Action == Action_DigFinish || MainCharObj1[0]->Action == Action_DigFinishOnWall)
-		|| isAttackingKBB() )
+		|| isAttacking() )
 	{
 		_asm jmp loc_6109eb
 	}

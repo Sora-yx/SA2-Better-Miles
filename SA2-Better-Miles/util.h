@@ -13,8 +13,6 @@ bool isRando();
 bool isCharaSelect();
 bool isSA1Char(uint8_t charID);
 
-signed int Tails_CheckActionWindowR(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4);
-
 int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 void DoNextAction_r(int playerNum, char action, int unknown);
 int DiffAngle(int ang0, int ang1);
@@ -43,4 +41,4 @@ AnimationIndex* getCharAnim_r();
 void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
 bool isTailsAI();
 void Draw_MilesWrapper(NJS_OBJECT* object, int(__cdecl* callback)(NJS_CNK_MODEL*));
-bool isAttackingKBB();
+bool isAttacking();

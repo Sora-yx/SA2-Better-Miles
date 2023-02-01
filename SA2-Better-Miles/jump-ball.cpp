@@ -36,7 +36,7 @@ void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
 
 		int curAnim = mCO2->base.AnimInfo.Current;
 
-		if ((data1->Status & Status_Ball) != 0 && (spinTimer & 0x11) != 0 && mCO2->base.AnimInfo.AnimationFrame != 2)
+		if ((data1->Status & Status_Ball) != 0 && (spinTimer & 0x11) != 0 && mCO2->base.AnimInfo.mtnmode != 2)
 		{
 			mdl = CharacterModels[jmpBallID].Model;
 

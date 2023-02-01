@@ -357,23 +357,6 @@ static inline void sub_7274F0(EntityData1* a1)
 	}
 }
 
-struct xssunit
-{
-	int findflag;
-	int objatt;
-	int angx;
-	int angz;
-	float onpos;
-	NJS_POINT3 normal;
-};
-
-struct zxsdwstr
-{
-	NJS_POINT3 pos;
-	xssunit lower;
-	xssunit upper;
-};
-
 
 static const void* const njScaleExPtr = (void*)0x429740;
 static inline void njScaleEx(NJS_VECTOR* a1)
@@ -468,3 +451,19 @@ static inline void Miles_InitLightDash(EntityData1* data, CharObj2Base* co2, Ent
 }
 
 VoidFunc(sub_48BDF0, 0x48BDF0);
+
+static inline signed int Tails_CheckActionWindow_(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4)
+{
+	signed int result;
+	__asm
+	{
+		push[a4]
+		mov ecx, [a3]
+		mov edx, [a2]
+		mov eax, [a1]
+		call Tails_CheckActionWindowPtr
+		add esp, 4
+		mov result, eax
+	}
+	return result;
+}

@@ -51,10 +51,10 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 						* -0.1591549762031479)) >> 13) & 7)
 					+ Spin3);
 
-				if (a1->AnimInfo.field_10 >= 10.0) {
+				if (a1->AnimInfo.nframe >= 10.0) {
 					if (v4 == a1->AnimInfo.Current)
 					{
-						a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_10 & 1) + Spin1;
+						a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.nframe & 1) + Spin1;
 					}
 					else
 					{
@@ -67,7 +67,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 			{
 				getCurAnim = a1->AnimInfo.Current;
 
-				if (a1->AnimInfo.field_10 >= 10.0) {
+				if (a1->AnimInfo.nframe >= 10.0) {
 					if (getCurAnim == Spin1 || getCurAnim == Spin2)
 					{
 						Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
@@ -75,7 +75,7 @@ void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
 					}
 					else
 					{
-						a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.field_10 & 1) + Spin1;
+						a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.nframe & 1) + Spin1;
 					}
 				}
 			}

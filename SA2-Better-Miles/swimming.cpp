@@ -121,7 +121,7 @@ void CheckFloatingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2
 			return;
 		}
 
-		if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles) && !TailsJump(co2, data))
+		if (!Tails_CheckActionWindow_(data, data2, co2, co2Miles) && !TailsJump(co2, data))
 		{
 			if ((data->Status & 0x2000) == 0)
 			{
@@ -148,7 +148,7 @@ void CheckSwimmingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2
 	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
 	{
 		if ((co2->SurfaceInfo.TopSurface & SurfaceFlag_Water) != 0 && CheckWaterDistanceThing(co2)) {
-			if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles) && !TailsJump(co2, data))
+			if (!Tails_CheckActionWindow_(data, data2, co2, co2Miles) && !TailsJump(co2, data))
 			{
 				if ((!GetAnalog(data, co2, 0, 0)
 					|| (data->Status & Status_DisableControl)))
@@ -231,7 +231,7 @@ void CheckDivingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, 
 			PlaySoundProbably(28677, 0, 0, 0);
 			data->Status &= 0xFAFFu;
 		}
-		else if (!Tails_CheckActionWindowR(data, data2, co2, co2Miles))
+		else if (!Tails_CheckActionWindow_(data, data2, co2, co2Miles))
 		{
 			if (!Action_Held[co2->PlayerNum])
 			{
