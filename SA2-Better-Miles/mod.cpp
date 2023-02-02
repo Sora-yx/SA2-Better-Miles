@@ -28,11 +28,7 @@ extern "C" {
 
 		ReadConfig(path); //get mod settings by the user
 
-	
-		if (HelperFunctionsGlobal.Version < 5)
-			MessageBoxA(MainWindowHandle, "WARNING: Your version of the Mod Loader is old, some functionality of Better Miles will not be available.\N Please update your Mod Loader for best experience.", "Better Miles Mod", MB_ICONWARNING);
 
-		//Cart_HackInit();
 		init_BassSound();
 
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\se_ch_te\\2.csb", "Resource\\gd_PC\\Sounds\\se_ch_te\\2.csb");
@@ -46,7 +42,7 @@ extern "C" {
 
 		if (Controllers[0].on & Buttons_L && Controllers[0].on & Buttons_R && Controllers[0].press & Buttons_X)
 		{
-			AwardWin(0);
+			//AwardWin(0);
 		}
 	}
 

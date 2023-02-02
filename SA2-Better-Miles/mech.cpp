@@ -9,7 +9,7 @@ AnimationFile* TornadoTransfoMotion = nullptr;
 NJS_TEXNAME tornadoTransfoTex[150];
 NJS_TEXLIST tornadoTransfoTexList = { arrayptrandlength(tornadoTransfoTex) };
 
-Trampoline* MechTails_runsActions_t = nullptr;
+FunctionHook<void, EntityData1*, EntityData2*, CharObj2Base*, MechEggmanCharObj2*> MechTails_runsActions_t(0x742C10);
 Trampoline* sub_75DF80_t = nullptr;
 Trampoline* CCL_CalcColli_t = nullptr;
 
@@ -203,7 +203,6 @@ void TransfoMech_Display(ObjectMaster* obj) {
 	NJS_MOTION* TornadoMotion = TornadoTransfoMotion->getmotion();
 	EntityData1* player = MainCharObj1[data->Index];
 
-
 	njSetTexture(&tornadoTransfoTexList);
 	njPushMatrixEx();
 
@@ -361,9 +360,7 @@ void Load_TornadoTransfo_ModelsTextures() {
 
 void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, MechEggmanCharObj2* co2Miles) {
 
-	FunctionPointer(void, original, (EntityData1 * data1, EntityData2 * data2, CharObj2Base * co2, MechEggmanCharObj2 * co2Miles), MechTails_runsActions_t->Target());
-	original(data1, data2, co2, co2Miles);
-
+	MechTails_runsActions_t.Original(data1, data2, co2, co2Miles);
 
 	if (!TwoPlayerMode && co2)
 	{
@@ -432,7 +429,7 @@ void Delete_TornadoTransform() {
 
 
 void Init_TailsMechHack() {
-	MechTails_runsActions_t = new Trampoline(0x742C10, 0x742C17, MechTails_runsActions_r);
+	MechTails_runsActions_t.Hook(MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
 	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
 	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);

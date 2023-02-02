@@ -207,7 +207,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		*(int*)&co2Miles->field_1BC[436] = -9000;
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		break;
-	case HandGrinding: //Or whatever you call that thing in CG
+	case HandGrinding: //Whatever you call that thing in CG
 		DoHangGrinding(data1, co2);
 		return;
 	case 76:
@@ -321,7 +321,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
 		break;
-	case HandGrinding: //Or whatever you call that thing in CG
+	case HandGrinding: //Whatever you call that thing in CG
 		SomethingAboutHandGrind(data1, data2, co2Miles);
 		MoveCharacterOnRail(data1, co2, data2);
 		SomethingAboutHandGrind2(data1, data2, co2Miles);

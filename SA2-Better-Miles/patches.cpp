@@ -2,46 +2,6 @@
 
 //miscellaneous fixes 
 
-static Trampoline* PlayAnimationThing_t = nullptr;
-
-static inline void PlayAnimationThing_origin(CharAnimInfo* a1)
-{
-	auto target = PlayAnimationThing_t->Target();
-
-	__asm
-	{
-		mov esi, [a1]
-		call target
-	}
-}
-
-void PlayAnimationThing_r(CharAnimInfo* charAnimInfo)
-{
-	if (charAnimInfo)
-	{
-		if (CharacterAnimations[charAnimInfo->Animations->AnimNum].Animation == nullptr 
-			|| CharacterModels[charAnimInfo->Animations[charAnimInfo->Animations->AnimNum].ModelNum].Model == nullptr)
-		{
-			PrintDebug("FAILSAFE ANIM");
-			charAnimInfo->Next = 15; //swap to falling animation
-		}
-	}
-
-	return PlayAnimationThing_origin(charAnimInfo);
-}
-
-static void __declspec(naked) PlayAnimationThingASM()
-{
-	__asm
-	{
-		push esi 
-		call PlayAnimationThing_r
-		pop esi
-		retn
-	}
-}
-
-
 void CheckAndSetPlayerSpeed_r(int pid)
 {
 	__int16 status;
