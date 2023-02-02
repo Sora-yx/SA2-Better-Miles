@@ -14,6 +14,11 @@ bool jumpVoice = false;
 
 bool isJumpBall = true;
 
+Buttons RollBtn = Buttons_B;
+Buttons BounceBtn = Buttons_B;
+Buttons SpinBtn = Buttons_X;
+Buttons LightDashBtn = Buttons_Y;
+
 void ReadConfig(const char* path) {
 
 	const IniFile* config = new IniFile(std::string(path) + "\\config.ini");
@@ -27,6 +32,10 @@ void ReadConfig(const char* path) {
 	isLightDash = config->getBool("Abilities", "isLightDash", true);
 	isBounce = config->getBool("Abilities", "isBounce", true);
 
+	RollBtn = (Buttons)config->getInt("pad", "RollBtn", RollBtn);
+	BounceBtn = (Buttons)config->getInt("pad", "BounceBtn", BounceBtn);
+	SpinBtn = (Buttons)config->getInt("pad", "SpinBtn", SpinBtn);
+	LightDashBtn = (Buttons)config->getInt("pad", "LightDashBtn", LightDashBtn);
 
 	flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
 	jumpVoice = config->getBool("Audio", "jumpVoice", false);

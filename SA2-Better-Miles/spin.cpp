@@ -9,7 +9,7 @@ void Miles_CheckSpinAttack(TailsCharObj2* co2M, EntityData1* twp, CharObj2Base* 
 		return;
 	}
 
-	if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && (twp->Status & Status_OnPath) == 0)
+	if (Controllers[co2->PlayerNum].on & SpinBtn && (twp->Status & Status_OnPath) == 0)
 	{
 		twp->Action = Spinning;
 		co2->AnimInfo.Next = Spin1;
@@ -41,7 +41,7 @@ void Miles_SpinAttack(playerwk* pwp, taskwk* twp, TailsCharObj2* mCO2)
 		{
 			TailsAnimationList_R[curAnim].NextAnimation = 0;
 		}
-		else if (Action_Held[pnum])
+		else if (Controllers[pwp->PlayerNum].on & SpinBtn)
 		{
 			if (GetAnalog((EntityData1*)twp, (CharObj2Base*)pwp, 0, 0))
 			{

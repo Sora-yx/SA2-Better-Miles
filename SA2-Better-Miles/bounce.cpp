@@ -3,33 +3,33 @@
 
 bool rebound = false;
 
-signed int Miles_CheckBounceAttack(CharObj2Base* a1, EntityData1* a2)
+signed int Miles_CheckBounceAttack(CharObj2Base* pwp, EntityData1* twp)
 {
-	if (!Action_Pressed[a1->PlayerNum] || !isBounce)
+	if ((Controllers[pwp->PlayerNum].press & BounceBtn) == 0 || !isBounce)
 	{
-		return 0;
+		return FALSE;
 	}
-	a1->AnimInfo.Next = 66;
-	a2->Action = Bounce;
-	a2->Status |= Status_Attack | Status_Ball;
-	a1->Speed.y = -5.0f;
+	pwp->AnimInfo.Next = 66;
+	twp->Action = Bounce;
+	twp->Status |= Status_Attack | Status_Ball;
+	pwp->Speed.y = -5.0f;
 	rebound = false;
 	//PlaySoundProbably(8202, 0, 0, 0);
-	return 1;
+	return TRUE;
 }
 
-signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
+signed int Miles_PerformBounce(CharObj2Base* pwp, EntityData1* twp)
 {
-	if (!Action_Pressed[a1->PlayerNum] || !isBounce)
+	if ((Controllers[pwp->PlayerNum].press & BounceBtn) == 0 || !isBounce)
 	{
-		return 0;
+		return FALSE;
 	}
-	a1->AnimInfo.Next = 66;
-	a2->Status |= Status_Attack | Status_Ball;
-	a2->Action = Bounce;
-	a1->Speed.y = -7.0f;
+	pwp->AnimInfo.Next = 66;
+	twp->Status |= Status_Attack | Status_Ball;
+	twp->Action = Bounce;
+	pwp->Speed.y = -7.0f;
 	//PlaySoundProbably(8202, 0, 0, 0);
-	return 1;
+	return TRUE;;
 }
 
 float getGrav = 0.0f;

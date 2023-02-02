@@ -2,46 +2,30 @@
 
 //Most of the functions here are directly copied pasted from the disassembly from Sonic grinding, with few extra fixes.
 int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
-	NJS_VECTOR result;
+
 	int v8 = 0;
-	float* v21;
 	signed int v37 = 0;
 	int a2a = 0;
 	int v20 = 0;
-	double v22 = 0.0;
-	double v23 = 0.0;
-	double v24 = 0.0;
+	Float v22 = 0.0;
+	Float v23 = 0.0;
+	Float v24 = 0.0;
 	int v25 = 0;
 	float v39 = 0.0;
 	float v40 = 0.0;
 	float v41 = 0.0;
 	a4->Status = a4->Status & 0xFAFF | 0x2000;
 
-	result = { 1, 0, 0 };
+	NJS_VECTOR result = { 1, 0, 0 };
 
-	v21 = (float*)_nj_current_matrix_ptr_;
-	if (_nj_current_matrix_ptr_)
-	{
-		memset(_nj_current_matrix_ptr_, v20, 0x30u);
-		*v21 = 1.0;
-		v21[5] = 1.0;
-		v21[10] = 1.0;
-	}
-	if (v37)
-	{
-		njRotateZ(v21, v37);
-	}
-	if (a2a)
-	{
-		njRotateX(v21, a2a);
-	}
-	if (a4->Rotation.y)
-	{
-		njRotateY((float*)v21, -a4->Rotation.y);
-	}
-	njCalcVector(&result, &result, v21);
+	njUnitMatrix_();
+	njRotateZ(0, v37);
+	njRotateX(0, a2a);
+	njRotateY(0, -a4->Rotation.y);
+
+	njCalcVector(&result, &result, _nj_current_matrix_ptr_);
 	v39 = fabs(a3->Speed.y);
-	if (a3->Speed.x < 0.0)
+	if (a3->Speed.x < 0.0f)
 	{
 		v24 = v39;
 		v41 = fabs(result.y);
@@ -57,7 +41,8 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	a4->Action = Grinding;
 
 	if (isCustomAnim && (a3->CharID2 == Characters_Tails)) {
-		if ((double)rand() * 0.000030517578125 <= 0.5) {
+		if (njRandom() <= 0.5) 
+		{
 			a3->AnimInfo.Next = Anm_Tails_RailFastL; //Anm_RailFastL;
 		}
 		else {
@@ -82,9 +67,9 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	}
 	Play3DSound2(v25, &a4->Position, 0, 0, 127);
 	VibeThing(0, 15, a3->PlayerNum, 6); //Vibe thing
-	sub_429000();
+	njPopMatrixEx();
 	v8 = 1;
-	a3->Speed.y = 0.0;
+	a3->Speed.y = 0.0f;
 	return 1;
 }
 
@@ -95,7 +80,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, 
 
 	if ((data1->Status & Status_OnPath) == 0) {
 		co2->AnimInfo.Next = 15;
-		data1->Action = Action_Fall; 
+		data1->Action = Action_Fall;
 		co2->AnimInfo.Current = 15; //Falling
 		data1->Status &= 0xDFFFu;
 		return;
@@ -126,7 +111,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, 
 			}
 
 			data1->Action = Action_Fall;
-			co2->AnimInfo.Current = 15; 
+			co2->AnimInfo.Current = 15;
 			data1->Status &= 0xDFFFu;
 		}
 
@@ -134,7 +119,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, 
 	}
 
 	data1->Status &= 0xDFFFu;
-	data1->Action = Action_Fall; 
+	data1->Action = Action_Fall;
 	PlaySoundProbably(8193, 0, 0, 0);
 
 	Angle analog_angle;

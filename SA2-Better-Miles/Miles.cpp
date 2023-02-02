@@ -137,6 +137,14 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		if (Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
+		if (co2->Speed.x < 1.3f || SpinBtn != RollBtn) 
+		{
+			Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
+		}
+		
+		if (co2->Speed.x > 1.3f)
+			Miles_RollCheckInput(data1, co2);
+		
 		break;
 	case Jumping:
 		if (Miles_CheckBounceAttack(co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
@@ -243,6 +251,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 			return;
 
 		Miles_UnrollCheck(data1, data2, co2);
+		Miles_UnrollCheckInput(data1, co2);
 		return;
 	case LightDash:
 		CheckLightDashEnd(co2Miles, co2, data1);
@@ -283,23 +292,6 @@ void Tails_Main_r(ObjectMaster* obj)
 
 	switch (data1->Action)
 	{
-	case Standing:
-	case Running:
-
-		if (!MilesCheckInput(data2, co2Miles, co2, data1) && !TailsJump(co2, data1)) {
-			if (co2->Speed.x < 1.3f) {
-				Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
-			}
-			else {
-				Miles_RollCheckInput(data1, co2);
-			}
-		}
-		break;
-	case ObjectControl:
-		if (!isCustomAnim)
-			break;
-
-		break;
 	case Bounce:
 		PResetAngle(data1, co2);
 		PGetAccelerationAir(data1, co2, data2);
@@ -348,7 +340,6 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case Rolling:
 		RollPhysicControlMain(data1, data2, co2);
-		Miles_UnrollCheckInput(data1, co2);
 		break;
 	case LightDash:
 	{
@@ -549,7 +540,7 @@ void BetterMiles_Init() {
 	//Improve physic
 	if (isCustomPhysics) {
 		//copy knux physics since it's more closer to sadx tails
-		PhysicsArray[Characters_Tails] = PhysicsArray[Characters_Knuckles];
+		PhysicsArray[Characters_Tails] = PhysicsArray[Characters_Sonic];
 
 		//adjust to sadx Tails physics
 		PhysicsArray[Characters_Tails].FloorGrip = 1.5f;

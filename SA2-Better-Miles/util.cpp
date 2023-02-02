@@ -52,9 +52,7 @@ void PlayerMoveStuff(EntityData1* a1, EntityData2* a2, CharObj2Base* a3) {
 	PGetSpeed(a1, a3, a2);
 	PSetPosition(a1, a2, a3);
 	PResetPosition(a1, a2, a3);
-	return;
 }
-
 
 void sub_4273B0(NJS_VECTOR* a1, NJS_VECTOR* a2, float* a3)
 {

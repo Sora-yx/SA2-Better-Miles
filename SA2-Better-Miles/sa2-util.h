@@ -12,7 +12,6 @@ ObjectFunc(PrisonLaneDoor4, 0x606A10);
 FunctionPointer(int, LoadShEffTex, (), 0x755DE0);
 
 FunctionPointer(signed int, sub_429710, (), 0x429710); //matrix stuff
-FunctionPointer(signed int, sub_429000, (), 0x429000); //matrix stuff
 
 FunctionPointer(int, AnimateMilesTails, (EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3), 0x751090);
 
@@ -243,21 +242,17 @@ static inline signed int GetBufferedPositionAndRot(int a1, int a2, NJS_VECTOR* a
 }
 
 
-static const void* const SlowDownThingPtr = (void*)0x45F840;
-static inline float SlowDownThing(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
+static const void* const PGetInertiaPtr = (void*)0x45F840;
+static inline void PGetInertia(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
 {
-	float result;
 	__asm
 	{
 		mov ebx, a3
 		mov eax, a2
 		mov ecx, a1
-		call SlowDownThingPtr
-		fstp result
+		call PGetInertiaPtr
 	}
-	return result;
 }
-
 
 static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
 static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2* a3, CharObj2Base* a4)
