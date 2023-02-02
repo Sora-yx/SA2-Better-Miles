@@ -12,7 +12,7 @@ signed int Miles_CheckBounceAttack(CharObj2Base* a1, EntityData1* a2)
 	a1->AnimInfo.Next = 66;
 	a2->Action = Bounce;
 	a2->Status |= Status_Attack | Status_Ball;
-	a1->Speed.y = -5.0;
+	a1->Speed.y = -5.0f;
 	rebound = false;
 	//PlaySoundProbably(8202, 0, 0, 0);
 	return 1;
@@ -27,12 +27,12 @@ signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
 	a1->AnimInfo.Next = 66;
 	a2->Status |= Status_Attack | Status_Ball;
 	a2->Action = Bounce;
-	a1->Speed.y = -7.0;
+	a1->Speed.y = -7.0f;
 	//PlaySoundProbably(8202, 0, 0, 0);
 	return 1;
 }
 
-float getGrav = 0.0;
+float getGrav = 0.0f;
 
 void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2* data2) {
 	if (MilesCheckInput(data2, co2Miles, co2, data) || Tails_CheckActionWindow_(data, data2, co2, co2Miles)) {
@@ -45,11 +45,11 @@ void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, Ent
 		data->Rotation.z = data2->Forward.z;
 		if (rebound)
 		{
-			co2->Speed.y = 4.5999999;
+			co2->Speed.y = 4.5999999f;
 		}
 		else
 		{
-			co2->Speed.y = 3.5000001;
+			co2->Speed.y = 3.5000001f;
 			rebound = true;
 		}
 		VibeThing(0, 15, co2->PlayerNum, 7);
@@ -64,10 +64,10 @@ void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, Ent
 		return;
 	}
 	getGrav = fabs(Gravity.y);
-	if (getGrav == 1.0)
+	if (getGrav == 1.0f)
 	{
 		getGrav = fabs(co2->SurfaceInfo.BottomSurfaceDist - data->Position.y); //distance max
-		if (getGrav <= 8.0)
+		if (getGrav <= 8.0f)
 		{
 			return;
 		}
@@ -93,9 +93,9 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
 		{
 			data->Rotation.x = data2->Forward.x;
 			data->Rotation.z = data2->Forward.z;
-			if (njScalor((const NJS_VECTOR*)&data2->Velocity) >= (double)1.0)
+			if (njScalor((const NJS_VECTOR*)&data2->Velocity) >= 1.0f)
 			{
-				if (njScalor((const NJS_VECTOR*)&data2->Velocity) >= 2.5)
+				if (njScalor((const NJS_VECTOR*)&data2->Velocity) >= 2.5f)
 				{
 					co2->AnimInfo.Next = 17;
 					VibeThing(0, 15, co2->PlayerNum, 6);
@@ -123,12 +123,12 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
 	}
 	else if ((data->Status & 0x4000) != 0
 		|| (!Jump_Pressed[co2->PlayerNum])
-		|| (getGrav = fabs(Gravity.y), getGrav == 1.0)
-		&& (getGrav = fabs(co2->SurfaceInfo.BottomSurfaceDist - data->Position.y), getGrav <= 8.0))
+		|| (getGrav = fabs(Gravity.y), getGrav == 1.0f)
+		&& (getGrav = fabs(co2->SurfaceInfo.BottomSurfaceDist - data->Position.y), getGrav <= 8.0f))
 	{
 		if (!Miles_PerformBounce(co2, data))
 		{
-			if (co2->AnimInfo.Next == 66 && co2->Speed.y <= 0.0)
+			if (co2->AnimInfo.Next == 66 && co2->Speed.y <= 0.0f)
 			{
 				co2->AnimInfo.Next = 67;
 				data->Status &= 0xFEFFu;

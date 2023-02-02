@@ -1,37 +1,31 @@
 #include "pch.h"
 
 //miscellaneous fixes 
+TaskHook Levelitem_t((intptr_t)LevelItem_Load);
 
 void CheckAndSetPlayerSpeed_r(int pid)
 {
-	__int16 status;
-	int charID;
-	float x;
-	float z;
-	float v6;
-	float v7;
-	float y;
-
 	EntityData1* data1 = MainCharObj1[pid];
 
 	if (!data1)
 		return;
 
-	status = data1->Status;
+	int charID = MainCharObj2[pid]->CharID;
+	__int16 status = data1->Status;
 
 	if ((status & Status_Attack) != 0
 		&& (status & (Status_OnObjectColli | Status_Ground)) == 0
-		&& ((charID = MainCharObj2[pid]->CharID) == Characters_Sonic
-			|| charID == Characters_Shadow
-			|| (charID == Characters_Knuckles || charID == Characters_Rouge || charID == Characters_Tails || charID == Characters_Eggman)
+		&& ((charID) == Characters_Sonic || charID == Characters_Shadow
+			|| (charID == Characters_Knuckles || charID == Characters_Rouge 
+				|| charID == Characters_Tails || charID == Characters_Eggman)
 			&& (data1->Action == Action_Jump || data1->Action == Action_Punch3Run)))
 	{
-		v6 = Gravity.z * -2.0;
-		z = v6;
-		v7 = Gravity.y * -2.0;
-		x = v7;
-		y = -2.0 * Gravity.x;
-		SetPlayerSpeed(pid, y, x, z);
+
+		NJS_VECTOR spd;
+		spd.z  = Gravity.z * -2.0f;
+		spd.y = Gravity.y * -2.0f;
+		spd.x = Gravity.x * -2.0f;
+		SetPlayerSpeed(pid, spd.x, spd.y, spd.z);
 		VibeThing(0, 15, pid, 6);
 	}
 }
@@ -87,17 +81,15 @@ __declspec(naked) void  CheckAnimateTailsAction() {
 void Miles_DoCollisionAttackStuff(EntityData1* data1, CharObj2Base* co2) {
 
 	CollisionInfo* col = data1->Collision;
-	CollisionData* colArray;
-	unsigned int attrCol;
-	int colFlag1 = 0;
-	int colFlag2 = 0;
 
 	if (!col)
 		return;
 
-	colArray = col->CollisionArray;
-	colArray->attr &= 0xFFFFBFFF;
-	attrCol = colArray->attr;
+	CollisionData* colArray = col->CollisionArray;
+	colArray->attr &= 0xFFFFBFFF;	unsigned int attrCol = colArray->attr;
+
+	int colFlag1 = 0;
+	int colFlag2 = 0;
 
 	if (co2->Powerups >= 0)
 	{
@@ -120,7 +112,7 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1, CharObj2Base* co2) {
 				colArray->attr = attrCol | 0x4000;
 				break;
 			case Spinning:
-				colArray[2].param1 = 8.0;
+				colArray[2].param1 = 10.0f;
 				break;
 			default:
 				if ((data1->Status & Status_Attack) != 0)
@@ -157,32 +149,30 @@ void Miles_DoCollisionAttackStuff(EntityData1* data1, CharObj2Base* co2) {
 
 void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
 {
-	NJS_OBJECT* v3; // edi
-	NJS_MATRIX_PTR v4; // ebx
-
 	if ((FrameCountIngame & 1) == 0 && a2->CharID == Characters_Tails && CharacterModels[208].Model)
 	{
-		v3 = CharacterModels[208].Model;
+		NJS_OBJECT* obj = CharacterModels[208].Model;
 		njPushMatrix(flt_25F02A0);
 
 		njTranslateEx(&a1->Position);
-		v4 = _nj_current_matrix_ptr_;
+
+		NJS_MATRIX_PTR matrix = _nj_current_matrix_ptr_;
+
 		if (a1->Rotation.z)
 		{
 			njRotateZ((float*)_nj_current_matrix_ptr_, a1->Rotation.z);
 		}
 		if (a1->Rotation.x)
 		{
-			njRotateX((float*)v4, a1->Rotation.x);
+			njRotateX(matrix, a1->Rotation.x);
 		}
 		if (a1->Rotation.y != 0x8000)
 		{
-			njRotateY((float*)v4, 0x8000 - a1->Rotation.y);
+			njRotateY(matrix, 0x8000 - a1->Rotation.y);
 		}
 		if (!TwoPlayerMode)
 		{
-			PlayerAfterImage(v3, 0, a3->TextureList, 0.0, 0);
-			v4 = _nj_current_matrix_ptr_;
+			PlayerAfterImage(obj, 0, a3->TextureList, 0.0f, 0);
 		}
 		njPopMatrix(1u);
 	}
@@ -212,6 +202,13 @@ void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles) {
 		*(int*)&co2Miles->field_1BC[436] = -9000;
 }
 
+void LevelItem_r(ObjectMaster* tp)
+{
+	if (!MainCharObj2[0] || MainCharObj2[0]->CharID2 != Characters_Tails)
+	{
+		Levelitem_t.Original(tp);
+	}
+}
 
 void init_Patches()
 {
@@ -224,4 +221,6 @@ void init_Patches()
 	//Draw the tails depending on the action
 	WriteCall((void*)0x750B32, Miles_DrawTail);
 	WriteCall((void*)0x750BB8, Miles_DrawTail);
+
+	Levelitem_t.Hook(LevelItem_r);
 }
