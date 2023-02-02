@@ -537,6 +537,7 @@ void BetterMiles_Init() {
 	Miles_CheckNextActions_t.Hook(Miles_CheckNextActions_r);
 	Tails_RunsAction_t.Hook(Tails_runsAction_r);
 	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
+	Init_LandColMemory_t = new Trampoline((int)0x47BB50, (int)0x47BB57, InitLandColMemory_r);
 
 	if (isMechRemoved) {
 		LoadMechTails_t.Hook(RemoveMech);

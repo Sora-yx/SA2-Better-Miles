@@ -29,7 +29,6 @@ bool isTransform = false;
 
 
 
-
 void __cdecl CartExecuter_Main_r(ObjectMaster* obj)
 {
 
@@ -40,9 +39,7 @@ void __cdecl CartExecuter_Main_r(ObjectMaster* obj)
 		obj->EntityData2 = obj->EntityData2;
 		cartPtr = (cartStruct*)obj->EntityData2;
 	}
-
 }
-
 
 void Load_CartTimeOver_r() {
 

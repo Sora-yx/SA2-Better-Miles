@@ -10,7 +10,7 @@ NJS_TEXLIST MilesBall1_Texlist = { arrayptrandlength(MilesBallTex) };
 
 int spinTimer = 0;
 
-Trampoline* Tails_JumpStart_t = nullptr;
+static UsercallFunc(signed int, Tails_JumpStart_t, (CharObj2Base* a1, EntityData1* a2), (a1, a2), 0x751B80, rEAX, rEAX, rECX);
 
 void Miles_LoadJmpBall(TailsCharObj2* mco2) {
 
@@ -78,26 +78,11 @@ static void __declspec(naked) DrawMotionAndObject_Hack()
 	}
 }
 
-static inline signed int Tails_JumpStart_Origin(CharObj2Base* co2, EntityData1* data)
-{
-	const auto target = Tails_JumpStart_t->Target();
-	signed int result;
-
-	__asm
-	{
-		mov ecx, [data]
-		mov eax, [co2]
-		call target
-		mov result, eax
-	}
-
-	return result;
-}
 
 
 int Tails_JumpStart_r(CharObj2Base* co2, EntityData1* data)
 {
-	signed int result = Tails_JumpStart_Origin(co2, data);
+	signed int result = Tails_JumpStart_t.Original(co2, data);
 
 	if (result == 1 && data->Action == Action_Jump && (co2->SurfaceInfo.PrevTopSurface & (SurfaceFlag_WaterNoAlpha | SurfaceFlag_Water)) == 0) {
 		{
@@ -108,19 +93,6 @@ int Tails_JumpStart_r(CharObj2Base* co2, EntityData1* data)
 	return result;
 }
 
-static void __declspec(naked) Tails_JumpStartASM()
-{
-	__asm
-	{
-		push ecx
-		push eax
-		call Tails_JumpStart_r
-		add esp, 4
-		pop ecx
-		retn
-	}
-}
-
 
 void Init_JumpBallhack() {
 
@@ -129,6 +101,6 @@ void Init_JumpBallhack() {
 
 	WriteCall((void*)0x750ABF, DrawMotionAndObject_Hack);
 
-	Tails_JumpStart_t = new Trampoline((int)0x751B80, (int)0x751B85, Tails_JumpStartASM);
+	Tails_JumpStart_t.Hook(Tails_JumpStart_r);
 	return;
 }
