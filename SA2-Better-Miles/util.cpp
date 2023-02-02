@@ -309,3 +309,11 @@ bool isTailsAI()
 
 	return false;
 }
+
+
+void njRotateXYZ(NJS_MATRIX_PTR m, Angle angx, Angle angy, Angle angz)
+{
+	njRotateZ(_nj_current_matrix_ptr_, angz);
+	njRotateY(_nj_current_matrix_ptr_, angy);
+	njRotateX(_nj_current_matrix_ptr_, angx);
+}

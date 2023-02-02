@@ -114,7 +114,17 @@ signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, C
 }
 
 
-void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) 
+{
+
+	if (data1->Action == Spinning)
+	{
+		if (!MilesCheckInput(data2, co2Miles, co2, data1) && !Miles_SetNextActionSwim(co2Miles, data1))
+		{
+			if (isCustomAnim)
+				spinOnFrames((playerwk*)co2, data1, co2Miles);
+		}
+	}
 
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
@@ -175,14 +185,6 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	case Flying:
 
 		Miles_ManageFly((taskwk*)data1, (motionwk2*)data2, (playerwk*)co2, co2Miles);
-
-		break;
-	case Spinning:
-		if (MilesCheckInput(data2, co2Miles, co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
-			return;
-
-		if (isCustomAnim)
-			spinOnFrames(co2, data1);
 
 		break;
 	case Bounce:

@@ -1,103 +1,99 @@
 #include "pch.h"
+#include "sa1Matrices.h"
 
-int FailSafeTimer = 0;
-int spinDelay = 0;
-void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3, EntityData2* a4)
+static Float savePosY = 0.0f;
+
+void Miles_CheckSpinAttack(TailsCharObj2* co2M, EntityData1* twp, CharObj2Base* co2, EntityData2* a4)
 {
-	if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || MilesCheckInput(a4, a1, a3, a2)) {
-		spinDelay = 0;
+	if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || MilesCheckInput(a4, co2M, co2, twp) || Tails_CheckActionWindow_(twp, a4, co2, co2M)) {
 		return;
 	}
 
-	if (Controllers[a3->PlayerNum].on & (Buttons_X | Buttons_B) && (a2->Status & 0x2000) == 0)
+	if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && (twp->Status & Status_OnPath) == 0)
 	{
-		//a2->NextAction = 39;
-		if (++spinDelay >= 10) {
-			a2->Action = 60;
-			a3->AnimInfo.Next = Spin1;
-			a3->AnimInfo.field_8 = 0;
-			a1->field_1BC[418] |= 2u;
-			FailSafeTimer = 0;
-			PlaySoundProbably(8200, 0, 0, 0);
-		}
+		twp->Action = Spinning;
+		co2->AnimInfo.Next = Spin1;
+		co2->AnimInfo.field_8 = 0;
+		co2M->field_3BC[122] |= 2u;
+		PlaySoundProbably(8200, 0, 0, 0);
 	}
-	else {
-		spinDelay = 0;
-	}
-
-	return;
 }
 
-//Field 10 or 14 = Frame
-void Miles_SpinAttack(CharObj2Base* a1, EntityData1* a2)
-{
-	unsigned __int16 curAnim; // ax
-	__int16 v4; // ax
-	__int16 getCurAnim; // ax
 
-	curAnim = a1->AnimInfo.Current;
+void Miles_SpinAttack2(playerwk* pwp, taskwk* twp, TailsCharObj2* mCO2)
+{
+	unsigned __int16 curAnim = pwp->mj.reqaction;
+	char pnum = pwp->PlayerNum;
 
 	if (curAnim >= Spin1 && curAnim <= Spin10)
 	{
-		if (Controllers[a1->PlayerNum].on & (Buttons_X | Buttons_B))
-		{
-			if (GetAnalog(a2, a1, 0, 0))
-			{
-				//The animation of the spin attack changes depending on the player direction.
-				v4 = (unsigned __int8)((((int)(4096
-					- (unsigned __int64)(atan2((double)(Controllers[a1->PlayerNum].y1 << 8),
-						(double)(Controllers[a1->PlayerNum].x1 << 8))
-						* 65536.0
-						* -0.1591549762031479)) >> 13) & 7)
-					+ Spin3);
 
-				if (a1->AnimInfo.nframe >= 10.0) {
-					if (v4 == a1->AnimInfo.Current)
-					{
-						a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.nframe & 1) + Spin1;
-					}
-					else
-					{
-						a1->AnimInfo.Next = v4;
-						Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
-					}
+		AnimationIndex* sa2anim = getCharAnim_r();
+		int curAnim = mCO2->base.AnimInfo.Current;
+		int id = mCO2->base.AnimInfo.Animations[curAnim].AnimNum;
+		AnimationIndex* plAct = &CharacterAnimations[id];
+
+		if (sa2anim)
+		{
+			plAct = &sa2anim[id];
+		}
+
+		if (plAct->Animation->nbFrame - 10.0f >= pwp->mj.nframe)
+		{
+			TailsAnimationList_R[curAnim].NextAnimation = 0;
+		}
+		else if (Action_Held[pnum])
+		{
+			if (GetAnalog((EntityData1*)twp, (CharObj2Base*)pwp, 0, 0))
+			{
+				unsigned __int16 v4 = ((((4096
+					- (-njArcTan2((Controllers[pnum].y1 << 8), (Controllers[pnum].x1 << 8)))) >> 13) & 7) + Spin3);
+				if (v4 == pwp->mj.reqaction)
+				{
+					TailsAnimationList_R[curAnim].NextAnimation = ((int)pwp->mj.nframe & 1) + Spin1;
 				}
+				else
+				{
+					TailsAnimationList_R[curAnim].NextAnimation = v4;
+					Play3DSound_Pos(8200, &twp->pos, 0, 0, 0);
+				}
+
+				if ((twp->flag & 3) != 0)
+				{
+					savePosY = twp->pos.y;
+				}
+				else if (savePosY + 100.0 < twp->pos.y)
+				{
+					Tails_FlyStart((EntityData1*)twp, (CharObj2Base*)pwp, mCO2);
+				}
+
 			}
 			else
 			{
-				getCurAnim = a1->AnimInfo.Current;
-
-				if (a1->AnimInfo.nframe >= 10.0) {
-					if (getCurAnim == Spin1 || getCurAnim == Spin2)
-					{
-						Play3DSound_Pos(8200, &a2->Position, 0, 0, 0);
-						a1->AnimInfo.Next = getCurAnim ^ 1;
-					}
-					else
-					{
-						a1->AnimInfo.Next = ((unsigned __int64)a1->AnimInfo.nframe & 1) + Spin1;
-					}
+				curAnim = pwp->mj.reqaction;
+				if (curAnim == Spin1 || curAnim == Spin2)
+				{
+					TailsAnimationList_R[curAnim].NextAnimation = curAnim ^ 1;
+					Play3DSound_Pos(8200, &twp->pos, 0, 0, 0);
 				}
-			}
-		}
-		else {
-			if (++FailSafeTimer == 30) //FAILSAFE
-			{
-				spinDelay = 0;
-				a1->AnimInfo.Next = 0;
-				a2->Action = 0;
+				else
+				{
+					TailsAnimationList_R[curAnim].NextAnimation = ((int)pwp->mj.nframe & 1) + Spin1;
+				}
 			}
 		}
 	}
 }
 
-void spinOnFrames(CharObj2Base* co2, EntityData1* data1) {
-	if (co2->AnimInfo.Current) {
-		Miles_SpinAttack(co2, data1);
+void spinOnFrames(playerwk* pwk, EntityData1* data1, TailsCharObj2* mCo2) {
+
+	if (pwk->mj.reqaction) 
+	{
+		Miles_SpinAttack2(pwk, (taskwk*)data1, mCo2);
 	}
 	else {
 		data1->Action = 1;
-		co2->AnimInfo.Current = 0;
+		pwk->mj.reqaction = 0;
 	}
 	return;
 }

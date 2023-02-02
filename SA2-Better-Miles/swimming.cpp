@@ -24,17 +24,17 @@ bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2)
 
 bool isSwimAllowed(TailsCharObj2* a1, EntityData1* a2)
 {
-	bool result; // eax
-	float v3; // [esp+0h] [ebp-4h]
+	bool result; 
+	float v3; 
 
 	result = false;
 
-	if ((!Jump_Held[a1->base.PlayerNum] || a2->Action != 6 || a1->base.Speed.y <= 0.0)
+	if ((!Jump_Held[a1->base.PlayerNum] || a2->Action != 6 || a1->base.Speed.y <= 0.0f)
 		&& (a1->base.SurfaceInfo.TopSurface & 2) != 0
-		&& (a2->Collision->CollisionArray->center.y + 4.0 < a1->base.SurfaceInfo.TopSurfaceDist || (a2->Status & 3) == 0))
+		&& (a2->Collision->CollisionArray->center.y + 4.0f < a1->base.SurfaceInfo.TopSurfaceDist || (a2->Status & 3) == 0))
 	{
 		v3 = fabs(a1->base.SurfaceInfo.TopSurfaceDist - a1->base.SurfaceInfo.BottomSurfaceDist);
-		if (v3 > 7.0)
+		if (v3 > 7.0f)
 		{
 			result = true;
 		}
@@ -56,59 +56,48 @@ signed int Miles_SetNextActionSwim(TailsCharObj2* a1, EntityData1* a2)
 
 void Miles_GetFloat(EntityData1* data, CharObj2Base* co2)
 {
-	double TopSurface; // st7
-	double v3; // st7
-	double result; // st7
-	double rng; // st7
-	EntityData2* data2; // eax
-	float v7; // [esp+0h] [ebp-Ch]
-	Float copyResult; // [esp+0h] [ebp-Ch]
-	float posCalc; // [esp+4h] [ebp-8h]
-	float posY; // [esp+8h] [ebp-4h]
 
-	posY = data->Position.y - 1.0; //Used for Character surface position check. (Knuckles originally uses "+1.0", but since Miles is a bit smaller, we will got for -1.0.)
-	posCalc = co2->PhysData.Height + data->Position.y + 10.0;
-	TopSurface = co2->SurfaceInfo.TopSurfaceDist;
+	Float result = 0.0f;
+	Float posY = data->Position.y - 1.0f; //Used for Character surface position check. (Knuckles originally uses "+1.0", but since Miles is a bit smaller, we will got for -1.0.)
+	Float posCalc = co2->PhysData.Height + data->Position.y + 10.0f;
+	Float TopSurface = co2->SurfaceInfo.TopSurfaceDist;
 	if (posCalc >= TopSurface)
 	{
 		if (posY <= TopSurface)
 		{
 			result = (posCalc - TopSurface) * (co2->PhysData.Weight - 0.07999999821186066) * 0.1000000014901161
-				+ (TopSurface - posY) * 0.02300000004470348
-				- co2->Speed.y * 0.300000011920929;
+				+ (TopSurface - posY) * 0.02300000004470348f
+				- co2->Speed.y * 0.300000011920929f;
 		}
 		else
 		{
-			result = co2->PhysData.Weight - 0.07999999821186066;
+			result = co2->PhysData.Weight - 0.07999999821186066f;
 		}
 	}
 	else
 	{
-		v3 = co2->Speed.y;
+		Float spdY = co2->Speed.y;
 		if (data->Action == Action_SwimMove)
 		{
-			result = 0.05999999865889549 - v3 * 0.03999999910593033;
+			result = 0.05999999865889549f - spdY * 0.03999999910593033f;
 		}
 		else
 		{
-			result = 0.1599999964237213 - v3 * 0.09000000357627869;
+			result = 0.1599999964237213f - spdY * 0.09000000357627869f;
 		}
 	}
-	v7 = result;
-	rng = (double)rand();
-	data2 = MainCharData2[co2->PlayerNum];
-	copyResult = rng * 0.000030517578125 * 0.00009999999747378752 + v7;
-	data2->Acceleration.x = 0.0;
-	data2->Acceleration.y = copyResult;
-	data2->Acceleration.z = 0.0;
+
+	EntityData2* data2 = MainCharData2[co2->PlayerNum];
+	Float accY = rand() * 0.000030517578125f * 0.00009999999747378752f + result;
+	data2->Acceleration.x = 0.0f;
+	data2->Acceleration.y = accY;
+	data2->Acceleration.z = 0.0f;
 }
 
 bool CheckWaterDistanceThing(CharObj2Base* a1)
 {
-	float v2; // [esp+0h] [ebp-4h]
-
-	v2 = fabs(a1->SurfaceInfo.TopSurfaceDist - a1->SurfaceInfo.BottomSurfaceDist);
-	return v2 > 7.0;
+	Float dist = fabs(a1->SurfaceInfo.TopSurfaceDist - a1->SurfaceInfo.BottomSurfaceDist);
+	return dist > 7.0f;
 }
 
 void CheckFloatingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {

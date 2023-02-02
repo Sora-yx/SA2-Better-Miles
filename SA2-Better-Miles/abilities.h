@@ -82,7 +82,7 @@ void RollPhysicControlMain(EntityData1* a1, EntityData2* a2, CharObj2Base* a3);
 void Miles_PerformLightDash(CharObj2Base* co2, EntityData1* data);
 void Init_MilesSpin();
 void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3, EntityData2* a4);
-void spinOnFrames(CharObj2Base* co2, EntityData1* data1);
+void spinOnFrames(playerwk* pwk, EntityData1* data1, TailsCharObj2* mCo2);
 void Miles_GetFloat(EntityData1* a1, CharObj2Base* a2);
 bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2);
 

@@ -164,6 +164,7 @@
     <ClInclude Include="mod.h" />
     <ClInclude Include="patches.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="sa1Matrices.h" />
     <ClInclude Include="sa2-util.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="StartPos.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="jump-ball.cpp" />
     <ClCompile Include="mech.cpp" />
     <ClCompile Include="patches.cpp" />
+    <ClCompile Include="SA1_Matrices.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="tornado.cpp" />
     <ClCompile Include="objects.cpp" />

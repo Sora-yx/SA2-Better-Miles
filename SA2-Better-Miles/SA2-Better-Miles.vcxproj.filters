@@ -57,6 +57,9 @@
     <ClInclude Include="patches.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sa1Matrices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -133,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="patches.cpp">
       <Filter>Source Files\Miles</Filter>
+    </ClCompile>
+    <ClCompile Include="SA1_Matrices.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

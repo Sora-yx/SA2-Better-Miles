@@ -42,3 +42,5 @@ void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
 bool isTailsAI();
 void Draw_MilesWrapper(NJS_OBJECT* object, int(__cdecl* callback)(NJS_CNK_MODEL*));
 bool isAttacking();
+
+void njRotateXYZ(NJS_MATRIX_PTR m, Angle angx, Angle angy, Angle angz);
