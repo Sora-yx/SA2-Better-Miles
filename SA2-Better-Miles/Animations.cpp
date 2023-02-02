@@ -70,8 +70,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ 110, 208, 4, 0, 0.25f, 0.3f },
 	{ 111, 208, 4, 0, 0.25f, 0.3f },
 	{ 65, 208, 4, 66, 0.25f, 1.4f },
-	{ 66, 208, 3, 66, 0.25f, 1 },
-	{ 66, 208, 4, 68, 0.125f, 1.0f },
+	{ 66, 208, 3, 66, 0.25f, 1.0f },
+	{ 66, 208, 3, 68, 0.125f, 1.0f },
 	{ 66, 208, 3, 68, 0.125f, 1.0f },
 	{ 69, 208, 4, 70, 0.25f, 0.1f },
 	{ 70, 208, 3, 70, 1, 0.2f },
@@ -281,7 +281,6 @@ void Init_NewAnimation() {
 		{
 			TailsAnimationList_R[30].ModelNum = 208;
 			TailsAnimationList_R[66].AnimNum = 66;
-
 			TailsAnimationList_R[67].AnimNum = 107;
 			TailsAnimationList_R[68].AnimNum = 108;
 			TailsAnimationList_R[67].AnimationSpeed = 0.4f;
