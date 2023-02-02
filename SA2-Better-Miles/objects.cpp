@@ -1,21 +1,21 @@
 #include "pch.h"
 
-static Trampoline* CheckBreakObject_t = nullptr;
-static Trampoline* MysticMelody_t = nullptr;
-static Trampoline* Dynamite_t = nullptr;
-static Trampoline* DynamiteHiddenBase_t = nullptr;
-static Trampoline* DynamiteSandOcean_t = nullptr;
-static Trampoline* PrisonLaneDoor_t = nullptr;
-static Trampoline* PrisonLaneDoor4_t = nullptr;
-static Trampoline* SuperAura_t = nullptr;
-static Trampoline* DoorIG_t = nullptr;
-static Trampoline* DoorIG2_t = nullptr;
-static Trampoline* RocketIG_t = nullptr;
+FunctionHook<Bool, ObjectMaster*, ObjectMaster*> CheckBreakObject_t((intptr_t)CheckBreakObject);
+TaskHook Dynamite_t(Dynamite_Main);
+TaskHook DynamiteHiddenBase_t(DynamiteHiddenBase_Main);
+TaskHook DynamiteSandOcean_t(DynamiteSandOcean_Main);
+TaskHook MetalBox_t(MetalBox);
+TaskHook MetalBoxGravity_t(MetalBoxGravity);
+
+TaskHook PrisonLaneDoor_t(PrisonLaneDoor);
+TaskHook PrisonLaneDoor4_t(PrisonLaneDoor4);
+TaskHook DoorIG_t(DoorIG);
+TaskHook DoorIG2_t(DoorIG2);
+TaskHook RocketIG_t(RocketIG);
+TaskHook MysticMelody_t(0x6E76A0);
+
 static Trampoline* BrokenDownSmoke_t = nullptr;
-static Trampoline* MetalBox_t = nullptr;
-static Trampoline* MetalBoxGravity_t = nullptr;
 static Trampoline* IronBoxEggman_t = nullptr;
-static Trampoline* DeleteLevelStuff_t = nullptr;
 static Trampoline* Turtle_Function_t = nullptr;
 static Trampoline* PowerSupply_event_t = nullptr;
 static Trampoline* sub_6129C0_t = nullptr;
@@ -81,11 +81,19 @@ void Turtle_Function_r(ObjectMaster* obj)
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
-	if (isMilesAttackingBox() && GetCollidingPlayer(obj))
-		return 1;
+	if (obj) {
+		ObjectMaster* col = GetCollidingPlayer(obj);
 
-	FunctionPointer(Bool, original, (ObjectMaster * obj, ObjectMaster * other), CheckBreakObject_t->Target());
-	return original(obj, other);
+		if (col)
+		{
+			char pnum = GetPlayerNumber(col);
+
+			if (isMilesAttackingBox(pnum))
+				return 1;
+		}
+	}
+
+	return CheckBreakObject_t.Original(obj, other);
 }
 
 static const void* const loc_776339 = (void*)0x776339;
@@ -127,8 +135,7 @@ void PlayMysticMelody(ObjectMaster* obj)
 		}
 	}
 
-	ObjectFunc(origin, MysticMelody_t->Target());
-	origin(obj);
+	MysticMelody_t.Original(obj);
 }
 
 static const void* const loc_776D23 = (void*)0x776D23;
@@ -169,8 +176,7 @@ void CheckBreakDynamite(ObjectMaster* obj) {
 		}
 	}
 
-	ObjectFunc(origin, Dynamite_t->Target());
-	origin(obj);
+	Dynamite_t.Original(obj);
 }
 
 void CheckBreakDynamiteHiddenBase(ObjectMaster* obj) {
@@ -183,8 +189,7 @@ void CheckBreakDynamiteHiddenBase(ObjectMaster* obj) {
 		}
 	}
 
-	ObjectFunc(origin, DynamiteHiddenBase_t->Target());
-	origin(obj);
+	DynamiteHiddenBase_t.Original(obj);
 }
 
 void CheckBreakDynamiteSandOcean(ObjectMaster* obj) {
@@ -197,8 +202,8 @@ void CheckBreakDynamiteSandOcean(ObjectMaster* obj) {
 		}
 	}
 
-	ObjectFunc(origin, DynamiteSandOcean_t->Target());
-	origin(obj);
+
+	DynamiteSandOcean_t.Original(obj);
 }
 
 void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
@@ -224,15 +229,14 @@ void CheckAndOpenPrisonLaneDoor(ObjectMaster* obj) {
 void CheckPrisonLaneDoor(ObjectMaster* obj) {
 	CheckAndOpenPrisonLaneDoor(obj);
 
-	ObjectFunc(origin, PrisonLaneDoor_t->Target());
-	origin(obj);
+	PrisonLaneDoor_t.Original(obj);
 }
 
 void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 	CheckAndOpenPrisonLaneDoor(obj);
 
-	ObjectFunc(origin, PrisonLaneDoor4_t->Target());
-	origin(obj);
+
+	PrisonLaneDoor4_t.Original(obj);
 }
 
 void CheckAndSetHackObject(CharObj2Base* co2) {
@@ -280,15 +284,14 @@ void CheckAndOpenIronGateDoor(ObjectMaster* obj) {
 void doorIG_r(ObjectMaster* obj) {
 	CheckAndOpenIronGateDoor(obj);
 
-	ObjectFunc(origin, DoorIG_t->Target());
-	origin(obj);
+
+	DoorIG_t.Original(obj);
 }
 
 void doorIG2_r(ObjectMaster* obj) {
 	CheckAndOpenIronGateDoor(obj);
 
-	ObjectFunc(origin, DoorIG2_t->Target());
-	origin(obj);
+	DoorIG2_t.Original(obj);
 }
 
 void rocketIG_r(ObjectMaster* obj) {
@@ -299,14 +302,7 @@ void rocketIG_r(ObjectMaster* obj) {
 		data->Action = 6;
 	}
 
-	ObjectFunc(origin, RocketIG_t->Target());
-	origin(obj);
-}
-
-void Super_Aura_r(ObjectMaster* obj) {
-
-	ObjectFunc(origin, SuperAura_t->Target());
-	origin(obj);
+	RocketIG_t.Original(obj);
 }
 
 void LoadSuperFormFinalBattle() {
@@ -348,7 +344,7 @@ void breaBoxCheck(EntityData1* data)
 
 				char pnum = GetPlayerNumber(data->Collision->CollidingObject->Object);
 
-				if (isMilesAttackingBox() && data->NextAction < 1) {
+				if (isMilesAttackingBox(pnum) && data->NextAction < 1) {
 					data->Collision->CollisionArray->push |= 0x4000u;
 					data->Timer = 1;
 					AddScore(20);
@@ -363,20 +359,15 @@ void breaBoxCheck(EntityData1* data)
 void MetalBox_r(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
-
 	breaBoxCheck(data);
-
-	ObjectFunc(origin, MetalBox_t->Target());
-	origin(obj);
+	MetalBox_t.Original(obj);
 }
 
 void MetalBoxGravity_r(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1.Entity;
 	breaBoxCheck(data);
-
-	ObjectFunc(origin, MetalBoxGravity_t->Target());
-	origin(obj);
+	MetalBoxGravity_t.Original(obj);
 }
 
 void IronBoxEggman_r(ObjectMaster* obj) {
@@ -409,7 +400,6 @@ ObjectMaster* __cdecl sub_6129C0(ObjectMaster* a1)
 }
 
 
-
 void Init_ObjectsHacks() {
 
 	if (isRando())
@@ -417,24 +407,22 @@ void Init_ObjectsHacks() {
 
 	WriteCall((void*)0x43B364, DeleteLevelStuff_r);
 
-	CheckBreakObject_t = new Trampoline((int)CheckBreakObject, (int)CheckBreakObject + 0x7, CheckBreakObject_r);
-	MysticMelody_t = new Trampoline((int)0x6E76A0, (int)0x6E76A0 + 0x6, PlayMysticMelody);
-	Dynamite_t = new Trampoline((int)Dynamite_Main, (int)Dynamite_Main + 0x5, CheckBreakDynamite);
-	DynamiteHiddenBase_t = new Trampoline((int)DynamiteHiddenBase_Main, (int)DynamiteHiddenBase_Main + 0x5, CheckBreakDynamiteHiddenBase);
-	DynamiteSandOcean_t = new Trampoline((int)DynamiteSandOcean_Main, (int)DynamiteSandOcean_Main + 0x6, CheckBreakDynamiteSandOcean);
-	PrisonLaneDoor_t = new Trampoline((int)PrisonLaneDoor, (int)PrisonLaneDoor + 0x6, CheckPrisonLaneDoor);
-	PrisonLaneDoor4_t = new Trampoline((int)PrisonLaneDoor4, (int)PrisonLaneDoor4 + 0x6, CheckPrisonLaneDoor4);
+	CheckBreakObject_t.Hook(CheckBreakObject_r);
+	MysticMelody_t.Hook(PlayMysticMelody);
+	Dynamite_t.Hook(CheckBreakDynamite);
+	DynamiteHiddenBase_t.Hook(CheckBreakDynamiteHiddenBase);
+	DynamiteSandOcean_t.Hook(CheckBreakDynamiteSandOcean);
+	PrisonLaneDoor_t.Hook(CheckPrisonLaneDoor);
+	PrisonLaneDoor4_t.Hook(CheckPrisonLaneDoor4);
 
-	//SuperAura_t = new Trampoline((int)Super_Something, (int)Super_Something + 0x7, Super_Aura_r);
-
-	DoorIG_t = new Trampoline((int)DoorIG, (int)DoorIG + 0x6, doorIG_r);
-	DoorIG2_t = new Trampoline((int)DoorIG2, (int)DoorIG2 + 0x6, doorIG2_r);
-	RocketIG_t = new Trampoline((int)RocketIG, (int)RocketIG + 0x6, rocketIG_r);
+	DoorIG_t.Hook(doorIG_r);
+	DoorIG2_t.Hook(doorIG2_r);
+	RocketIG_t.Hook(rocketIG_r);
 
 	BrokenDownSmoke_t = new Trampoline((int)BrokenDownSmokeExec, (int)BrokenDownSmokeExec + 0x7, BrokenDownSmoke_r);
 
-	MetalBox_t = new Trampoline((int)MetalBox, (int)MetalBox + 0x6, MetalBox_r);
-	MetalBoxGravity_t = new Trampoline((int)MetalBoxGravity, (int)MetalBoxGravity + 0x6, MetalBoxGravity_r);
+	MetalBox_t.Hook(MetalBox_r);
+	MetalBoxGravity_t.Hook(MetalBoxGravity_r);
 	PowerSupply_event_t = new Trampoline((int)0x78A450, (int)0x78A455, PowerSupply_EventTask);
 	WriteJump(reinterpret_cast<void*>(0x776D1E), CheckGravitySwitch);
 	WriteJump(reinterpret_cast<void*>(0x776330), CheckBreakCGGlasses);	

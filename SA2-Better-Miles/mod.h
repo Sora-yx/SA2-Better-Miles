@@ -1,6 +1,7 @@
 #pragma once
 
 void ReadConfig(const char* path);
+#define TaskHook static FunctionHook<void, ObjectMaster*>
 
 extern HMODULE SA2Anim;
 extern HMODULE SA1Char;

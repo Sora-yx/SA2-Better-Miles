@@ -11,6 +11,8 @@
 #include "framework.h"
 #include "SA2ModLoader.h"
 #include "Trampoline.h"
+#include "FunctionHook.h"
+#include "UsercallFunctionHandler.h"
 #include "IniFile.hpp"
 #include "ModelInfo.h"
 #include "AnimationFile.h"

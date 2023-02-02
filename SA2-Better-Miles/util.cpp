@@ -92,12 +92,12 @@ bool isMilesAttacking() {
 	return false;
 }
 
-bool isMilesAttackingBox() {
+bool isMilesAttackingBox(char pnum) {
 
 	if (!isMiles())
 		return false;
 
-	EntityData1* data1 = MainCharObj1[MilesCO2Extern->base.PlayerNum];
+	EntityData1* data1 = MainCharObj1[pnum];
 
 	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
 		return true;

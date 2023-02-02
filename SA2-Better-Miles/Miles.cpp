@@ -1,34 +1,15 @@
 #include "pch.h"
 #include "patches.h"
 
-Trampoline* Tails_Main_t;
-Trampoline* Miles_CheckNextActions_t;
-Trampoline* Tails_RunsAction_t;
-Trampoline* LoadCharacters_t;
-Trampoline* LoadMechTails_t = nullptr;
+TaskHook Tails_Main_t(Tails_Main);
 
-//Trampoline Usercall Function to get the control of "Tails Check Next Actions" this need 3 functions to work.
-static const void* const Miles_CheckNextActionPtr = (void*)0x751CB0;
-signed int Miles_CheckNextActions_original(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+static UsercallFunc(signed int, Miles_CheckNextActions_t, (EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4), 
+	(a1, a2, a3, a4), 0x751CB0, rEAX, rECX, rEBX, rEDI, rESI);
+static FunctionHook<void, EntityData1*, EntityData2*, CharObj2Base*, TailsCharObj2*> Tails_RunsAction_t(Tails_RunActions);
+Trampoline* LoadCharacters_t = nullptr;
+static FunctionHook<void, int> LoadMechTails_t(LoadMechTails);
+static Trampoline* Init_LandColMemory_t = nullptr;
 
-	const auto MilesCheck_ptr = Miles_CheckNextActions_t->Target();
-
-	signed int result;
-
-	__asm
-	{
-		mov esi, a4
-		mov edi, a3
-		mov ebx, a2
-		mov eax, a1
-
-		call MilesCheck_ptr
-
-		mov result, eax
-	}
-
-	return result;
-}
 
 signed int __cdecl Miles_CheckNextActions_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
 	switch (a4->NextAction)
@@ -128,33 +109,13 @@ signed int __cdecl Miles_CheckNextActions_r(EntityData2* a1, TailsCharObj2* a2, 
 		return 1;
 	}
 
-	return Miles_CheckNextActions_original(a1, a2, a3, a4);
+	return Miles_CheckNextActions_t.Original(a1, a2, a3, a4);
 }
-
-static void __declspec(naked) Miles_CheckNextActionsASM()
-{
-	__asm
-	{
-		push esi
-		push edi
-		push ebx
-		push ecx
-
-		call Miles_CheckNextActions_r
-
-		pop ecx
-		pop ebx
-		pop edi
-		pop esi
-		retn
-	}
-}
-
 
 
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	FunctionPointer(void, original, (EntityData1 * data1, EntityData2 * data2, CharObj2Base * co2, TailsCharObj2 * co2Miles), Tails_RunsAction_t->Target());
-	original(data1, data2, co2, co2Miles);
+
+	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
 	CheckAndFixTailsRotation(co2, co2Miles);
 
@@ -262,9 +223,9 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		data1->Action = 76;
 		co2->AnimInfo.Next = 121;
 		co2->AnimInfo.nframe = 0.0f;
-		if (co2->Speed.x <= 0.30000001)
+		if (co2->Speed.x <= 0.30000001f)
 		{
-			co2->Speed.x = 1.0;
+			co2->Speed.x = 1.0f;
 		}
 		data1->Rotation.x = data2->Forward.x;
 		data1->Rotation.z = data2->Forward.z;
@@ -305,8 +266,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 void Tails_Main_r(ObjectMaster* obj)
 {
-	ObjectFunc(origin, Tails_Main_t->Target());
-	origin(obj);
+
+	Tails_Main_t.Original(obj);
 
 	CharObj2Base* co2 = obj->Data2.Character;
 	EntityData1* data1 = obj->Data1.Entity;
@@ -327,7 +288,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Running:
 
 		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1) && !TailsJump(co2, data1)) {
-			if (co2->Speed.x < 1.3) {
+			if (co2->Speed.x < 1.3f) {
 				Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 			}
 			else {
@@ -367,7 +328,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case Action_Board:
 	{
-		PhysicsBoardStuff(co2, data1, data2, 7.8200002);
+		PhysicsBoardStuff(co2, data1, data2, 7.8200002f);
 		PGetSpeed(data1, co2, data2);
 		int checkPos = PSetPosition(data1, data2, co2);
 		if (checkPos != 2)
@@ -418,33 +379,29 @@ void Tails_Main_r(ObjectMaster* obj)
 				data1->Action = 10;
 				co2->AnimInfo.Next = 15;
 				data1->Status &= 0xFBFFu;
-				if (njScalor(&data2->Velocity) <= 2.0) {
+				if (njScalor(&data2->Velocity) <= 2.0f) {
 					if (&data2->Velocity)
 					{
-						data2->Velocity.z = 0.0;
-						data2->Velocity.y = 0.0;
-						data2->Velocity.x = 0.0;
+						data2->Velocity = { 0.0f };
 					}
 				}
 				else {
 					njUnitVector(&data2->Velocity);
-					data2->Velocity.x = data2->Velocity.x * 2.0;
-					data2->Velocity.y = data2->Velocity.y * 2.0;
-					data2->Velocity.z = data2->Velocity.z * 2.0;
+					data2->Velocity.x *= 2.0f;
+					data2->Velocity.y *= 2.0f;
+					data2->Velocity.z *= 2.0f;
 				}
 				PResetPosition(data1, data2, co2);
 
-				if (njScalor(&co2->Speed) <= 2.0) {
-					co2->Speed.x = 0.0;
-					co2->Speed.y = 0.0;
-					co2->Speed.z = 0.0;
+				if (njScalor(&co2->Speed) <= 2.0f) {
+					co2->Speed = { 0.0f };
 					Miles_DisplayAfterImage(data1, co2, co2Miles);
 				}
 				else {
 					njUnitVector(&co2->Speed);
-					co2->Speed.x = co2->Speed.x * 2.0;
-					co2->Speed.y = co2->Speed.y * 2.0;
-					co2->Speed.z = 2.0 * co2->Speed.z;
+					co2->Speed.x += 2.0f;
+					co2->Speed.y += 2.0f;
+					co2->Speed.z += 2.0f;
 				}
 			}
 		}
@@ -526,12 +483,14 @@ void RemoveMech(int player) {
 		return;
 	}
 
-	FunctionPointer(void, origin, (int player), LoadMechTails_t->Target());
-	origin(player);
+	LoadMechTails_t.Original(player);
 }
 
-void LoadExtra_MilesAnimModel()
+//used to load object hack
+void InitLandColMemory_r()
 {
+	bool isMiles = false;
+
 	for (int i = 0; i < 2; i++) {
 
 		if (MainCharObj2[i]) {
@@ -543,13 +502,21 @@ void LoadExtra_MilesAnimModel()
 				SetSpacePhysics(MainCharObj2[i]);
 				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
 				spinTimer = 0;
+				CheckAndSetHackObject(MainCharObj2[i]);
+				isMiles = true;
+				break;
 			}
-
-			CheckAndSetHackObject(MainCharObj2[i]);
 		}
 	}
 
-	sub_47BB50();
+
+	if (!isMiles)
+	{
+		MilesCO2Extern = nullptr; //reset the pointer because the vanilla game never do lol
+	}
+
+	VoidFunc(origin, Init_LandColMemory_t->Target());
+	origin();
 }
 
 void LoadCharacter_r() {
@@ -566,13 +533,13 @@ void LoadCharacter_r() {
 
 void BetterMiles_Init() {
 
-	Tails_Main_t = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x6, Tails_Main_r);
-	Miles_CheckNextActions_t = new Trampoline(0x751CB0, 0x751CB5, Miles_CheckNextActionsASM);
-	Tails_RunsAction_t = new Trampoline((int)Tails_runsAction, (int)Tails_runsAction + 0x7, Tails_runsAction_r);
+	Tails_Main_t.Hook(Tails_Main_r);
+	Miles_CheckNextActions_t.Hook(Miles_CheckNextActions_r);
+	Tails_RunsAction_t.Hook(Tails_runsAction_r);
 	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
 
 	if (isMechRemoved) {
-		LoadMechTails_t = new Trampoline((int)LoadMechTails, (int)LoadMechTails + 0x6, RemoveMech);
+		LoadMechTails_t.Hook(RemoveMech);
 	}
 
 	if (isMilesAdventure || isMechRemoved) {
@@ -610,9 +577,6 @@ void BetterMiles_Init() {
 	Init_VoicesFixes();
 	init_Patches();
 
-	WriteCall((void*)0x439B18, LoadExtra_MilesAnimModel);
 	WriteData((int**)0x7952fa, &ShadowActionWindowTextIndexes);
 	InitLightDashStuff();
-
-
 }

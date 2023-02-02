@@ -3,7 +3,7 @@
 void PlayerMoveStuff(EntityData1* a1, EntityData2* a2, CharObj2Base* a3);
 
 bool isMilesAttacking();
-bool isMilesAttackingBox();
+bool isMilesAttackingBox(char pnum);
 
 void init_RankScore();
 void CheckAndSetHackObject(CharObj2Base* co2);
