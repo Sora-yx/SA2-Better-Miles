@@ -19,7 +19,7 @@ void BoardSoundEffect(CharObj2Base* co2, EntityData1* data) {
 
 
 void BoardStuff(EntityData2* data2, TailsCharObj2* co2Miles, EntityData1* data, CharObj2Base* co2) {
-	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data))
+	if (MilesCheckInput(data2, co2Miles, co2, data))
 	{
 		return;
 	}
@@ -41,7 +41,7 @@ void BoardStuff(EntityData2* data2, TailsCharObj2* co2Miles, EntityData1* data, 
 }
 
 void BoardJumpStuff(EntityData1* data, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData2* data2) {
-	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data))
+	if (MilesCheckInput(data2, co2Miles, co2, data))
 	{
 		return;
 	}

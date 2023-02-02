@@ -112,7 +112,7 @@ bool CheckWaterDistanceThing(CharObj2Base* a1)
 }
 
 void CheckFloatingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
+	if (!MilesCheckInput(data2, co2Miles, co2, data))
 	{
 		if ((co2->SurfaceInfo.TopSurface & SurfaceFlag_Water) == 0 || !CheckWaterDistanceThing(co2)) {
 			data->Action = 0;
@@ -145,7 +145,7 @@ void CheckFloatingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2
 }
 
 void CheckSwimmingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
+	if (!MilesCheckInput(data2, co2Miles, co2, data))
 	{
 		if ((co2->SurfaceInfo.TopSurface & SurfaceFlag_Water) != 0 && CheckWaterDistanceThing(co2)) {
 			if (!Tails_CheckActionWindow_(data, data2, co2, co2Miles) && !TailsJump(co2, data))
@@ -181,7 +181,7 @@ void CheckSwimmingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2
 }
 
 void CheckDivingStuff(EntityData2* data2, EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data))
+	if (!MilesCheckInput(data2, co2Miles, co2, data))
 	{
 		if (CheckWaterSurface(co2, data))
 		{

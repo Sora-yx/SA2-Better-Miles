@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "abilities.h"
 
 bool rebound = false;
 
@@ -34,7 +35,7 @@ signed int Miles_PerformBounce(CharObj2Base* a1, EntityData1* a2)
 float getGrav = 0.0;
 
 void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2* data2) {
-	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindow_(data, data2, co2, co2Miles)) {
+	if (MilesCheckInput(data2, co2Miles, co2, data) || Tails_CheckActionWindow_(data, data2, co2, co2Miles)) {
 		return;
 	}
 	if ((data->Status & 3) != 0)
@@ -73,16 +74,14 @@ void DoBounce(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, Ent
 	}
 
 	// sub_720E00(co2Miles, data, (EntityData2*)data2, co2);
-	PlayVoice(2, 1629);
-	co2->Speed.x = 4.0;
-	data->Action = Flying;
-	co2->AnimInfo.Next = FlyingAnim;
+	co2->Speed.x = 4.0f;
+	Tails_FlyStart(data, co2, co2Miles);
 	data->Status &= 0xFEFFu;
 	return;
 }
 
 void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Miles, EntityData2* data2) {
-	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data) || Tails_CheckActionWindow_(data, data2, co2, co2Miles)) {
+	if (MilesCheckInput(data2, co2Miles, co2, data) || Tails_CheckActionWindow_(data, data2, co2, co2Miles)) {
 		return;
 	}
 
@@ -118,7 +117,7 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
 			data->Rotation.x = data2->Forward.x;
 			data->Rotation.z = data2->Forward.z;
 			data->Action = 1;
-			CheckSpeedAndSetNextAnim(co2, data);
+			PlayerChangeRunningMotion(co2, data);
 			data->Status &= 0xFAFFu;
 		}
 	}
@@ -143,10 +142,8 @@ void DoBounceOnFloor(EntityData1* data, CharObj2Base* co2, TailsCharObj2* co2Mil
 	}
 	else
 	{
-		PlayVoice(2, 1629);
-		co2->Speed.x = 4.0;
-		data->Action = Flying;
-		co2->AnimInfo.Next = FlyingAnim;
+		co2->Speed.x = 4.0f;
+		Tails_FlyStart(data, co2, co2Miles);
 		data->Status &= 0xFEFFu;
 
 		if (CurrentLevel != LevelIDs_GreenHill)

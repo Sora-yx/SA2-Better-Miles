@@ -39,7 +39,6 @@ extern "C" {
 	__declspec(dllexport) void __cdecl OnFrame() {
 
 		RunCustomSounds();
-
 		if (Controllers[0].on & Buttons_L && Controllers[0].on & Buttons_R && Controllers[0].press & Buttons_X)
 		{
 			//AwardWin(0);

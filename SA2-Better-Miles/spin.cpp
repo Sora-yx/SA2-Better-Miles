@@ -4,7 +4,7 @@ int FailSafeTimer = 0;
 int spinDelay = 0;
 void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3, EntityData2* a4)
 {
-	if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || Miles_CheckNextActions_r(a4, a1, a3, a2)) {
+	if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || MilesCheckInput(a4, a1, a3, a2)) {
 		spinDelay = 0;
 		return;
 	}

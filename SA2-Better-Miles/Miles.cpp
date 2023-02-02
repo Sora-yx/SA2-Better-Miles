@@ -11,7 +11,8 @@ static FunctionHook<void, int> LoadMechTails_t(LoadMechTails);
 static Trampoline* Init_LandColMemory_t = nullptr;
 
 
-signed int __cdecl Miles_CheckNextActions_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+
 	switch (a4->NextAction)
 	{
 	case 1:
@@ -154,7 +155,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 		break;
 	case MysticMelody:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
+		if (MilesCheckInput(data2, co2Miles, co2, data1)) {
 			return;
 		}
 
@@ -164,7 +165,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		}
 		return;
 	case Pulley:
-		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
+		if (!MilesCheckInput(data2, co2Miles, co2, data1)) {
 			TailsJump(co2, data1);
 		}
 		return;
@@ -172,16 +173,12 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		*(int*)&co2Miles->field_1BC[436] = -17000;
 		break;
 	case Flying:
-		if (Miles_SetNextActionSwim(co2Miles, data1))
-			return;
 
-		if (isSuperForm(co2->PlayerNum) && co2->AnimInfo.Next == 92 || co2->AnimInfo.Current == 92)
-		{
-			co2->AnimInfo.Next = 15;
-		}
+		Miles_ManageFly((taskwk*)data1, (motionwk2*)data2, (playerwk*)co2, co2Miles);
+
 		break;
 	case Spinning:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
+		if (MilesCheckInput(data2, co2Miles, co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
 		if (isCustomAnim)
@@ -202,7 +199,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		DoBounceOnFloor(data1, co2, co2Miles, data2);
 		break;
 	case Grinding:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+		if (MilesCheckInput(data2, co2Miles, co2, data1))
 			return;
 		*(int*)&co2Miles->field_1BC[436] = -9000;
 		CheckGrindThing(data1, data2, co2, co2Miles);
@@ -214,7 +211,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		BoardStuff(data2, co2Miles, data1, co2);
 		return;
 	case 79:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1) || (data1->Status & 3) == 0)
+		if (MilesCheckInput(data2, co2Miles, co2, data1) || (data1->Status & 3) == 0)
 		{
 			return;
 		}
@@ -235,12 +232,12 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		break;
 	case Action_TurtleDive:
 
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+		if (MilesCheckInput(data2, co2Miles, co2, data1))
 			return;
 
 		break;
 	case Rolling:
-		if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1))
+		if (MilesCheckInput(data2, co2Miles, co2, data1))
 			return;
 
 		Miles_UnrollCheck(data1, data2, co2);
@@ -287,7 +284,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	case Standing:
 	case Running:
 
-		if (!Miles_CheckNextActions_r(data2, co2Miles, co2, data1) && !TailsJump(co2, data1)) {
+		if (!MilesCheckInput(data2, co2Miles, co2, data1) && !TailsJump(co2, data1)) {
 			if (co2->Speed.x < 1.3f) {
 				Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 			}
@@ -442,7 +439,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	}
 
-	MilesFly(data1, co2);
+	//MilesFly(data1, co2);
 	Tornado_CallCheckInput(co2, data1);
 	Tornado_MainActions(data1, co2, data2);
 }
@@ -534,7 +531,7 @@ void LoadCharacter_r() {
 void BetterMiles_Init() {
 
 	Tails_Main_t.Hook(Tails_Main_r);
-	Miles_CheckNextActions_t.Hook(Miles_CheckNextActions_r);
+	Miles_CheckNextActions_t.Hook(Miles_CheckNextAction_r);
 	Tails_RunsAction_t.Hook(Tails_runsAction_r);
 	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
 	Init_LandColMemory_t = new Trampoline((int)0x47BB50, (int)0x47BB57, InitLandColMemory_r);

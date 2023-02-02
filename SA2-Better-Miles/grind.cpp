@@ -89,7 +89,7 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 }
 
 void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
-	if (Miles_CheckNextActions_r(data2, co2Miles, co2, data1)) {
+	if (MilesCheckInput(data2, co2Miles, co2, data1)) {
 		return;
 	}
 

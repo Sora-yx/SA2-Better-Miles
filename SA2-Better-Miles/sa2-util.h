@@ -117,7 +117,7 @@ static inline char Play3DSound2(int id, NJS_VECTOR* pos, int a3, char a4, char a
 
 
 static const void* const SetNextAnimPtr = (void*)0x474F80;
-static inline int CheckSpeedAndSetNextAnim(CharObj2Base* a1, EntityData1* a2)
+static inline int PlayerChangeRunningMotion(CharObj2Base* a1, EntityData1* a2)
 {
 	int result;
 	__asm
@@ -463,6 +463,24 @@ static inline signed int Tails_CheckActionWindow_(EntityData1* a1, EntityData2* 
 		mov eax, [a1]
 		call Tails_CheckActionWindowPtr
 		add esp, 4
+		mov result, eax
+	}
+	return result;
+}
+
+//int __usercall Miles_CheckNextActions@<eax>(EntityData2 *a2@<ecx>, TailsCharObj2 *ebx0@<ebx>, CharObj2Base *a3@<edi>, EntityData1 *a4@<esi>)
+static const void* const MilesCheckInputPtr = (void*)0x751CB0;
+static inline signed int MilesCheckInput(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4)
+{
+	signed int result;
+
+	__asm
+	{
+		mov esi, [a4]
+		mov edi, [a3]
+		mov ebx, [a2]
+		mov ecx, [a1]
+		call MilesCheckInputPtr
 		mov result, eax
 	}
 	return result;
