@@ -80,15 +80,13 @@ void Turtle_Function_r(ObjectMaster* obj)
 
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
-	if (obj) {
+	if (obj && obj->Data1.Entity) 
+	{
+		int pnum = IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15.0f);
 
-		ObjectMaster* col = GetCollidingPlayer(obj);
-
-		if (col)
+		if (pnum)
 		{
-			char pnum = GetPlayerNumber(col);
-
-			if (isMilesAttackingBox(pnum))
+			if (isMilesAttackingBox(pnum -1))
 				return TRUE;
 		}
 	}
@@ -126,7 +124,7 @@ void PlayMysticMelody(ObjectMaster* obj)
 		CharObj2Base* co2 = &MilesCO2Extern->base;
 		EntityData1* data = MainCharObj1[co2->PlayerNum];
 
-		if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15))
+		if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15.0f))
 		{
 			if (data->NextAction == 0 && co2->CharID == Characters_Tails) {
 				if (Controllers[co2->PlayerNum].on & (Buttons_X | Buttons_B) && (data->Action == 0 || data->Action == 60))

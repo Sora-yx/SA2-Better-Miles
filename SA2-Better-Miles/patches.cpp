@@ -26,7 +26,8 @@ void TailsCalcColDamage_r(TailsCharObj2* co2M, taskwk* twp)
 	CharObj2Base* pwp = &co2M->base;
 
 	auto colInfo = col->info;
-	colInfo->attr &= 0xFFFFBFFF;	unsigned int attrCol = colInfo->attr;
+	colInfo->attr &= 0xFFFFBFFF;	
+	unsigned int attrCol = colInfo->attr;
 
 	int colFlag1 = 0;
 	int colFlag2 = 0;
@@ -48,8 +49,13 @@ void TailsCalcColDamage_r(TailsCharObj2* co2M, taskwk* twp)
 
 				twp->cwp->info[1].center = co2T->tailVector0;
 				twp->cwp->info[2].center = co2T->tailVector1;
-				return;
+				WriteData<1>((int*)0x74FD8B, SpinningAir); //hacky way to get damage on the tails in the air
 			}
+			else
+			{
+				WriteData<1>((int*)0x74FD8B, 60); //restore original
+			}
+
 
 			switch (twp->mode)
 			{
@@ -68,7 +74,7 @@ void TailsCalcColDamage_r(TailsCharObj2* co2M, taskwk* twp)
 				colInfo[2].a = 8.0f;
 				break;
 			default:
-				if ((twp->mode & Status_Attack) != 0)
+				if ((twp->flag & Status_Attack) != 0)
 				{
 					colFlag1 = 1;
 					colFlag2 = 1;
@@ -90,14 +96,10 @@ void TailsCalcColDamage_r(TailsCharObj2* co2M, taskwk* twp)
 	{
 		colFlag1 = 3;
 		colFlag2 = 3;
-		if (twp->mode == Bounce)
-		{
-			colInfo->attr = attrCol | 0x4000;
-		}
+
 	}
 
 	colInfo->damage = colInfo->damage & 0xF0 | colFlag1 & 3 | (4 * (colFlag2 & 3));
-	colInfo[1].attr |= 0x10u;
 }
 
 void CheckAndSetPlayerSpeed_r(int pid)
@@ -322,8 +324,11 @@ void __cdecl Miles_ManageTails_r(EntityData1* data1, CharObj2Base* a2, TailsChar
 	*(Float*)&a3->field_3BC[164] = data1->Position.z;
 	*(_DWORD*)&a3->field_3BC[192] = data1->Rotation.y;
 }
+
+
 void init_Patches()
 {
+
 	TailsCalcColDamage_t.Hook(TailsCalcColDamage_r);
 	WriteJump((void*)0x47A9C0, CheckAndSetPlayerSpeed); //make Miles bouncing when hitting enemy like other characters
 
@@ -339,5 +344,7 @@ void init_Patches()
 
 	Levelitem_t.Hook(LevelItem_r);
 	Miles_ManageTails_t.Hook(Miles_ManageTails_r);
+
+	//WriteData<1>((int*)0x75310F, SpinningAir);
 
 }

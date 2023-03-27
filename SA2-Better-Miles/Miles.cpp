@@ -489,7 +489,8 @@ void Tails_Main_r(ObjectMaster* obj)
 	case SpinningAir:
 	{
 		auto RestoreSpeed = co2->PhysData.Weight;
-		co2->PhysData.Weight = 0.009f;
+		co2->PhysData.Weight = 0.0199999982f;
+
 
 		PGetRotation(data1, data2, co2);
 		PResetAngle(data1, co2);
@@ -614,7 +615,8 @@ void BetterMiles_Init() {
 	}
 
 	//Improve physic
-	if (isCustomPhysics) {
+	if (isCustomPhysics) 
+	{
 		//copy knux physics since it's more closer to sadx tails
 		PhysicsArray[Characters_Tails] = PhysicsArray[Characters_Sonic];
 
