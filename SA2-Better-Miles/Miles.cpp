@@ -3,12 +3,59 @@
 
 TaskHook Tails_Main_t(Tails_Main);
 
-static UsercallFunc(signed int, Miles_CheckNextActions_t, (EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4), 
+UsercallFunc(signed int, Miles_CheckNextActions_t, (EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4),
 	(a1, a2, a3, a4), 0x751CB0, rEAX, rECX, rEBX, rEDI, rESI);
 static FunctionHook<void, EntityData1*, EntityData2*, CharObj2Base*, TailsCharObj2*> Tails_RunsAction_t(Tails_RunActions);
 Trampoline* LoadCharacters_t = nullptr;
 static FunctionHook<void, int> LoadMechTails_t(LoadMechTails);
 static Trampoline* Init_LandColMemory_t = nullptr;
+
+UsercallFunc(signed int, Tails_CheckActionWindow_t, (taskwk* data1, motionwk2* data2, playerwk* co2, TailsCharObj2* sonicCO2), (data1, data2, co2, sonicCO2), 0x752400, rEAX, rEAX, rEDX, rECX, stack4);
+
+static Sint32 Tails_CheckActionWindow_r(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCharObj2* co2M)
+{
+	// This code is based on the pseudocode of the original function
+	int  pnum = pwp->PlayerNum;
+	char action = pwp->field_D[0];
+	int  count = pwp->ActionWindowItemCount;
+	int  i = 0;
+
+	if (count)
+	{
+		if (count > 0)
+		{
+			do
+			{
+				if (pwp->field_D[0] == pwp->ActionWindowItems[i])
+				{
+					break;
+				}
+				++i;
+			} while (i < count);
+			action = pwp->field_D[0];
+		}
+
+		if (count == i)
+		{
+			action = pwp->ActionWindowItems[0];
+		}
+
+		if (action == LightDash)
+		{
+			pwp->field_D[1] = action;
+
+			if ((Controllers[pnum].press & LightDashBtn) == 0)
+			{
+				return FALSE;
+			}
+
+			Miles_PerformLightDash((CharObj2Base*)pwp, (EntityData1*)twp);
+			return TRUE;
+		}
+	}
+
+	return Tails_CheckActionWindow_t.Original(twp, mwp, pwp, co2M);
+}
 
 
 signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
@@ -105,30 +152,43 @@ signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, C
 		MainCharObj1[a3->PlayerNum]->field_2 = 1;
 		a4->NextAction = 0;
 		return 0;
-	case 103:
-		Miles_PerformLightDash(a3, a4);
-		return 1;
 	}
 
 	return Miles_CheckNextActions_t.Original(a1, a2, a3, a4);
 }
 
 
-void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) 
+void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles)
 {
+	auto pwp = (playerwk*)co2;
+	auto twp = (taskwk*)data1;
+	auto mwp = (motionwk2*)data2;
 
-	if (data1->Action == Spinning)
+	Check_LightDash(twp, pwp);
+
+	if (!MilesCheckInput(data2, co2Miles, co2, data1) && !Miles_SetNextActionSwim(co2Miles, data1))
 	{
-		if (!MilesCheckInput(data2, co2Miles, co2, data1) && !Miles_SetNextActionSwim(co2Miles, data1))
+		if (data1->Action == Spinning)
 		{
+			spinLeaveGroundCheck(twp, pwp, co2Miles);
+
 			if (isCustomAnim)
-				spinOnFrames((playerwk*)co2, data1, co2Miles);
+				spinOnFrames(pwp, data1, co2Miles);
+		}
+		else if (data1->Action == SpinningAir)
+		{
+			spinLandingCheck(twp, pwp);
+
+			if (isCustomAnim)
+				spinOnFrames(pwp, data1, co2Miles);
 		}
 	}
 
+
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
-	CheckAndFixTailsRotation(co2, co2Miles);
+	TailsCharObj2_r* co2M = (TailsCharObj2_r*)co2Miles;
+	CheckAndFixTailsRotation(co2, co2M);
 
 	switch (data1->Action)
 	{
@@ -137,20 +197,22 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		if (Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
-		if (co2->Speed.x < 1.3f || SpinBtn != RollBtn) 
+		if (co2->Speed.x < 1.3f || SpinBtn != RollBtn)
 		{
 			Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 		}
-		
+
 		if (co2->Speed.x > 1.3f)
 			Miles_RollCheckInput(data1, co2);
-		
+
 		break;
 	case Jumping:
 		if (Miles_CheckBounceAttack(co2, data1) || Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
 		data1->Status |= Status_Attack;
+
+		Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 
 		break;
 	case 7:
@@ -163,7 +225,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		if (Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
-		*(int*)&co2Miles->field_1BC[436] = -17000;
+		SetNewTailsRotation(co2Miles, -17000);
+		Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 
 		break;
 	case 15:
@@ -188,11 +251,11 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		}
 		return;
 	case Action_AirBubble:
-		*(int*)&co2Miles->field_1BC[436] = -17000;
+		SetNewTailsRotation(co2Miles, -17000);
 		break;
 	case Flying:
 
-		Miles_ManageFly((taskwk*)data1, (motionwk2*)data2, (playerwk*)co2, co2Miles);
+		Miles_ManageFly(twp, mwp, pwp, co2Miles);
 
 		break;
 	case Bounce:
@@ -211,7 +274,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	case Grinding:
 		if (MilesCheckInput(data2, co2Miles, co2, data1))
 			return;
-		*(int*)&co2Miles->field_1BC[436] = -9000;
+		SetNewTailsRotation(co2Miles, -9000);
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		break;
 	case HandGrinding: //Whatever you call that thing in CG
@@ -260,11 +323,11 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		CheckFloatingStuff(data2, data1, co2, co2Miles);
 		break;
 	case Swimming:
-		*(int*)&co2Miles->field_1BC[436] = -17000; //fix "rotation Y" of the tails
+		SetNewTailsRotation(co2Miles, -17000); //fix "rotation Y" of the tails
 		CheckSwimmingStuff(data2, data1, co2, co2Miles);
 		break;
 	case Diving:
-		*(int*)&co2Miles->field_1BC[436] = -17000;
+		SetNewTailsRotation(co2Miles, -17000);
 		CheckDivingStuff(data2, data1, co2, co2Miles);
 		break;
 	}
@@ -274,7 +337,6 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 void Tails_Main_r(ObjectMaster* obj)
 {
-
 	Tails_Main_t.Original(obj);
 
 	CharObj2Base* co2 = obj->Data2.Character;
@@ -287,8 +349,6 @@ void Tails_Main_r(ObjectMaster* obj)
 	{
 		spinTimer++;
 	}
-
-	Miles_DoCollisionAttackStuff(data1, co2);
 
 	switch (data1->Action)
 	{
@@ -312,7 +372,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
 		break;
-	case HandGrinding: //Whatever you call that thing in CG
+	case HandGrinding: 
 		SomethingAboutHandGrind(data1, data2, co2Miles);
 		MoveCharacterOnRail(data1, co2, data2);
 		SomethingAboutHandGrind2(data1, data2, co2Miles);
@@ -426,13 +486,27 @@ void Tails_Main_r(ObjectMaster* obj)
 		PSetPosition(data1, data2, co2);
 		PResetPosition(data1, data2, co2);
 		break;
+	case SpinningAir:
+	{
+		auto RestoreSpeed = co2->PhysData.Weight;
+		co2->PhysData.Weight = 0.009f;
+
+		PGetRotation(data1, data2, co2);
+		PResetAngle(data1, co2);
+		PGetAcceleration(data1, data2, co2);
+		PGetSpeed(data1, co2, data2);
+		PSetPosition(data1, data2, co2);
+		PResetPosition(data1, data2, co2);
+
+		co2->PhysData.Weight = RestoreSpeed;
+	}
+		break;
 	case VictoryPose:
 
 		AnimateMilesTails(data1, co2, co2Miles);
 		break;
 	}
 
-	//MilesFly(data1, co2);
 	Tornado_CallCheckInput(co2, data1);
 	Tornado_MainActions(data1, co2, data2);
 }
@@ -449,8 +523,8 @@ signed char GetCharacterLevel() {
 	return -1;
 }
 
-int BannedMilesLevel[5] = {  LevelIDs_FinalHazard, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1, 
-LevelIDs_TailsVsEggman2, 
+int BannedMilesLevel[5] = { LevelIDs_FinalHazard, LevelIDs_Route101280, LevelIDs_KartRace, LevelIDs_TailsVsEggman1,
+LevelIDs_TailsVsEggman2,
 };
 
 bool isLevelBanned() {
@@ -512,7 +586,7 @@ void InitLandColMemory_r()
 void LoadCharacter_r() {
 
 	if (!TwoPlayerMode && !isLevelBanned()) {
-		
+
 		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails && CurrentCharacter == Characters_MechTails))
 			CurrentCharacter = Characters_Tails;
 	}
@@ -526,7 +600,9 @@ void BetterMiles_Init() {
 	Tails_Main_t.Hook(Tails_Main_r);
 	Miles_CheckNextActions_t.Hook(Miles_CheckNextAction_r);
 	Tails_RunsAction_t.Hook(Tails_runsAction_r);
+	Tails_CheckActionWindow_t.Hook(Tails_CheckActionWindow_r);
 	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
+
 	Init_LandColMemory_t = new Trampoline((int)0x47BB50, (int)0x47BB57, InitLandColMemory_r);
 
 	if (isMechRemoved) {
@@ -569,5 +645,4 @@ void BetterMiles_Init() {
 	init_Patches();
 
 	WriteData((int**)0x7952fa, &ShadowActionWindowTextIndexes);
-	InitLightDashStuff();
 }

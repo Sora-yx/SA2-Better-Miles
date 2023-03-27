@@ -84,20 +84,24 @@ bool isMilesAttacking() {
 
 	EntityData1* data1 = MainCharObj1[MilesCO2Extern->base.PlayerNum];
 
-	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
-		return true;
+	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling 
+		|| data1->Action == BounceFloor || data1->Action == SpinningAir)
+		{
+			return true;
+		}
 
 	return false;
 }
 
 bool isMilesAttackingBox(char pnum) {
 
-	if (!isMiles())
-		return false;
-
 	EntityData1* data1 = MainCharObj1[pnum];
 
-	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor)
+	if (!data1 || !isMiles())
+		return false;
+
+
+	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor || data1->Action == SpinningAir)
 		return true;
 
 	return false;

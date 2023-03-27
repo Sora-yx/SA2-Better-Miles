@@ -1,8 +1,5 @@
 #include "pch.h"
 
-
-static Float savePosY = 0.0f;
-
 void Miles_CheckSpinAttack(TailsCharObj2* co2M, EntityData1* twp, CharObj2Base* co2, EntityData2* a4)
 {
 	if (!isCustomAnim || CurrentLevel == LevelIDs_ChaoWorld && CurrentChaoArea != 7 || MilesCheckInput(a4, co2M, co2, twp) || Tails_CheckActionWindow_(twp, a4, co2, co2M)) {
@@ -11,14 +8,15 @@ void Miles_CheckSpinAttack(TailsCharObj2* co2M, EntityData1* twp, CharObj2Base* 
 
 	if (Controllers[co2->PlayerNum].on & SpinBtn && (twp->Status & Status_OnPath) == 0)
 	{
-		twp->Action = Spinning;
+
+		twp->Action = (twp->Status & 3) ? Spinning : SpinningAir;
+		twp->Status &= ~Status_Ball;
 		co2->AnimInfo.Next = Spin1;
 		co2->AnimInfo.field_8 = 0;
 		co2M->field_3BC[122] |= 2u;
 		PlaySoundProbably(8200, 0, 0, 0);
 	}
 }
-
 
 void Miles_SpinAttack(playerwk* pwp, taskwk* twp, TailsCharObj2* mCO2)
 {
@@ -43,6 +41,7 @@ void Miles_SpinAttack(playerwk* pwp, taskwk* twp, TailsCharObj2* mCO2)
 		}
 		else if (Controllers[pwp->PlayerNum].on & SpinBtn)
 		{
+
 			if (GetAnalog((EntityData1*)twp, (CharObj2Base*)pwp, 0, 0))
 			{
 				unsigned __int16 nextAnim = ((((4096
@@ -57,14 +56,6 @@ void Miles_SpinAttack(playerwk* pwp, taskwk* twp, TailsCharObj2* mCO2)
 					Play3DSound_Pos(8200, &twp->pos, 0, 0, 0);
 				}
 
-				if ((twp->flag & 3) != 0)
-				{
-					savePosY = twp->pos.y;
-				}
-				else if (savePosY + 100.0f < twp->pos.y)
-				{
-					Tails_FlyStart((EntityData1*)twp, (CharObj2Base*)pwp, mCO2);
-				}
 			}
 			else
 			{
@@ -89,11 +80,41 @@ void spinOnFrames(playerwk* pwk, EntityData1* data1, TailsCharObj2* mCo2)
 	{
 		Miles_SpinAttack(pwk, (taskwk*)data1, mCo2);
 	}
-	else {
-		data1->Action = 1;
-		pwk->mj.reqaction = 0;
+	else 
+	{
+		if (data1->Status & 3)
+		{
+			data1->Action = 1;
+			pwk->mj.reqaction = 0;
+		}
+		else
+		{
+			data1->Action = 10;
+			pwk->mj.reqaction = 15;
+		}
 	}
 	return;
+}
+
+void spinLeaveGroundCheck(taskwk* twp, playerwk* pwp, TailsCharObj2* co2M)
+{
+	if (!(twp->flag & 3) || TailsJump((CharObj2Base*)pwp, (EntityData1*)twp))
+	{
+		twp->mode = SpinningAir;
+		pwp->mj.reqaction = Spin1;
+		twp->flag &= ~Status_Ball;
+		return;
+	}
+}
+
+void spinLandingCheck(taskwk* twp, playerwk* pwp)
+{
+	if (twp->flag & 3)
+	{
+		twp->mode = Spinning;
+		pwp->mj.reqaction = Spin1;
+		return;
+	}
 }
 
 void Init_MilesSpin() {

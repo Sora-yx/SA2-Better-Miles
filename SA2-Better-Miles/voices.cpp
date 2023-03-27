@@ -1,6 +1,6 @@
 #include "pch.h"
 
-static UsercallFuncVoid(PlayIdle_Voice_t, (CharObj2Base* a1, char a2), (a1, a2), 0x477BB0, rEAX, stack4);
+UsercallFuncVoid(PlayIdle_Voice_t, (CharObj2Base* a1, char a2), (a1, a2), 0x477BB0, rEAX, stack4);
 
 void PlayIdle_Voice_r(CharObj2Base* co2, char a2)
 {

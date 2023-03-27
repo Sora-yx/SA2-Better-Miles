@@ -18,7 +18,6 @@ static Trampoline* BrokenDownSmoke_t = nullptr;
 static Trampoline* IronBoxEggman_t = nullptr;
 static Trampoline* Turtle_Function_t = nullptr;
 static Trampoline* PowerSupply_event_t = nullptr;
-static Trampoline* sub_6129C0_t = nullptr;
 
 void __cdecl PowerSupply_EventTask(ObjectMaster* a1)
 {
@@ -82,6 +81,7 @@ void Turtle_Function_r(ObjectMaster* obj)
 Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
 	if (obj) {
+
 		ObjectMaster* col = GetCollidingPlayer(obj);
 
 		if (col)
@@ -89,7 +89,7 @@ Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 			char pnum = GetPlayerNumber(col);
 
 			if (isMilesAttackingBox(pnum))
-				return 1;
+				return TRUE;
 		}
 	}
 
@@ -327,7 +327,8 @@ void LoadSuperFormFinalBattle() {
 void BrokenDownSmoke_r(ObjectMaster* a1) {
 	if (MainCharObj2[0]->CharID != Characters_MechTails && MainCharObj2[0]->CharID != Characters_MechEggman)
 		DeleteObject_(a1);
-	else {
+	else 
+	{
 		ObjectFunc(origin, BrokenDownSmoke_t->Target());
 		origin(a1);
 	}
@@ -388,17 +389,6 @@ void DeleteLevelStuff_r() {
 	Delete_TornadoTransform();
 }
 
-ObjectMaster* __cdecl sub_6129C0(ObjectMaster* a1)
-{
-	EntityData1* data = a1->Data1.Entity;
-	
-	FunctionPointer(ObjectMaster*, origin, (ObjectMaster * a1), sub_6129C0_t->Target());
-	ObjectMaster* obj = origin(a1);
-
-	data->Action = data->Action;
-	return obj;
-}
-
 
 void Init_ObjectsHacks() {
 
@@ -431,14 +421,13 @@ void Init_ObjectsHacks() {
 	WriteJump(reinterpret_cast<void*>(0x6109d5), KBB_DamageChk);
 	WriteData<17>((int*)0x6109da, 0x90); //need 5 bytes to jump so we nop the rest and will add this code manually
 
-	WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
+
 	WriteData<3>((int*)0x751d70, 0x90); //Remove path action, we will manually call it (fix RH last loop)
 	WriteData<2>((int*)0x4cd255, 0x90); //remove chara sonic check in cannon core (fix softlock after the first rail)
 
 	Turtle_Function_t = new Trampoline((int)0x642B10, (int)0x642B16, Turtle_Function_r);
 	IronBoxEggman_t = new Trampoline((int)0x6FBC20, (int)0x6FBC26, IronBoxEggman_r);
 
-	sub_6129C0_t = new Trampoline((int)0x6129C0, (int)0x6129C6, sub_6129C0);
 
 	/*if (isMilesAdventure) {
 		//FinalHazard Stuff

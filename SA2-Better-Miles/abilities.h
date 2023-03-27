@@ -35,6 +35,7 @@ enum MilesState {
 	FloatingOnWater,
 	Swimming,
 	Diving,
+	SpinningAir,
 	TornadoStanding,
 	TornadoMoving,
 	TornadoAscending,
@@ -83,6 +84,8 @@ void Miles_PerformLightDash(CharObj2Base* co2, EntityData1* data);
 void Init_MilesSpin();
 void Miles_CheckSpinAttack(TailsCharObj2* a1, EntityData1* a2, CharObj2Base* a3, EntityData2* a4);
 void spinOnFrames(playerwk* pwk, EntityData1* data1, TailsCharObj2* mCo2);
+void spinLeaveGroundCheck(taskwk* twp, playerwk* pwp, TailsCharObj2* co2M);
+void spinLandingCheck(taskwk* twp, playerwk* pwp);
 void Miles_GetFloat(EntityData1* a1, CharObj2Base* a2);
 bool CheckWaterSurface(CharObj2Base* a1, EntityData1* a2);
 
@@ -114,11 +117,9 @@ float PhysicsBoardStuff2(EntityData1* a1, EntityData2* a2, CharObj2Base* a3);
 void BoardSparklesMaybe(EntityData2* a1, EntityData1* a2, TailsCharObj2* a3);
 int PhysicsBoardStuff(CharObj2Base* a1, EntityData1* a2, EntityData2* a3, float a4);
 
-
+void Check_LightDash(taskwk* twp, playerwk* pwp);
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
 void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data);
-void InitLightDashStuff();
-
 signed int __cdecl MilesCheckInput(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
 
 void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* data1);

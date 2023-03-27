@@ -14,24 +14,9 @@ void Miles_PerformLightDash(CharObj2Base* co2, EntityData1* data)
 		co2->AnimInfo.Next = 4;
 	lightdashTime = 10;
 	lightdashTimer = 0;
-	co2->Speed.x = 16.0;
+	co2->Speed.x = 16.0f;
 	data->Status = data->Status & ~Status_Ball | Status_Attack;
 	PlaySoundProbably(8210, 0, 0, 0);
-}
-
-
-void RingMain_R(ObjectMaster* obj)
-{
-	if (IsPlayerInsideSphere(&obj->Data1.Entity->Position, 25))
-	{
-		if ( (Controllers[0].on & LightDashBtn) && (MainCharObj1[0]->Action <= Running || MainCharObj1[0]->Action == Jumping || MainCharObj1[0]->Action == 10 || MainCharObj1[0]->Action == Flying)) 
-		{
-			DoNextAction_r(0, 103, 0);
-		}
-	}
-
-	ObjectFunc(origin, RingMain_t->Target());
-	origin(obj);
 }
 
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1) 
@@ -149,9 +134,11 @@ void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data) {
 	}
 }
 
-void InitLightDashStuff() {
-	if (!isLightDash)
+void Check_LightDash(taskwk* twp, playerwk* pwp)
+{
+	if (!isLightDash || twp->flag & Status_HoldObject || twp->mode > Flying)
 		return;
 
-	RingMain_t = new Trampoline((int)RingMain, (int)RingMain + 0x6, RingMain_R);
+	if (sub_721480((CharObj2Base*)pwp, (EntityData1*)twp, 32.0f))
+		pwp->ActionWindowItems[pwp->ActionWindowItemCount++ & 7] = LightDash;
 }

@@ -78,8 +78,6 @@ static void __declspec(naked) DrawMotionAndObject_Hack()
 	}
 }
 
-
-
 int Tails_JumpStart_r(CharObj2Base* co2, EntityData1* data)
 {
 	signed int result = Tails_JumpStart_t.Original(co2, data);

@@ -329,7 +329,7 @@ unsigned int __cdecl CCL_CalcColli_r(ObjectMaster* a1, int* a2) //fix crash when
 		return 0;
 
 
-	TARGET_DYNAMIC(CCL_CalcColli)(a1, a2);
+	return TARGET_DYNAMIC(CCL_CalcColli)(a1, a2);
 }
 
 void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* tailsCO2) {

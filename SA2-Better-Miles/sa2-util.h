@@ -445,6 +445,16 @@ static inline void Miles_InitLightDash(EntityData1* data, CharObj2Base* co2, Ent
 	}
 }
 
+static const void* const DoJiggleThingPtr = (void*)0x4479E0;
+static inline void DoJiggleThing(JiggleInfo* jiggle)
+{
+	__asm
+	{
+		mov eax, jiggle
+		call DoJiggleThingPtr
+	}
+}
+
 VoidFunc(sub_48BDF0, 0x48BDF0);
 
 static inline signed int Tails_CheckActionWindow_(EntityData1* a1, EntityData2* a2, CharObj2Base* a3, TailsCharObj2* a4)
@@ -480,3 +490,4 @@ static inline signed int MilesCheckInput(EntityData2* a1, TailsCharObj2* a2, Cha
 	}
 	return result;
 }
+
