@@ -538,14 +538,19 @@ bool isLevelBanned() {
 	return false;
 }
 
+extern bool isTransform;
 
 void RemoveMech(int player) {
 
 	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
-		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) {
-		CurrentCharacter = Characters_Tails;
-		LoadTails(player);
-		return;
+		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) 
+	{
+		if (!isTransform)
+		{
+			CurrentCharacter = Characters_Tails;
+			LoadTails(player);
+			return;
+		}
 	}
 
 	LoadMechTails_t.Original(player);
@@ -584,12 +589,16 @@ void InitLandColMemory_r()
 	origin();
 }
 
+
 void LoadCharacter_r() {
 
 	if (!TwoPlayerMode && !isLevelBanned()) {
 
 		if (isMilesAdventure || isMechRemoved && (GetCharacterLevel() == Characters_MechTails && CurrentCharacter == Characters_MechTails))
+		{
 			CurrentCharacter = Characters_Tails;
+		}
+			
 	}
 
 	auto original = reinterpret_cast<decltype(LoadCharacter_r)*>(LoadCharacters_t->Target());

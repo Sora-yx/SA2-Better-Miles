@@ -13,11 +13,20 @@ bool flySoundEffect = true;
 bool jumpVoice = false;
 
 bool isJumpBall = true;
+bool tornadoConfig = true;
 
 Buttons RollBtn = Buttons_B;
 Buttons BounceBtn = Buttons_B;
 Buttons SpinBtn = Buttons_X;
 Buttons LightDashBtn = Buttons_Y;
+
+static const Buttons ButtonsList[]
+{
+	Buttons_B,
+	Buttons_X,
+	Buttons_Y,
+};
+
 
 void ReadConfig(const char* path) {
 
@@ -31,11 +40,12 @@ void ReadConfig(const char* path) {
 	isInfiniteFly = config->getBool("Abilities", "isInfiniteFly", false);
 	isLightDash = config->getBool("Abilities", "isLightDash", true);
 	isBounce = config->getBool("Abilities", "isBounce", true);
+	tornadoConfig = config->getBool("Abilities", "tornadoConfig", true);
 
-	RollBtn = (Buttons)config->getInt("pad", "RollBtn", RollBtn);
-	BounceBtn = (Buttons)config->getInt("pad", "BounceBtn", BounceBtn);
-	SpinBtn = (Buttons)config->getInt("pad", "SpinBtn", SpinBtn);
-	LightDashBtn = (Buttons)config->getInt("pad", "LightDashBtn", LightDashBtn);
+	RollBtn = ButtonsList[config->getInt("pad", "RollBtn", 0)];
+	BounceBtn = ButtonsList[config->getInt("pad", "BounceBtn", 0)];
+	SpinBtn = ButtonsList[config->getInt("pad", "SpinBtn", 1)];
+	LightDashBtn = ButtonsList[config->getInt("pad", "LightDashBtn", 2)];
 
 	flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
 	jumpVoice = config->getBool("Audio", "jumpVoice", false);

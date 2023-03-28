@@ -53,6 +53,7 @@ void SoundEffect_Tornado(ObjectMaster* obj)
 	}
 }
 
+
 void DeleteAndLoadMech(char pNum) {
 
 	DeleteObject_(MainCharacter[pNum]);

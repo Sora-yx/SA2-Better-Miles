@@ -23,7 +23,7 @@ void Mech_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
 	if (GameState != GameStates_Ingame || !co2 || !isTornadoOn)
 		return;
 
-	if (Controllers[co2->PlayerNum].press & Buttons_Up && Controllers[co2->PlayerNum].press & Buttons_Y)
+	if (Controllers[co2->PlayerNum].press & Buttons_Up)
 	{
 		data1->Action = tornadoTransfoMech;
 		return;
@@ -61,9 +61,10 @@ void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	if (playerData->Action <= Action_Run)
 	{
-		if (Controllers[co2->PlayerNum].press & Buttons_Up && Controllers[co2->PlayerNum].press & Buttons_Y)
+		if (Controllers[co2->PlayerNum].press & Buttons_Up)
 		{
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
+			//PoseEffectMan_Load_(co2->PlayerNum, 186);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
 			isTornadoOn = true;
 
@@ -79,12 +80,12 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	char pNum = co2->PlayerNum;
 
-	if (Controllers[pNum].press & Buttons_Down && Controllers[pNum].press & Buttons_Y && isInTornado(pNum) || !isInTornado(pNum) && playerData->Action != Action_ObjectControl)
+	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum) || !isInTornado(pNum) && playerData->Action != Action_ObjectControl)
 	{
 		StopMusic();
 		ResetMusic();
 		isTornadoOn = false;
-		co2->Speed.y += 3;
+		co2->Speed.y += 3.0f;
 		co2->AnimInfo.Next = 66;
 		playerData->Action = Action_Fall;
 
@@ -152,7 +153,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 		if (++data->Timer == 100)
 		{
 
-			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
+			ReleaseCamera(CameraData[pNum].currentCameraSlot, pNum);
 			data->Action++;
 		}
 		break;
@@ -193,11 +194,9 @@ void tornadoCam_Child(ObjectMaster* obj)
 
 		if (++data->Timer == 100)
 		{
-			CamEventPos = player->Position;
-			CamEventAngleY = player->Rotation.y;
-			CameraEventZoom = 30.0f;
-			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
+			ReleaseCamera(CameraData[pNum].currentCameraSlot, pNum);
 			data->Action++;
+		
 		}
 		break;
 	default:
@@ -223,6 +222,9 @@ void Tornado_Main(ObjectMaster* obj) {
 
 	if (!player)
 		return;
+
+	Angle angy = njArcTan2((data->Position.x - player->Position.x), (data->Position.z, player->Position.z));
+	data->Rotation.y = -0xC000 - angy;
 
 	switch (data->Action)
 	{
@@ -254,10 +256,10 @@ void Tornado_Main(ObjectMaster* obj) {
 		player->Action = ObjectControl;
 		co2->AnimInfo.Next = 0;
 		data->Position = player->Position;
-		data->Position.x += 1020;
-		data->Position.y = data->Position.y + 20.0;
+		data->Position.x += 1020.0f;
+		data->Position.y = data->Position.y + 20.0f;
 
-		LookAt(&data->Position, &player->Position, nullptr, &data->Rotation.y + 4000);
+
 		data->Action++;
 		break;
 	case tornadoCall:
@@ -269,7 +271,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		break;
 	case tornadoMoveToPlayer1:
 
-		if (data->Position.x > player->Position.x + 650) {
+		if (data->Position.x > player->Position.x + 650.0f) {
 			data->Position.x -= 8;
 		}
 		else {
@@ -279,18 +281,18 @@ void Tornado_Main(ObjectMaster* obj) {
 		break;
 	case tornadoMoveToPlayer2:
 
-		if (data->Position.x > player->Position.x + 70) {
+		if (data->Position.x > player->Position.x + 70.0f) {
 			data->Position.x -= 3;
 		}
 		else {
-			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
+
 			data->Action++;
 		}
 		break;
 	case tornadoTransition:
 		player->Action = Action_Jump;
 		co2->AnimInfo.Next = 66;
-		co2->Speed.y += 2;
+		co2->Speed.y += 2.0f;
 		data->Action++;
 		break;
 	case tornadoTransition2:
@@ -334,13 +336,14 @@ void Tornado_Main(ObjectMaster* obj) {
 		mech->Data1.Entity->Position = player->Position;
 		mech->Data1.Entity->Rotation.y = player->Rotation.y;
 		DeleteObject_(obj);
-		break;
+		return;
 	case tornadoExit:
 		data->Rotation.y = 0x4000;
 		data->Position.x += 3;
 		data->Position.y += 3;
 
-		if (++data->Timer == 100) {
+		if (++data->Timer == 100) 
+		{
 			DeleteObject_(obj);
 		}
 		break;
@@ -372,9 +375,9 @@ void Tornado_SetNextAction(EntityData1* data1, char action) {
 signed int isTornadoStanding(CharObj2Base* a1, EntityData1* a2)
 {
 	if ((a2->Status & 0x4000) == 0
-		&& 0.0 != AnalogThings[a1->PlayerNum].magnitude
+		&& 0.0f != AnalogThings[a1->PlayerNum].magnitude
 		&& ((a2->Status & Status_OnPath) != 0 || !a1->DisableControlTimer)
-		|| 0.0 != a1->Speed.x)
+		|| 0.0f != a1->Speed.x)
 	{
 		return 0;
 	}
@@ -387,7 +390,7 @@ signed int isTornadoStanding(CharObj2Base* a1, EntityData1* a2)
 void Tornado_Standing(EntityData1* data1, CharObj2Base* co2)
 {
 
-	float spdY = 0.0;
+	float spdY = 0.0f;
 	char pnum = co2->PlayerNum;
 
 	if ((0.0 != AnalogThings[co2->PlayerNum].magnitude) || (data1->Status & Status_DisableControl))
@@ -398,10 +401,10 @@ void Tornado_Standing(EntityData1* data1, CharObj2Base* co2)
 
 	if (Jump_Held[pnum])
 	{
-		spdY = 2.7;
+		spdY = 2.7f;
 		Tornado_SetNextAction(data1, TornadoAscending);
 		data1->Status |= Status_Attack;
-		if (co2->Speed.y >= 2.7)
+		if (co2->Speed.y >= 2.7f)
 		{
 			VibeThing(0, 15, 0, 4);
 		}
