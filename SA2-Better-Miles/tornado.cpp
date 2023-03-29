@@ -10,6 +10,7 @@ NJS_TEXLIST* tornadoTex;
 bool isTornadoOn = false;
 bool cutsceneTornado = false;
 
+Float ColRangeBackup = 0.0f;
 DataPointer(NJS_MOTION*, off_171D8B8, 0x171D8B8);
 
 void __cdecl PoseEffectMan_r(ObjectMaster* a1)
@@ -140,6 +141,7 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 		co2->Speed.y += 3.0f;
 		co2->AnimInfo.Next = 66;
 		playerData->Action = Action_Fall;
+		playerData->Collision->Range = ColRangeBackup;
 
 		return;
 	}
@@ -390,6 +392,8 @@ void Tornado_Main(ObjectMaster* obj) {
 		co2->AnimInfo.Next = 35;
 		ControllerEnabled[pNum] = 1;
 		co2->Powerups &= Powerups_Invincibility;
+		ColRangeBackup = player->Collision->Range;
+		player->Collision->Range *= 5.0f;
 		data->Action++;
 
 		break;

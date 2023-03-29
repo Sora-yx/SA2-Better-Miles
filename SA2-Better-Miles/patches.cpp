@@ -263,15 +263,20 @@ static void __declspec(naked) fixRocketGrabASM()
 	}
 }
 
-
+char field_3BCBackup[15]{ 0 };
 void __cdecl Miles_ManageTails_r(EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3)
 {
 	if (!data1 || data1->Action != SpinningAir)
 	{
+		if (data1 && data1->Action == Spinning)
+		{
+			memcpy(&a3->field_3BC[125], field_3BCBackup, sizeof(field_3BCBackup));
+		}
 		return Miles_ManageTails_t.Original(data1, a2, a3);
 	}
 
 
+	memcpy(&a3->field_3BC[125], field_3BCBackup, sizeof(field_3BCBackup));;
 	int angle = 0;
 
 	Float TailPos = data1->Position.y + 2.5f - *(float*)&a3->field_4BC[20];
