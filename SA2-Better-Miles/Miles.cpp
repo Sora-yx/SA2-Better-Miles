@@ -580,17 +580,16 @@ void InitLandColMemory_r()
 		auto p = MainCharObj2[i];
 		if (p) 
 		{
-
 			if (p->CharID == Characters_Tails)
 			{
 				LoadTailsExtra(i);
 				isMiles = true;
-				break;
 			}
 
 			if (p->CharID == Characters_Tails || p->CharID == Characters_MechTails)
 			{
 				LoadTornado_ModelAnim();
+				break;
 			}
 		}
 	}
