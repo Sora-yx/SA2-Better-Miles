@@ -129,3 +129,4 @@ void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* dat
 
 void Cart_HackInit();
 void Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
+void LoadTailsExtra(char pnum);

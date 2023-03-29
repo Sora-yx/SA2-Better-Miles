@@ -13,9 +13,15 @@ FunctionHook<void, EntityData1*, EntityData2*, CharObj2Base*, MechEggmanCharObj2
 Trampoline* sub_75DF80_t = nullptr;
 Trampoline* CCL_CalcColli_t = nullptr;
 
+UsercallFunc(int*, sub_74A6E0_t, (int* a1), (a1), 0x74A6E0, rEAX, rEAX);
+
+
 bool isInMech = false;
 
-CollisionData SuperLaserCol = { 0, CollisionShape_Cyl1, 7, 0xE1, 0x800400, {0}, 5.0, 40.0, 30.0, 30.0, {0, 0, 0x0 } };
+CollisionData SuperLaserCol = { 0, CollisionShape_Cube1, 7, 0xE1, 0x800400, {0.0f, 0.0f, 0.0f}, 25.0, 20.0f, 5.0, 0.0, {0x4000, 0, 0x4000 } };
+
+static const uint16_t PowerLaserFullCD = 60 * 15;
+static uint16_t PowerLaserCD = 0;
 
 
 void SoundEffect_Tornado(ObjectMaster* obj)
@@ -69,6 +75,7 @@ void DeleteAndLoadMiles(char pNum) {
 	CurrentCharacter = Characters_Tails;
 	LoadTails(pNum);
 	InitCharacterSound();
+	LoadTailsExtra(pNum);
 	return;
 }
 
@@ -333,17 +340,35 @@ unsigned int __cdecl CCL_CalcColli_r(ObjectMaster* a1, int* a2) //fix crash when
 	return TARGET_DYNAMIC(CCL_CalcColli)(a1, a2);
 }
 
+//should fix crash hopefully
+int* sub_74A6E0_r(int* a1)
+{
+	if (!a1 || isTransform)
+		return 0;
+
+	sub_74A6E0_t.Original(a1);
+}
+
+
 void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* tailsCO2) {
 
 	if (GameState != GameStates_Ingame || !co2)
 		return;
 
-	if (data->Action <= Action_Run) {
+	if (PowerLaserCD > 0)
+	{
+		PowerLaserCD--;
+	}
+	else
+	{
+		if (data->Action <= Action_Run) {
 
-		if (Controllers[co2->PlayerNum].press & Buttons_Y)
-		{
-			TailsEggman_LaserAttack(co2, data, data2, tailsCO2);
-			return;
+			if (Controllers[co2->PlayerNum].press & Buttons_Y)
+			{
+				TailsEggman_LaserAttack(co2, data, data2, tailsCO2);
+				PowerLaserCD = PowerLaserFullCD;
+				return;
+			}
 		}
 	}
 }
@@ -374,12 +399,34 @@ void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, Cha
 
 			UntransfoMech_CheckInput(co2, data1);
 
-			if ((TimerSeconds > 0 || TimerMinutes > 0)) {
+			if ((TimerSeconds > 0 || TimerMinutes > 0))
+			{
 				WriteData<1>((int*)0x749E90, 0xF8); //remove laser delay lol
 				Tails_SuperAttack_CheckInput(co2, data1, data2, co2Miles);
 			}
 		}
 	}
+}
+
+void SuperLaserChild_Hack(ObjectMaster* tp)
+{
+	auto twp = tp->Data1.Entity;
+	if (!twp->Action)
+	{
+
+		InitCollision(tp, &SuperLaserCol, 1, 4); //change the collision so we can hurt enemies.
+		twp->Collision->CollisionArray->attr |= 0x40000u;
+		twp->Collision->Range += 500.0f;
+		twp->Collision->Flag &= 0xFFBFu;
+		twp->Collision->CollisionArray->param3 = 120.0f;
+
+		twp->Action++;
+	}
+
+	twp->Position = tp->Parent->Data1.Entity->Position;
+	twp->Rotation = tp->Parent->Data1.Entity->Rotation;
+
+	AddToCollisionList(tp);
 }
 
 void SuperLaserCol_Hack(ObjectMaster* obj, CollisionData* collision, int count, unsigned __int8 a4) {
@@ -390,15 +437,14 @@ void SuperLaserCol_Hack(ObjectMaster* obj, CollisionData* collision, int count, 
 		return;
 	}
 
-	InitCollision(obj, &SuperLaserCol, count, 1); //change the collision so we can hurt enemies.
+	InitCollision(obj, &SuperLaserCol, 1, 1); //change the collision so we can hurt enemies.
+	LoadChildObject(LoadObj_Data1, SuperLaserChild_Hack, obj);
 	EntityData1* data1 = obj->Data1.Entity;
 	data1->Collision->CollisionArray->attr |= 0x40000u;
-	data1->Collision->Flag &= 0xFFBFu;
 	data1->Collision->Range += 500.0f;
+	data1->Collision->Flag &= 0xFFBFu;
 	data1->Collision->CollisionArray->param3 = 120.0f;
-
 }
-
 
 static void __declspec(naked) SuperLaserColHack_ASM()
 {
@@ -417,7 +463,8 @@ static void __declspec(naked) SuperLaserColHack_ASM()
 	}
 }
 
-void Delete_TornadoTransform() {
+void Delete_TornadoTransform() 
+{
 	FreeMDL(TornadoTransfo);
 	TornadoTransfo = nullptr;
 	FreeTexList(&tornadoTransfoTexList);
@@ -428,13 +475,15 @@ void Delete_TornadoTransform() {
 	return;
 }
 
-
-void Init_TailsMechHack() {
+void Init_TailsMechHack() 
+{
 	MechTails_runsActions_t.Hook(MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
 	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
 	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
+	sub_74A6E0_t.Hook(sub_74A6E0_r); //fix nonsense crash
 	WriteCall((void*)0x7607E2, SuperLaserColHack_ASM);
+
 	return;
 }
 

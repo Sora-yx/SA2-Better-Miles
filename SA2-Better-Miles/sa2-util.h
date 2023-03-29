@@ -379,19 +379,6 @@ static inline void sub_46C6D0(int a1, float a2, float a3, float a4)
 	}
 }
 
-//void __usercall PoseEffectMan_Load(int a1@<eax>, int arg0)
-static const void* const PoseEffectMan_r = (void*)0x477490;
-static inline void PoseEffectMan_Load_(int a1, int a2)
-{
-	__asm
-	{
-		push[a2]
-		mov eax, [a1]
-		call PoseEffectMan_r
-		add esp, 4
-	}
-}
-
 
 #pragma pack(push, 1)
 struct cartStruct

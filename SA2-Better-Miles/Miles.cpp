@@ -332,7 +332,11 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		break;
 	}
 
-	Tornado_RunsActions(data1, co2);
+	if (!MilesCheckInput(data2, co2Miles, co2, data1))
+	{
+		Tornado_RunsActions(data1, co2);
+	}
+
 }
 
 void Tails_Main_r(ObjectMaster* obj)
@@ -556,6 +560,16 @@ void RemoveMech(int player) {
 	LoadMechTails_t.Original(player);
 }
 
+void LoadTailsExtra(char pnum)
+{
+	auto p = MainCharObj2[pnum];
+	Load_MilesNewAnim();
+	SetSpacePhysics(p);
+	Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[pnum]->Data2.Undefined);
+	spinTimer = 0;
+	CheckAndSetHackObject(p);
+}
+
 //used to load object hack
 void InitLandColMemory_r()
 {
@@ -563,18 +577,20 @@ void InitLandColMemory_r()
 
 	for (int i = 0; i < 2; i++) {
 
-		if (MainCharObj2[i]) {
+		auto p = MainCharObj2[i];
+		if (p) 
+		{
 
-			if (MainCharObj2[i]->CharID == Characters_Tails)
+			if (p->CharID == Characters_Tails)
 			{
-				Load_MilesNewAnim();
-				LoadTornado_ModelAnim();
-				SetSpacePhysics(MainCharObj2[i]);
-				Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[i]->Data2.Undefined);
-				spinTimer = 0;
-				CheckAndSetHackObject(MainCharObj2[i]);
+				LoadTailsExtra(i);
 				isMiles = true;
 				break;
+			}
+
+			if (p->CharID == Characters_Tails || p->CharID == Characters_MechTails)
+			{
+				LoadTornado_ModelAnim();
 			}
 		}
 	}
