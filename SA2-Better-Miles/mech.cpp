@@ -81,7 +81,7 @@ void DeleteAndLoadMiles(char pNum) {
 
 void DeleteMech(ObjectMaster* obj)
 {
-	isTransform = false;
+	isTornadoTransform = false;
 	isInMech = false;
 }
 
@@ -134,7 +134,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 		playerData->Position.y += 1;
 		SavePos = playerData->Position;
 		SavePos.y += 5;
-		isTransform = true;
+		isTornadoTransform = true;
 		co2->Powerups |= Powerups_Invincibility;
 		co2->Speed = { 0, 0, 0 };
 		SetCameraFacePlayer(pNum, playerData, 40.0f);
@@ -170,7 +170,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
 			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
-			isTransform = false;
+			isTornadoTransform = false;
 			co2->Powerups &= Powerups_Invincibility;
 			ControllerEnabled[pNum] = 1;
 			data->Action++;
@@ -244,7 +244,7 @@ void CallMech(ObjectMaster* obj) {
 	case 0:
 	{
 		obj->DeleteSub = DeleteMech;
-		isTransform = true;
+		isTornadoTransform = true;
 		isInMech = true;
 		co2->Powerups |= Powerups_Invincibility;
 		co2->Speed = { 0, 0, 0 };
@@ -297,7 +297,7 @@ void CallMech(ObjectMaster* obj) {
 		if (++data->Timer == 7)
 		{
 			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
-			isTransform = false;
+			isTornadoTransform = false;
 			co2->Powerups &= Powerups_Invincibility;
 			int rng = rand() % 2 ? 1695 : 2274;
 			PlayVoice(2, 2274);
@@ -314,7 +314,7 @@ void CallMech(ObjectMaster* obj) {
 
 void ResetSoundSystem_r() {
 
-	if (isTransform && GameState == GameStates_Ingame)
+	if (isTornadoTransform && GameState == GameStates_Ingame)
 		return;
 
 	ResetSoundSystem();
@@ -324,7 +324,7 @@ void ResetSoundSystem_r() {
 
 void sub_75DF80_r(ObjectMaster* obj)
 {
-	if (isTransform)
+	if (isTornadoTransform)
 		return;
 
 	TARGET_DYNAMIC(sub_75DF80);
@@ -333,7 +333,7 @@ void sub_75DF80_r(ObjectMaster* obj)
 unsigned int __cdecl CCL_CalcColli_r(ObjectMaster* a1, int* a2) //fix crash when deleting player
 {
 
-	if (a1->MainSub == nullptr || !a2 || a2 + 52 == nullptr || isTransform)
+	if (a1->MainSub == nullptr || !a2 || a2 + 52 == nullptr || isTornadoTransform)
 		return 0;
 
 
@@ -343,7 +343,7 @@ unsigned int __cdecl CCL_CalcColli_r(ObjectMaster* a1, int* a2) //fix crash when
 //should fix crash hopefully
 int* sub_74A6E0_r(int* a1)
 {
-	if (!a1 || isTransform)
+	if (!a1 || isTornadoTransform)
 		return 0;
 
 	sub_74A6E0_t.Original(a1);

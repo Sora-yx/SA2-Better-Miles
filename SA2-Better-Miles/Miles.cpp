@@ -320,6 +320,9 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		CheckLightDashEnd(co2Miles, co2, data1);
 		return;
 	case FloatingOnWater:
+		if (co2->Speed.x > 0.0f)
+			SetNewTailsRotation(co2Miles, -17000);
+
 		CheckFloatingStuff(data2, data1, co2, co2Miles);
 		break;
 	case Swimming:
@@ -493,7 +496,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	case SpinningAir:
 	{
 		auto RestoreSpeed = co2->PhysData.Weight;
-		co2->PhysData.Weight = 0.0199999982f;
+		co2->PhysData.Weight = 0.0199999992f;
 
 
 		PGetRotation(data1, data2, co2);
@@ -542,14 +545,14 @@ bool isLevelBanned() {
 	return false;
 }
 
-extern bool isTransform;
+extern bool isTornadoTransform;
 
 void RemoveMech(int player) {
 
 	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
 		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) 
 	{
-		if (!isTransform)
+		if (!isTornadoTransform)
 		{
 			CurrentCharacter = Characters_Tails;
 			LoadTails(player);
@@ -641,19 +644,20 @@ void BetterMiles_Init() {
 	//Improve physic
 	if (isCustomPhysics) 
 	{
-		//copy knux physics since it's more closer to sadx tails
+		//copy Sonic physics since it's more closer to sadx tails
 		PhysicsArray[Characters_Tails] = PhysicsArray[Characters_Sonic];
 
 		//adjust to sadx Tails physics
 		PhysicsArray[Characters_Tails].FloorGrip = 1.5f;
 		PhysicsArray[Characters_Tails].JogSpeed = 0.49f;
-		PhysicsArray[Characters_Tails].RunSpeed = 2.8f;
+		PhysicsArray[Characters_Tails].RunSpeed = 2.2f;
 		PhysicsArray[Characters_Tails].RunAccel = 0.06f;
 		PhysicsArray[Characters_Tails].Radius = 3.5f;
 		PhysicsArray[Characters_Tails].Height = 9.0f;
 		PhysicsArray[Characters_Tails].CameraY = 6.0f;
 		PhysicsArray[Characters_Tails].CenterHeight = 4.5f;
 	}
+
 
 	Init_ObjectsHacks();
 	Init_MilesFly();
@@ -670,5 +674,4 @@ void BetterMiles_Init() {
 	Init_VoicesFixes();
 	init_Patches();
 
-	WriteData((int**)0x7952fa, &ShadowActionWindowTextIndexes);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-extern bool isTransform;
+extern bool isTornadoTransform;
 extern bool isTornadoOn;
 extern bool isInMech;
 

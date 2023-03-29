@@ -14,7 +14,6 @@ FunctionHook<void, EntityData1*, CharObj2Base*, TailsCharObj2*> Miles_ManageTail
 
 void TailsCalcColDamage_r(TailsCharObj2* co2M, taskwk* twp)
 {
-
 	TailsCalcColDamage_t.Original(co2M, twp);
 
 	auto col = twp->cwp;
@@ -158,21 +157,6 @@ void SetSpacePhysics(CharObj2Base* co2) {
 	return;
 }
 
-int ActionArray[7] = { Jumping, 24, ObjectControl, Pulley, 66, VictoryPose };
-
-//Edit the function which checks where it needs to animate Miles's tails to add more actions.
-static const void* const loc_7512F2 = (void*)0x7512F2;
-__declspec(naked) void  CheckAnimateTailsAction() {
-
-	for (int i = 0; i < LengthOfArray(ActionArray); i++)
-	{
-		if (MainCharObj1[0]->Action != ActionArray[i])
-		{
-			_asm jmp loc_7512F2
-			break;
-		}
-	}
-}
 
 void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
 {
@@ -200,7 +184,8 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
-	if (MilesCO2Extern) {
+	if (MilesCO2Extern) 
+	{
 
 		char pNum = MilesCO2Extern->base.PlayerNum;
 		char curAnim = MainCharObj2[pNum]->AnimInfo.Current;
@@ -209,7 +194,6 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 		if ((model == jmpBallID || isSA1Char(Characters_Tails) && model == 255 || isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
 			return;
-
 	}
 
 	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
@@ -218,14 +202,12 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 //Many animations make Miles's tails in a very weird rotation, we force a specific rotation so they look decent here.
 void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2_r* co2Miles) {
 	if (co2->AnimInfo.Current == 74 || co2->AnimInfo.Current >= 121 && co2->AnimInfo.Current <= 130 || co2->AnimInfo.Current >= 195 && co2->AnimInfo.Current <= 197)
-		*(int*)&co2Miles->field_1BC[436] = -9000;
+		*(_DWORD*)&co2Miles->field_3BC[140] = -9000;
 }
 
 void SetNewTailsRotation(TailsCharObj2* co2Miles, int angle)
 {
-	TailsCharObj2_r* co2M = (TailsCharObj2_r*)co2Miles;
-	*(int*)&co2M->field_1BC[436] = angle;
-	co2Miles = (TailsCharObj2*)co2M;
+	*(_DWORD*)&co2Miles->field_3BC[140] = angle;
 }
 
 void LevelItem_r(ObjectMaster* tp)
@@ -260,7 +242,11 @@ void fixRocketGrab_r(task* obj)
 
 	if (CurrentCharacter == Characters_Tails)
 	{
-		return;			
+		if (data)
+		{
+			data->cwp->info->attr |= 0x40000u; //fix rocket dammage lol
+			data->cwp->flag &= 0xFFBFu;
+		}
 	}
 
 	return AddToCollisionList((ObjectMaster*)obj);
@@ -277,12 +263,14 @@ static void __declspec(naked) fixRocketGrabASM()
 	}
 }
 
+
 void __cdecl Miles_ManageTails_r(EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3)
 {
 	if (!data1 || data1->Action != SpinningAir)
 	{
 		return Miles_ManageTails_t.Original(data1, a2, a3);
 	}
+
 
 	int angle = 0;
 
@@ -332,12 +320,12 @@ void init_Patches()
 	TailsCalcColDamage_t.Hook(TailsCalcColDamage_r);
 	WriteJump((void*)0x47A9C0, CheckAndSetPlayerSpeed); //make Miles bouncing when hitting enemy like other characters
 
-	if (isCustomAnim) {
-		WriteJump(reinterpret_cast<void*>(0x7512ea), CheckAnimateTailsAction); //fixes "static" Miles's Tails
-	}
-
+	//fixes "static" Miles's Tails
+	WriteJump(reinterpret_cast<void*>(0x7512ea), (void*)0x7512F2); 
+	WriteData<2>((int*)0x751529, 0x90);
+	
 	WriteCall((void*)0x6D6324, fixRocketGrabASM);
-	//WriteData<5>((void*)0x6d6324, 0x90); //fix rocket damage
+
 	//Draw the tails depending on the action
 	WriteCall((void*)0x750B32, Miles_DrawTail);
 	WriteCall((void*)0x750BB8, Miles_DrawTail);

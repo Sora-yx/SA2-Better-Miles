@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "tornado.h"
 
-extern bool isTransform;
+extern bool isTornadoTransform;
 
 ModelInfo* Tornado = nullptr;
 AnimationFile* TornadoMotion = nullptr;
@@ -667,7 +667,7 @@ void Delete_Tornado() {
 	Tornado = nullptr;
 	TornadoMotion = nullptr;
 	isTornadoOn = false;
-	isTransform = false;
+	isTornadoTransform = false;
 	FreeAnim(TornadoMotion);
 	FreeMDL(Tornado);
 	return;

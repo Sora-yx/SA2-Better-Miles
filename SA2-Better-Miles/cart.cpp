@@ -25,9 +25,7 @@ Trampoline* sub_485850_t;
 
 FunctionPointer(unsigned int, sub_485850, (ObjectMaster* a1, int* a2), 0x485850);
 
-bool isTransform = false;
-
-
+bool isTornadoTransform = false;
 
 void __cdecl CartExecuter_Main_r(ObjectMaster* obj)
 {
