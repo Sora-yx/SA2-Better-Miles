@@ -298,17 +298,21 @@ void CallMech(ObjectMaster* obj) {
 		{
 			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
 			isTornadoTransform = false;
-			co2->Powerups &= Powerups_Invincibility;
+
 			int rng = rand() % 2 ? 1695 : 2274;
 			PlayVoice(2, 2274);
 			DrawSubtitles(1, "\a I'll show you how powerful my Cyclone is!", 150, 1);
 			ControllerEnabled[pNum] = 1;
+			data->Timer = 0;
 			data->Action++;
 		}
 		break;
 	default:
-		DeleteObject_(obj);
-		return;
+		if (++data->Timer == 60)
+		{
+			co2->Powerups &= Powerups_Invincibility;
+			DeleteObject_(obj);
+		}
 	}
 }
 
