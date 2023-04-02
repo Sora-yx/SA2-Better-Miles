@@ -64,6 +64,7 @@ void DeleteAndLoadMech(char pNum) {
 
 	DeleteObject_(MainCharacter[pNum]);
 	CurrentCharacter = Characters_MechTails;
+	MilesCO2Extern = nullptr;
 	LoadMechTails(pNum);
 	InitCharacterSound();
 	return;
@@ -231,7 +232,8 @@ void TransfoMech_Display(ObjectMaster* obj) {
 	njPopMatrixEx();
 }
 
-void CallMech(ObjectMaster* obj) {
+void CallMech(ObjectMaster* obj) 
+{
 
 	EntityData1* data = obj->Data1.Entity;
 	char pNum = data->Index;
@@ -399,7 +401,8 @@ void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, Cha
 			isInMech = true;
 		}
 
-		if (co2->CharID2 == Characters_MechTails && !isBossLevel()) {
+		if (co2->CharID2 == Characters_MechTails && !isBossLevel()) 
+		{
 
 			UntransfoMech_CheckInput(co2, data1);
 
@@ -487,7 +490,5 @@ void Init_TailsMechHack()
 	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
 	sub_74A6E0_t.Hook(sub_74A6E0_r); //fix nonsense crash
 	WriteCall((void*)0x7607E2, SuperLaserColHack_ASM);
-
-	return;
 }
 

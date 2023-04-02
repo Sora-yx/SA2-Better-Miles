@@ -182,6 +182,7 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 	}
 }
 
+
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 	if (MilesCO2Extern) 
@@ -200,7 +201,8 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 }
 
 //Many animations make Miles's tails in a very weird rotation, we force a specific rotation so they look decent here.
-void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2_r* co2Miles) {
+void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles) 
+{
 	if (co2->AnimInfo.Current == 74 || co2->AnimInfo.Current >= 121 && co2->AnimInfo.Current <= 130 || co2->AnimInfo.Current >= 195 && co2->AnimInfo.Current <= 197)
 		*(_DWORD*)&co2Miles->field_3BC[140] = -9000;
 }

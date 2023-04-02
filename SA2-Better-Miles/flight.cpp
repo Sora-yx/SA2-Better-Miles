@@ -138,7 +138,7 @@ void MilesGetAccelerationFly(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCh
 		pwp->mj.reqaction = 91;
 
 		if (!isTailsAI())
-			PlayCustomSoundVolume(Voice_TailsTired, 1);
+			PlayCustomVoiceVolume(Voice_TailsTired, 1);
 
 		return;
 	}

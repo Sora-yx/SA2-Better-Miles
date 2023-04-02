@@ -191,6 +191,26 @@ void PlayCustomSoundVolume(int ID, float volume) {
 	}
 }
 
+void PlayCustomVoiceVolume(int ID, float volume)
+{
+	if (!VoiceLanguage)
+	{
+		ID += 10000;
+	}
+
+	return PlayCustomSoundVolume(ID, volume);
+}
+
+void PlayCustomVoice(int ID)
+{
+	if (!VoiceLanguage)
+	{
+		ID += 10000;
+	}
+
+	return PlayCustomSound(ID);
+}
+
 void PlayCustomSoundQueue(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, bool loop, float volume, float pitch) {
 	int entryID = GetFreeSoundEntry();
 

@@ -18,6 +18,8 @@ void PlayCustomSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop);
 void PlayCustomSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop);
 void PlayCustomSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop);
 void PlayCustomSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool loop);
+void PlayCustomVoiceVolume(int ID, float volume);
+void PlayCustomVoice(int ID);
 
 enum CM_SoundList {
 	SE_tornado_Transfo01 = 10000,

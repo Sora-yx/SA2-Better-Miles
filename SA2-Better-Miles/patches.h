@@ -34,18 +34,9 @@ struct TailsCharObj2_
 	char field_5BC[36];
 };
 
-struct TailsCharObj2_r //cheesy
-{
-	CharObj2Base base;
-	char field_1BC[496];
-	NJS_TEXLIST* TextureList;
-	ModelIndex* ModelList;
-	AnimationIndex* MotionList;
-	char field_3BC[36];
-};
 
 
-void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2_r* co2Miles);
+void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles);
 void SetNewTailsRotation(TailsCharObj2* co2Miles, int angle);
 void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
 void SetSpacePhysics(CharObj2Base* co2);

@@ -139,6 +139,6 @@ void Check_LightDash(taskwk* twp, playerwk* pwp)
 	if (!isLightDash || twp->flag & Status_HoldObject || twp->mode > Flying)
 		return;
 
-	if (sub_721480((CharObj2Base*)pwp, (EntityData1*)twp, 32.0f))
+	if (sub_721480((CharObj2Base*)pwp, (EntityData1*)twp, 35.0f))
 		pwp->ActionWindowItems[pwp->ActionWindowItemCount++ & 7] = LightDash;
 }

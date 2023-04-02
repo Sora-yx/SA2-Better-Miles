@@ -11,57 +11,6 @@ bool isTornadoOn = false;
 bool cutsceneTornado = false;
 
 Float ColRangeBackup = 0.0f;
-DataPointer(NJS_MOTION*, off_171D8B8, 0x171D8B8);
-
-void __cdecl PoseEffectMan_r(ObjectMaster* a1)
-{
-	if ((unsigned int)FrameCountIngame >= 0x3C)
-	{
-
-	}
-}
-
-void PoseEffectMan_Load_r(int pnum, int arg0)
-{
-	auto twp = MainCharObj1[pnum];
-	playerwk* pwp = (playerwk*)MainCharObj2[pnum];
-	CameraMotion camMTN{ 0 };
-	auto v4 = LoadObject(0, "PoseEffectMan", PoseEffectMan_r, LoadObj_Data1 | LoadObj_Data2);
-
-	if (v4)
-	{
-		v4->DisplaySub = PoseEffectMan_Display;
-		//pwp->mj.reqaction = arg0;
-		//twp->Action = 54;
-		v4->Data2.UnknownB->Time = pnum;
-		v4->Data2.UnknownB->Index = arg0;
-		//MainCharData2[pnum]->ang_aim.y = twp->Rotation.y;
-		Pose2PStart_PlayerNum = (pnum != 0) + 1;
-		camMTN.pos = &twp->Position;
-		//byte_174AFE2 = 1;
-		//byte_174AFFD = 1;
-
-		camMTN.mtn = 0;
-		camMTN.angy = 0x8000 - twp->Rotation.y;
-		camMTN.flag = 80;
-		camMTN.endcallback = 0;
-
-		camMTN.mtn = off_171D8B8;
-		camMTN.speed = 0.95999998f;
-
-		CameraData[0].shake_offset.x = 0.0f;
-		CameraData[0].shake_offset.y = 0.0f;
-		CameraData[0].shake_mode = 0;
-		CameraData[0].shake_offset.z = 0.0f;
-
-		if (CameraData[0].currentCameraSlot > 13)
-		{
-			ReleaseCamera(CameraData[0].currentCameraSlot, 0);
-		}
-
-		SetMotionCamera(0, &camMTN);
-	}
-}
 
 bool isInTornado(char pNum) {
 
@@ -99,10 +48,16 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 	{
 		PlayCustomSoundVolume(SE_tornadoBoost, 2);
 		data->Timer = 120;
-		co2->Speed.x += co2->PhysData.SpeedCapH - 2.0f;
+		co2->Speed.x += co2->PhysData.SpeedCapH - 4.0f;
 
-		int randomVoice = rand() % 2 ? (int)Voice_TailsWow : (int)Voice_TailsYay;
-		PlayCustomSoundVolume(randomVoice, 1);
+		uint16_t randomVoice = rand() % 3;
+
+		if (!randomVoice)
+			return;
+
+		randomVoice = randomVoice == 1 ? Voice_TailsWow : Voice_TailsYay;
+
+		PlayCustomVoiceVolume(randomVoice, 1);
 		return;
 	}
 }
@@ -232,7 +187,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 		*(int*)0x1DCFDE0 = 3;
 		*(int*)0x1DCFDE4 = 0;
 		*(int*)0x1DCFDE8 = 0;
-		CameraEventZoom = 800.0f;
+		CameraEventZoom = 600.0f;
 		CamEventPos = player->Position;
 		CamEventAngleZ = 63488;
 		CamEventAngleY = parentData->Rotation.y - 0x4000;
@@ -306,7 +261,7 @@ void Tornado_Main(ObjectMaster* obj) {
 			player->Action = TornadoStanding;
 			co2->AnimInfo.Next = 35;
 			data->Action = tornadoPlayable;
-			PlayCustomSound_Entity(SE_tornadoFlying, obj, 500, true);
+			PlayCustomSound_Entity(SE_tornadoFlying, obj, 300, true);
 			return;
 		}
 
@@ -324,11 +279,12 @@ void Tornado_Main(ObjectMaster* obj) {
 
 		if (!cutsceneTornado)
 		{
-			PlayCustomSound(Voice_TailsTimeToJam);
+			PlayCustomVoice(Voice_TailsTimeToJam);
 			DrawSubtitles(1, "\a Time to jam!", 95, 1);
 			LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
 			co2->Powerups |= Powerups_Invincibility;
 			data->Position.x += 1020.0f;
+
 			data->Action++;
 		}
 		else
@@ -355,6 +311,7 @@ void Tornado_Main(ObjectMaster* obj) {
 		}
 		else {
 			data->Timer = 0;
+
 			data->Action++;
 		}
 		break;

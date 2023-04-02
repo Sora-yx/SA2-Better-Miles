@@ -82,7 +82,7 @@ Bool __cdecl CheckBreakObject_r(ObjectMaster* obj, ObjectMaster* other)
 {
 	if (obj && obj->Data1.Entity) 
 	{
-		int pnum = IsPlayerInsideSphere(&obj->Data1.Entity->Position, 15.0f);
+		int pnum = IsPlayerInsideSphere(&obj->Data1.Entity->Position, 20.0f);
 
 		if (pnum)
 		{

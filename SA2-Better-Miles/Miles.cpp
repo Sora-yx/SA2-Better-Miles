@@ -187,8 +187,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
-	TailsCharObj2_r* co2M = (TailsCharObj2_r*)co2Miles;
-	CheckAndFixTailsRotation(co2, co2M);
+	CheckAndFixTailsRotation(co2, co2Miles);
 
 	switch (data1->Action)
 	{
@@ -518,6 +517,7 @@ void Tails_Main_r(ObjectMaster* obj)
 	Tornado_CallCheckInput(co2, data1);
 	Tornado_MainActions(data1, co2, data2);
 }
+
 
 signed char GetCharacterLevel() {
 	for (int i = 0; i < 33; i++)
