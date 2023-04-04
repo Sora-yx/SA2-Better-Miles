@@ -84,8 +84,8 @@ bool isMilesAttacking() {
 
 	EntityData1* data1 = MainCharObj1[MilesCO2Extern->base.PlayerNum];
 
-	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling 
-		|| data1->Action == BounceFloor || data1->Action == SpinningAir)
+	if (data1->Action == Flying || data1->Action == Jumping || data1->Action == Spinning || data1->Action == Rolling ||
+		data1->Action == Bounce || data1->Action == BounceFloor || data1->Action == SpinningAir)
 		{
 			return true;
 		}
@@ -101,7 +101,7 @@ bool isMilesAttackingBox(char pnum) {
 		return false;
 
 
-	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == BounceFloor || data1->Action == SpinningAir)
+	if (data1->Action == Flying || data1->Action == Spinning || data1->Action == Rolling || data1->Action == Bounce || data1->Action == BounceFloor || data1->Action == SpinningAir)
 		return true;
 
 	return false;
@@ -114,8 +114,7 @@ bool isAttacking() {
 	if (!data1)
 		return false;
 
-	if (isMilesAttacking() || data1->Action == Action_BounceUp || data1->Action == Action_Jump
-		|| data1->Action == Action_SpinCharge || data1->Action == 95)
+	if (isMilesAttacking() || data1->Action == Action_SpinCharge)
 	{
 		return true;
 	}
@@ -125,7 +124,7 @@ bool isAttacking() {
 
 int DiffAngle(int ang0, int ang1)
 {
-	int v2; // r11
+	int v2; 
 
 	v2 = (__int16)(ang1 - ang0);
 	if (v2 < 0)
