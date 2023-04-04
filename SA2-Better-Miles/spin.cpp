@@ -84,11 +84,13 @@ void spinOnFrames(playerwk* pwk, EntityData1* data1, TailsCharObj2* mCo2)
 	{
 		if (data1->Status & 3)
 		{
+			RestoreNextAnim();
 			data1->Action = 1;
 			pwk->mj.reqaction = 0;
 		}
 		else
 		{
+			RestoreNextAnim();
 			data1->Action = 10;
 			pwk->mj.reqaction = 15;
 		}

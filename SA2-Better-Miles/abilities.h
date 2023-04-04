@@ -132,3 +132,4 @@ void Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3);
 void LoadTailsExtra(char pnum);
 
 void Delete_MilesAnim();
+void RestoreNextAnim();
