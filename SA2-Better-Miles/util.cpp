@@ -294,3 +294,14 @@ void njRotateXYZ(NJS_MATRIX_PTR m, Angle angx, Angle angy, Angle angz)
 	njRotateY(_nj_current_matrix_ptr_, angy);
 	njRotateX(_nj_current_matrix_ptr_, angx);
 }
+
+bool isKeyboard()
+{
+	if (MainUserConfig != nullptr)
+	{
+		if (MainUserConfig->data.field_28 == 0)
+			return true;
+	}
+
+	return false;
+}

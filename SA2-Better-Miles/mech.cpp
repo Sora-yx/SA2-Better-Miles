@@ -174,7 +174,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 			tornado->Data1.Entity->Index = co2->PlayerNum;
 			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
 			isTornadoTransform = false;
-			isInMech = false;
+			isInMech = true;
 			co2->Powerups &= Powerups_Invincibility;
 			ControllerEnabled[pNum] = 1;
 			data->Action++;
@@ -198,10 +198,11 @@ void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	if (playerData->Action <= Action_Run) {
 
-		if (Controllers[co2->PlayerNum].press & Buttons_Down)
+		auto pNum = co2->PlayerNum;
+		if (Controllers[pNum].press & Buttons_Down && !isKeyboard() || isKeyboard() && GetKeyState('N') & 0x8000)
 		{
 			ObjectMaster* tornado = LoadObject(2, "MechUntransfo", Untransform_Mech, LoadObj_Data1);
-			tornado->Data1.Entity->Index = co2->PlayerNum;
+			tornado->Data1.Entity->Index = pNum;
 			return;
 		}
 	}
@@ -515,4 +516,3 @@ void Init_TailsMechHack()
 	sub_74A6E0_t.Hook(sub_74A6E0_r); //fix nonsense crash
 	WriteCall((void*)0x7607E2, SuperLaserColHack_ASM);
 }
-

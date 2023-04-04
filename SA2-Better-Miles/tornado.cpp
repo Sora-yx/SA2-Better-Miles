@@ -25,7 +25,7 @@ void Mech_CallCheckInput(CharObj2Base* co2, EntityData1* data1) {
 	if (GameState != GameStates_Ingame || !co2)
 		return;
 
-	if (Controllers[co2->PlayerNum].press & Buttons_Up)
+	if (Controllers[co2->PlayerNum].press & Buttons_Up && !isKeyboard() || isKeyboard() && GetKeyState('B') & 0x8000)
 	{
 		data1->Action = tornadoTransfoMech;
 		return;
@@ -69,7 +69,7 @@ void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	if (playerData->Action <= Action_Run)
 	{
-		if (Controllers[co2->PlayerNum].press & Buttons_Up)
+		if (Controllers[co2->PlayerNum].press & Buttons_Up && !isKeyboard() || isKeyboard() && GetKeyState('B') & 0x8000)
 		{
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
 			//PoseEffectMan_Load_(co2->PlayerNum, 186);
@@ -88,7 +88,7 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	char pNum = co2->PlayerNum;
 
-	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum) || !isInTornado(pNum) && playerData->Action != Action_ObjectControl)
+	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum) && !isKeyboard() || !isInTornado(pNum) && playerData->Action != Action_ObjectControl || isKeyboard() && GetKeyState('N') & 0x8000)
 	{
 		if (tornadoMusic)
 		{

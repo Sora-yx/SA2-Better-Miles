@@ -44,3 +44,4 @@ void Draw_MilesWrapper(NJS_OBJECT* object, int(__cdecl* callback)(NJS_CNK_MODEL*
 bool isAttacking();
 
 void njRotateXYZ(NJS_MATRIX_PTR m, Angle angx, Angle angy, Angle angz);
+bool isKeyboard();
