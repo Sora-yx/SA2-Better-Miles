@@ -35,17 +35,14 @@ extern "C" {
 		BetterMiles_Init();
 	}
 
-	__declspec(dllexport) void __cdecl OnFrame() {
+	__declspec(dllexport) void __cdecl OnFrame() 
+	{
 
 		RunCustomSounds();
-		if (Controllers[0].on & Buttons_L && Controllers[0].on & Buttons_R && Controllers[0].press & Buttons_X)
-		{
-			//AwardWin(0);
-		}
 	}
 
 
-	__declspec(dllexport) void __cdecl OnInitEnd()
+	__declspec(dllexport) void __cdecl OnExit()
 	{
 		FreeAllCustomSounds();
 		Delete_Tornado();
