@@ -31,7 +31,6 @@ static void __declspec(naked) Tails_FlyStartASM()
 	}
 }
 
-
 void PGetAccelerationFly(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCharObj2* co2Tails)
 {
 	Angle diffAngleRes = 0;

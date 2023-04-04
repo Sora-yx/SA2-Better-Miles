@@ -254,9 +254,11 @@ AnimationInfo TailsAnimationList_R[] = {
 
 AnimationIndex* MilesNewAnimList = nullptr;
 
-void Delete_MilesAnim() {
+void Delete_MilesAnim() 
+{
 	AnimationIndex* copy = MilesNewAnimList;
-	UnloadAnimation(copy);
+	if (copy)
+		UnloadAnimation(copy);
 
 	MilesNewAnimList = 0;
 	return;

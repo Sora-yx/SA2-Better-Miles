@@ -14,6 +14,7 @@ bool jumpVoice = false;
 
 bool isJumpBall = true;
 bool tornadoConfig = true;
+bool tornadoMusic = true;
 
 Buttons RollBtn = Buttons_B;
 Buttons BounceBtn = Buttons_B;
@@ -37,6 +38,7 @@ void ReadConfig(const char* path) {
 	isMilesAdventure = config->getBool("General", "isMilesAdventure", false);
 	isJumpBall = config->getBool("General", "isJumpBall", true);
 
+
 	isInfiniteFly = config->getBool("Abilities", "isInfiniteFly", false);
 	isLightDash = config->getBool("Abilities", "isLightDash", true);
 	isBounce = config->getBool("Abilities", "isBounce", true);
@@ -47,6 +49,7 @@ void ReadConfig(const char* path) {
 	SpinBtn = ButtonsList[config->getInt("pad", "SpinBtn", 1)];
 	LightDashBtn = ButtonsList[config->getInt("pad", "LightDashBtn", 2)];
 
+	tornadoMusic = config->getBool("Audio", "tornadoMusic", true);
 	flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
 	jumpVoice = config->getBool("Audio", "jumpVoice", false);
 	delete config;

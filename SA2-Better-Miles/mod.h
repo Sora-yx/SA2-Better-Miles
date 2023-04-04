@@ -15,6 +15,7 @@ extern bool jumpVoice;
 extern bool isCustomPhysics;
 extern bool flySoundEffect;
 extern bool isJumpBall;
+extern bool tornadoMusic;
 extern Buttons RollBtn;
 extern Buttons BounceBtn;
 extern Buttons SpinBtn;

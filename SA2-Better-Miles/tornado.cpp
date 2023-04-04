@@ -90,8 +90,12 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
 	if (Controllers[pNum].press & Buttons_Down && isInTornado(pNum) || !isInTornado(pNum) && playerData->Action != Action_ObjectControl)
 	{
-		StopMusic();
-		ResetMusic();
+		if (tornadoMusic)
+		{
+			StopMusic();
+			ResetMusic();
+		}
+
 		isTornadoOn = false;
 		co2->Speed.y += 3.0f;
 		co2->AnimInfo.Next = 66;
@@ -108,8 +112,11 @@ void Tornado_CancelNAct(CharObj2Base* co2, EntityData1* playerData, EntityData2*
 	{
 		if (TimerStopped)
 		{
-			StopMusic();
-			ResetMusic();
+			if (tornadoMusic)
+			{
+				StopMusic();
+				ResetMusic();
+			}
 			isTornadoOn = false;
 		}
 	}
@@ -242,7 +249,7 @@ void Tornado_Main(ObjectMaster* obj) {
 
 	ObjectMaster* mech;
 
-	if (!player)
+	if (!player || !co2)
 		return;
 
 	Angle angy = njArcTan2((player->Position.x, data->Rotation.y), (player->Position.z, data->Rotation.y));
@@ -251,11 +258,12 @@ void Tornado_Main(ObjectMaster* obj) {
 	{
 	case tornadoInit:
 
+		co2->Powerups |= Powerups_Invincibility;
+
 		if (isInMech)
 		{
 			isTornadoOn = true;
 			isInMech = false;
-			co2->Powerups |= Powerups_Invincibility;
 			obj->DisplaySub = Tornado_Display;
 			data->Position = player->Position;
 			player->Action = TornadoStanding;
@@ -268,7 +276,9 @@ void Tornado_Main(ObjectMaster* obj) {
 		obj->DisplaySub = Tornado_Display;
 		obj->DeleteSub = Tornado_Delete;
 		ControllerEnabled[pNum] = 0;
-		PlayJingle("tornado.adx");
+		DeathZoneDebug = 1;
+		if (tornadoMusic)
+			PlayJingle("tornado.adx");
 
 		player->Rotation = data->Rotation;
 		player->Action = ObjectControl;
@@ -282,7 +292,7 @@ void Tornado_Main(ObjectMaster* obj) {
 			PlayCustomVoice(Voice_TailsTimeToJam);
 			DrawSubtitles(1, "\a Time to jam!", 95, 1);
 			LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
-			co2->Powerups |= Powerups_Invincibility;
+
 			data->Position.x += 1020.0f;
 
 			data->Action++;
@@ -348,9 +358,10 @@ void Tornado_Main(ObjectMaster* obj) {
 		player->Action = TornadoStanding;
 		co2->AnimInfo.Next = 35;
 		ControllerEnabled[pNum] = 1;
-		co2->Powerups &= Powerups_Invincibility;
+
 		ColRangeBackup = player->Collision->Range;
 		player->Collision->Range *= 5.0f;
+		DeathZoneDebug = 0;
 		data->Action++;
 
 		break;
@@ -386,6 +397,7 @@ void Tornado_Main(ObjectMaster* obj) {
 
 		if (++data->Timer == 100)
 		{
+			co2->Powerups &= ~Powerups_Invincibility;
 			DeleteObject_(obj);
 		}
 		break;

@@ -30,7 +30,7 @@ DataPointer(DWORD, dword_267053C, 0x267053C); //something checked for after imag
 VoidFunc(sub_47BB50, 0x47BB50);
 
 
-
+DataPointer(int, DeathZoneDebug, 0x174B002);
 DataPointer(__int16, ActiveLandTableColCount, 0x1DE9484);
 DataPointer(int, DebugMode2_, 0x174AFF9);
 DataPointer(char, byte_1738C69, 0x1738C69);

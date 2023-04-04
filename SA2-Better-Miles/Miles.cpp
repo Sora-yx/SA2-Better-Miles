@@ -2,7 +2,7 @@
 #include "patches.h"
 
 TaskHook Tails_Main_t(Tails_Main);
-
+TaskHook Tails_Delete_t(Tails_Delete);
 UsercallFunc(signed int, Miles_CheckNextActions_t, (EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4),
 	(a1, a2, a3, a4), 0x751CB0, rEAX, rECX, rEBX, rEDI, rESI);
 static FunctionHook<void, EntityData1*, EntityData2*, CharObj2Base*, TailsCharObj2*> Tails_RunsAction_t(Tails_RunActions);
@@ -58,7 +58,9 @@ static Sint32 Tails_CheckActionWindow_r(taskwk* twp, motionwk2* mwp, playerwk* p
 }
 
 
-signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4)
+{
+
 
 	switch (a4->NextAction)
 	{
@@ -163,6 +165,9 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	auto pwp = (playerwk*)co2;
 	auto twp = (taskwk*)data1;
 	auto mwp = (motionwk2*)data2;
+
+	if (!data1 || !co2)
+		return;
 
 	Check_LightDash(twp, pwp);
 
@@ -343,6 +348,9 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 void Tails_Main_r(ObjectMaster* obj)
 {
+	if (!obj || !obj->Data1.Entity)
+		return;
+
 	Tails_Main_t.Original(obj);
 
 	CharObj2Base* co2 = obj->Data2.Character;
@@ -518,6 +526,12 @@ void Tails_Main_r(ObjectMaster* obj)
 	Tornado_MainActions(data1, co2, data2);
 }
 
+void Tails_Delete_r(ObjectMaster* obj)
+{
+	Tails_Delete_t.Original(obj);
+
+	Delete_MilesAnim();
+}
 
 signed char GetCharacterLevel() {
 	for (int i = 0; i < 33; i++)
@@ -547,7 +561,8 @@ bool isLevelBanned() {
 
 extern bool isTornadoTransform;
 
-void RemoveMech(int player) {
+void RemoveMech(int player) 
+{
 
 	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
 		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) 
@@ -629,6 +644,7 @@ void BetterMiles_Init() {
 	Miles_CheckNextActions_t.Hook(Miles_CheckNextAction_r);
 	Tails_RunsAction_t.Hook(Tails_runsAction_r);
 	Tails_CheckActionWindow_t.Hook(Tails_CheckActionWindow_r);
+	Tails_Delete_t.Hook(Tails_Delete_r);
 	LoadCharacters_t = new Trampoline((int)LoadCharacters, (int)LoadCharacters + 0x6, LoadCharacter_r);
 
 	Init_LandColMemory_t = new Trampoline((int)0x47BB50, (int)0x47BB57, InitLandColMemory_r);
@@ -637,7 +653,8 @@ void BetterMiles_Init() {
 		LoadMechTails_t.Hook(RemoveMech);
 	}
 
-	if (isMilesAdventure || isMechRemoved) {
+	if (isMilesAdventure || isMechRemoved) 
+	{
 		init_RankScore();
 	}
 

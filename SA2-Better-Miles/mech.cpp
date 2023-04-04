@@ -122,6 +122,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 	{
 	case 0:
 	{
+		DeathZoneDebug = 1;
 		playerData->Action = ObjectControl;
 		LoadChildObject(LoadObj_Data1, SoundEffect_Tornado, obj);
 		DrawSubtitles(1, "\a Tornado, transformation!", 120, 1);
@@ -142,13 +143,15 @@ void Untransform_Mech(ObjectMaster* obj) {
 		data->Scale.z = frame;
 		obj->DisplaySub = UnTransfoMech_Display;
 		DeleteAndLoadMiles(pNum);
+		playerData = MainCharObj1[pNum];
+		co2 = MainCharObj2[pNum];
 		playerData->Action = ObjectControl;
 		co2->AnimInfo.Next = 35;
 		data->Action++;
 	}
 	break;
 	case 1:
-		playerData->Action = ObjectControl;
+
 		playerData->Position = SavePos;
 		playerData->Rotation.y = data->Rotation.y;
 
@@ -167,15 +170,16 @@ void Untransform_Mech(ObjectMaster* obj) {
 		if (data->Scale.z <= 0)
 		{
 			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
-			isInMech = true;
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
 			ReleaseCamera(CameraData[pNum].currentCameraSlot, 0);
 			isTornadoTransform = false;
+			isInMech = false;
 			co2->Powerups &= Powerups_Invincibility;
 			ControllerEnabled[pNum] = 1;
 			data->Action++;
 			data->Scale.z = 0;
+			DeathZoneDebug = 0;
 		}
 		break;
 	default:
@@ -245,6 +249,7 @@ void CallMech(ObjectMaster* obj)
 	{
 	case 0:
 	{
+		DeathZoneDebug = 1;
 		obj->DeleteSub = DeleteMech;
 		isTornadoTransform = true;
 		isInMech = true;
@@ -252,8 +257,13 @@ void CallMech(ObjectMaster* obj)
 		co2->Speed = { 0, 0, 0 };
 		SetCameraFacePlayer(pNum, playerData, 40.0f);
 		data->Scale.z = 0;
-		StopMusic();
-		PlayJingle("tornado2.adx");
+
+		if (tornadoMusic)
+		{
+			StopMusic();
+			PlayJingle("tornado2.adx");
+		}
+
 		PlayVoice(2, 2433);
 		DrawSubtitles(1, "\a Tornado, transformation!", 120, 1);
 		obj->DisplaySub = TransfoMech_Display;
@@ -290,7 +300,11 @@ void CallMech(ObjectMaster* obj)
 		data->Timer = 0;
 		DeleteAndLoadMech(pNum);
 		playerData = MainCharObj1[pNum];
-		playerData->Position = SavePos;
+		if (playerData)
+			playerData->Position = SavePos;
+		co2 = MainCharObj2[pNum];
+		if (co2)
+			co2->Powerups |= Powerups_Invincibility;
 		data->Action++;
 		break;
 	case 4:
@@ -299,20 +313,22 @@ void CallMech(ObjectMaster* obj)
 		if (++data->Timer == 7)
 		{
 			PlayCustomSoundVolume(SE_tornadoTransfoFinish, 2);
-			isTornadoTransform = false;
 
+			isTornadoTransform = false;
 			int rng = rand() % 2 ? 1695 : 2274;
 			PlayVoice(2, 2274);
 			DrawSubtitles(1, "\a I'll show you how powerful my Cyclone is!", 150, 1);
 			ControllerEnabled[pNum] = 1;
 			data->Timer = 0;
+			DeathZoneDebug = 0;
 			data->Action++;
 		}
 		break;
 	default:
-		if (++data->Timer == 60)
+		if (++data->Timer == 90)
 		{
-			co2->Powerups &= Powerups_Invincibility;
+
+			co2->Powerups &= ~Powerups_Invincibility;
 			DeleteObject_(obj);
 		}
 	}
@@ -367,7 +383,8 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 	}
 	else
 	{
-		if (data->Action <= Action_Run) {
+		if (data->Action <= Action_Run) 
+		{
 
 			if (Controllers[co2->PlayerNum].press & Buttons_Y)
 			{
@@ -379,7 +396,8 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 	}
 }
 
-void Load_TornadoTransfo_ModelsTextures() {
+void Load_TornadoTransfo_ModelsTextures() 
+{
 	if (!TornadoTransfo)
 		TornadoTransfo = LoadMDL("tornadoTransfoMDL", ModelFormat_Chunk);
 
@@ -390,25 +408,31 @@ void Load_TornadoTransfo_ModelsTextures() {
 	return;
 }
 
-void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, MechEggmanCharObj2* co2Miles) {
+void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, MechEggmanCharObj2* co2Miles) 
+{
+
+	if (!co2Miles || isTornadoTransform)
+		return;
 
 	MechTails_runsActions_t.Original(data1, data2, co2, co2Miles);
 
-	if (!TwoPlayerMode && co2)
+	if (!TwoPlayerMode)
 	{
 		if (!data1->Action && !isInMech)
 		{
 			isInMech = true;
 		}
 
-		if (co2->CharID2 == Characters_MechTails && !isBossLevel()) 
+		if (co2->CharID2 == Characters_MechTails) 
 		{
-
-			UntransfoMech_CheckInput(co2, data1);
+			if (!isBossLevel())
+			{
+				UntransfoMech_CheckInput(co2, data1);
+				WriteData<1>((int*)0x749E90, 0xF8); //remove laser delay lol
+			}
 
 			if ((TimerSeconds > 0 || TimerMinutes > 0))
 			{
-				WriteData<1>((int*)0x749E90, 0xF8); //remove laser delay lol
 				Tails_SuperAttack_CheckInput(co2, data1, data2, co2Miles);
 			}
 		}
