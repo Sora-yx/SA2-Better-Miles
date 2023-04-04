@@ -252,6 +252,8 @@ AnimationInfo TailsAnimationList_R[] = {
 	{ Spin10, 208, 4, 0, 0.125f, 1 },
 };
 
+static const uint16_t listSize = LengthOfArray(TailsAnimationList_R);
+uint16_t nextAnimBackup[listSize]{ 0 };
 AnimationIndex* MilesNewAnimList = nullptr;
 
 void Delete_MilesAnim() 
@@ -273,6 +275,21 @@ void Load_MilesNewAnim() {
 		MilesNewAnimList = LoadMTNFile((char*)"\\animations\\NewMilesMtn.prs");
 }
 
+void CopyNextAnim()
+{
+	for (uint16_t i = 0; i < listSize; i++)
+	{
+		nextAnimBackup[i] = TailsAnimationList_R[i].NextAnimation;
+	}
+}
+
+void RestoreNextAnim()
+{
+	for (uint16_t i = 0; i < listSize; i++)
+	{
+		TailsAnimationList_R[i].NextAnimation = nextAnimBackup[i];
+	}
+}
 
 void Init_NewAnimation() {
 
@@ -290,5 +307,6 @@ void Init_NewAnimation() {
 		}
 
 		WriteData((AnimationInfo**)0x74CFD7, TailsAnimationList_R);
+		CopyNextAnim();
 	}
 }
