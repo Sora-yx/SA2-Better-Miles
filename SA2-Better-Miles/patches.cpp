@@ -340,6 +340,9 @@ void init_Patches()
 	Levelitem_t.Hook(LevelItem_r);
 	Miles_ManageTails_t.Hook(Miles_ManageTails_r);
 
+	if (!isCharaSelect())
+		WriteJump((void*)0x43C9D0, (void*)0x43CADF); // Tails/Eggman fix
+
 	//WriteData<1>((int*)0x75310F, SpinningAir);
 
 }

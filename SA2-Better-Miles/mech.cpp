@@ -369,7 +369,7 @@ int* sub_74A6E0_r(int* a1)
 	if (!a1 || isTornadoTransform)
 		return 0;
 
-	sub_74A6E0_t.Original(a1);
+	return sub_74A6E0_t.Original(a1);
 }
 
 
@@ -511,6 +511,7 @@ void Init_TailsMechHack()
 {
 	MechTails_runsActions_t.Hook(MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
+
 	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
 	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
 	sub_74A6E0_t.Hook(sub_74A6E0_r); //fix nonsense crash

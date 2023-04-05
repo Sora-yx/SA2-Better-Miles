@@ -631,7 +631,26 @@ void LoadCharacter_r() {
 		{
 			CurrentCharacter = Characters_Tails;
 		}
-			
+		
+	}
+
+	if (CurrentLevel == LevelIDs_ChaoWorld)
+	{
+		char curChar = CurrentCharacter;
+
+		if (curChar == Characters_MechEggman || curChar == Characters_MechTails)
+		{
+			if (MainCharacter[0])
+				DeleteObject_((ObjectMaster*)MainCharacter[0]);
+
+			if (isFirstStageLoad != 1 || negative_2 == -2)
+			{
+				if (CurrentCharacter == Characters_MechEggman)
+					CurrentCharacter = Characters_Eggman;
+				else
+					CurrentCharacter = Characters_Tails;
+			}
+		}
 	}
 
 	auto original = reinterpret_cast<decltype(LoadCharacter_r)*>(LoadCharacters_t->Target());
@@ -649,7 +668,8 @@ void BetterMiles_Init() {
 
 	Init_LandColMemory_t = new Trampoline((int)0x47BB50, (int)0x47BB57, InitLandColMemory_r);
 
-	if (isMechRemoved) {
+	if (isMechRemoved) 
+	{
 		LoadMechTails_t.Hook(RemoveMech);
 	}
 
