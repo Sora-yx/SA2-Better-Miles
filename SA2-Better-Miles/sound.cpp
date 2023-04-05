@@ -182,7 +182,34 @@ void PlayCustomSound(int ID) {
 	}
 }
 
-void PlayCustomSoundVolume(int ID, float volume) {
+void PlayCustomSoundVolume(int ID, float volume, bool voice = false) 
+{
+	if (!voice)
+		volume = static_cast<float>(sfxVol) / 100.0f;
+
+	if (volume <= 0.0f)
+		return;
+
+	int entryID = GetFreeSoundEntry();
+
+	if (entryID > -1) {
+		SoundListEntries[entryID].volumeB = volume;
+		PlaySoundChannelQueue(ID, entryID, 0);
+	}
+}
+
+void PlayCustomSoundVolume(int ID, float volume)
+{
+	const bool sup1 = volume > 1.0f;
+
+	volume = (static_cast<float>(sfxVol) / 100.0f);
+
+	if (volume <= 0.0f)
+		return;
+
+	if (sup1)
+		volume += 0.5f;
+
 	int entryID = GetFreeSoundEntry();
 
 	if (entryID > -1) {
@@ -198,7 +225,19 @@ void PlayCustomVoiceVolume(int ID, float volume)
 		ID += 10000;
 	}
 
-	return PlayCustomSoundVolume(ID, volume);
+	const bool sup1 = volume > 1.0f;
+
+	volume = (static_cast<float>(voiceVol) / 100.0f);
+
+	if (volume <= 0.0f)
+		return;
+
+
+	if (sup1)
+		volume += 1.0f;
+
+
+	return PlayCustomSoundVolume(ID, volume, true);
 }
 
 void PlayCustomVoice(int ID)
@@ -246,12 +285,14 @@ void PlayCustomSound_EntityOnlyOneAllowed(int ID, ObjectMaster* obj, float dist,
 	PlayCustomSound_Entity(ID, obj, dist, loop);
 }
 
-void PlayCustomSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop) {
+void PlayCustomSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop) 
+{
 	dist *= 2;
 	PlayCustomSoundQueue(ID, obj, NULL, dist, loop, volume, NULL);
 }
 
-void PlayCustomSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop) {
+void PlayCustomSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop) 
+{
 	PlayCustomSoundQueue(ID, obj, pos, dist, loop, volume, NULL);
 }
 
@@ -261,8 +302,9 @@ void PlayCustomSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool
 
 void DelayedCustomSound(ObjectMaster* obj) {
 	if (--obj->Data1.Entity->Scale.y <= 0) {
-		if (obj->Data1.Entity->Scale.z != 0) {
-			PlayCustomSoundVolume(obj->Data1.Entity->Scale.x, obj->Data1.Entity->Scale.z);
+		if (obj->Data1.Entity->Scale.z != 0) 
+		{
+			PlayCustomSoundVolume(obj->Data1.Entity->Scale.x, obj->Data1.Entity->Scale.z, false);
 		}
 		else {
 			PlayCustomSound(obj->Data1.Entity->Scale.x);
@@ -272,7 +314,8 @@ void DelayedCustomSound(ObjectMaster* obj) {
 	}
 }
 
-void PlayDelayedCustomSound(int ID, int time, float volumeoverride) {
+void PlayDelayedCustomSound(int ID, int time, float volumeoverride) 
+{
 	ObjectMaster* temp = LoadObject(1, "DelayedCustomSound", DelayedCustomSound, LoadObj_Data1);
 	temp->Data1.Entity->Scale.x = ID;
 	temp->Data1.Entity->Scale.y = time;

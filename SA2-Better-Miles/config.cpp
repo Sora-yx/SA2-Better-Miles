@@ -15,11 +15,15 @@ bool jumpVoice = false;
 bool isJumpBall = true;
 bool tornadoConfig = true;
 bool tornadoMusic = true;
+uint8_t sfxVol = 70;
+uint8_t voiceVol = 50;
 
 Buttons RollBtn = Buttons_B;
 Buttons BounceBtn = Buttons_B;
 Buttons SpinBtn = Buttons_X;
 Buttons LightDashBtn = Buttons_Y;
+
+
 
 static const Buttons ButtonsList[]
 {
@@ -52,6 +56,8 @@ void ReadConfig(const char* path) {
 	tornadoMusic = config->getBool("Audio", "tornadoMusic", true);
 	flySoundEffect = config->getBool("Audio", "flySoundEffect", true);
 	jumpVoice = config->getBool("Audio", "jumpVoice", false);
+	sfxVol = config->getInt("Audio", "sfxVol", sfxVol);
+	voiceVol = config->getInt("Audio", "voiceVol", voiceVol);
 	delete config;
 
 	if (isSA1Char(Characters_Tails))

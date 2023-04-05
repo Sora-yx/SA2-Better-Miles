@@ -47,8 +47,8 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 	if (Controllers[pNum].press & Buttons_Y && isInTornado(pNum))
 	{
 		PlayCustomSoundVolume(SE_tornadoBoost, 2);
-		data->Timer = 120;
-		co2->Speed.x += co2->PhysData.SpeedCapH - 4.0f;
+		data->Timer = 180;
+		co2->Speed.x += co2->PhysData.SpeedCapH - 6.5f;
 
 		uint16_t randomVoice = rand() % 3;
 
@@ -72,7 +72,6 @@ void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 		if (Controllers[co2->PlayerNum].press & Buttons_Up && !isKeyboard() || isKeyboard() && GetKeyState('B') & 0x8000)
 		{
 			ObjectMaster* tornado = LoadObject(2, "Tornado", Tornado_Main, LoadObj_Data1);
-			//PoseEffectMan_Load_(co2->PlayerNum, 186);
 			tornado->Data1.Entity->Index = co2->PlayerNum;
 			isTornadoOn = true;
 
@@ -97,7 +96,7 @@ void Tornado_AbortCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 		}
 
 		isTornadoOn = false;
-		co2->Speed.y += 3.0f;
+		co2->Speed.y += 4.0f;
 		co2->AnimInfo.Next = 66;
 		playerData->Action = Action_Fall;
 		playerData->Collision->Range = ColRangeBackup;
@@ -289,7 +288,7 @@ void Tornado_Main(ObjectMaster* obj)
 
 		if (!cutsceneTornado)
 		{
-			PlayCustomVoice(Voice_TailsTimeToJam);
+			PlayCustomVoiceVolume(Voice_TailsTimeToJam, 0.5f);
 			DrawSubtitles(1, "\a Time to jam!", 95, 1);
 			LoadChildObject(LoadObj_Data1, tornadoCam_Child, obj);
 
@@ -395,7 +394,7 @@ void Tornado_Main(ObjectMaster* obj)
 		data->Position.x += 3;
 		data->Position.y += 3;
 
-		if (++data->Timer == 100)
+		if (++data->Timer == 45)
 		{
 			co2->Powerups &= ~Powerups_Invincibility;
 			DeleteObject_(obj);
@@ -495,7 +494,7 @@ void Tornado_Moving(EntityData1* data1, CharObj2Base* co2)
 		curSpeed = 2.7;
 		Tornado_SetNextAction(data1, TornadoAscending);
 		data1->Status |= Status_Attack;
-		if (co2->Speed.y >= 2.7)
+		if (co2->Speed.y >= 2.7f)
 		{
 			VibeThing(0, 15, co2->PlayerNum, 4);
 			return;
