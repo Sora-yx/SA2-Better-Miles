@@ -478,3 +478,63 @@ static inline signed int MilesCheckInput(EntityData2* a1, TailsCharObj2* a2, Cha
 	return result;
 }
 
+#pragma pack(push, 8)
+struct MechEggmanCharObj2_r
+{
+	CharObj2Base base;
+	char field_1BC[124];
+	float field_23C;
+	char field_240[4];
+	float field_244;
+	int field_248;
+	char field_24C[8];
+	float field_254;
+	float field_258;
+	float field_25C;
+	char field_260[120];
+	float field_2D8;
+	float field_2DC;
+	float field_2E0;
+	float field_2E4;
+	float field_2E8;
+	float field_2EC;
+	float field_2F0;
+	float field_2F4;
+	float field_2F8;
+	char field_2FC[96];
+	char field_35C;
+	char field_35D;
+	char field_35E;
+	char field_35F;
+	char field_360;
+	char field_361[3];
+	__int16 field_364;
+	__int16 field_366;
+	__int16 field_368;
+	__int16 field_36A;
+	__int16 field_36C;
+	__int16 field_36E;
+	char field_370[4];
+	float field_374;
+	char field_378[8];
+	int field_380;
+	char field_384[12];
+	float field_390;
+	float field_394;
+	float field_398;
+	int field_39C;
+	char field_3A0[132];
+	int field_424;
+	int field_428;
+	int field_42C;
+	int field_430;
+	int field_434;
+	float field_438;
+	float field_43C;
+	float field_440;
+	NJS_TEXLIST* CommonTextureList;
+	NJS_TEXLIST* TextureList;
+	ModelIndex* ModelList;
+	AnimationIndex* MotionList;
+};
+#pragma pack(pop)

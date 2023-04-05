@@ -6,7 +6,7 @@ extern bool isTornadoTransform;
 ModelInfo* Tornado = nullptr;
 AnimationFile* TornadoMotion = nullptr;
 
-NJS_TEXLIST* tornadoTex;
+NJS_TEXLIST* tornadoTex = nullptr;
 bool isTornadoOn = false;
 bool cutsceneTornado = false;
 
@@ -64,7 +64,7 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 
 void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
-	if (GameState != GameStates_Ingame || !co2 || isTornadoOn || CurrentLevel >= LevelIDs_BigFoot)
+	if (GameState != GameStates_Ingame || !co2 || isTornadoOn || isBossLevel())
 		return;
 
 	if (playerData->Action <= Action_Run)
@@ -239,7 +239,8 @@ void Tornado_Delete(ObjectMaster* obj)
 	isTornadoOn = false;
 }
 
-void Tornado_Main(ObjectMaster* obj) {
+void Tornado_Main(ObjectMaster* obj) 
+{
 
 	EntityData1* data = obj->Data1.Entity;
 	char pNum = data->Index;
@@ -259,13 +260,14 @@ void Tornado_Main(ObjectMaster* obj) {
 	case tornadoInit:
 
 		co2->Powerups |= Powerups_Invincibility;
+		obj->DisplaySub = Tornado_Display;
+		obj->DeleteSub = Tornado_Delete;
+		data->Position = player->Position;
 
 		if (isInMech)
 		{
 			isTornadoOn = true;
 			isInMech = false;
-			obj->DisplaySub = Tornado_Display;
-			data->Position = player->Position;
 			player->Action = TornadoStanding;
 			co2->AnimInfo.Next = 35;
 			data->Action = tornadoPlayable;
@@ -273,8 +275,7 @@ void Tornado_Main(ObjectMaster* obj) {
 			return;
 		}
 
-		obj->DisplaySub = Tornado_Display;
-		obj->DeleteSub = Tornado_Delete;
+
 		ControllerEnabled[pNum] = 0;
 		DeathZoneDebug = 1;
 		if (tornadoMusic)
@@ -283,7 +284,6 @@ void Tornado_Main(ObjectMaster* obj) {
 		player->Rotation = data->Rotation;
 		player->Action = ObjectControl;
 		co2->AnimInfo.Next = 0;
-		data->Position = player->Position;
 		data->Position.y = data->Position.y + 20.0f;
 
 
@@ -612,7 +612,8 @@ void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* dat
 	}
 }
 
-void LoadTornado_ModelAnim() {
+void LoadTornado_ModelAnim() 
+{
 
 	if (!Tornado)
 		Tornado = LoadMDL("tornadoMDL", ModelFormat_Chunk);
@@ -632,16 +633,14 @@ void LoadTornado_ModelAnim() {
 
 	LoadTextureList("LIMTAILS", tornadoTex);
 	Load_TornadoTransfo_ModelsTextures();
-
-	return;
 }
 
-void Delete_Tornado() {
+void Delete_Tornado() 
+{
 	Tornado = nullptr;
 	TornadoMotion = nullptr;
 	isTornadoOn = false;
 	isTornadoTransform = false;
 	FreeAnim(TornadoMotion);
 	FreeMDL(Tornado);
-	return;
 }

@@ -61,7 +61,6 @@ static Sint32 Tails_CheckActionWindow_r(taskwk* twp, motionwk2* mwp, playerwk* p
 signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4)
 {
 
-
 	switch (a4->NextAction)
 	{
 	case 1:
@@ -592,6 +591,7 @@ void LoadTailsExtra(char pnum)
 void InitLandColMemory_r()
 {
 	bool isMiles = false;
+	resetMechWKPtr();
 
 	for (int i = 0; i < 2; i++) {
 

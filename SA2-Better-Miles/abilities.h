@@ -133,3 +133,4 @@ void LoadTailsExtra(char pnum);
 
 void Delete_MilesAnim();
 void RestoreNextAnim();
+void resetMechWKPtr();

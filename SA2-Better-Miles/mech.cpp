@@ -10,11 +10,11 @@ NJS_TEXNAME tornadoTransfoTex[150];
 NJS_TEXLIST tornadoTransfoTexList = { arrayptrandlength(tornadoTransfoTex) };
 
 FunctionHook<void, EntityData1*, EntityData2*, CharObj2Base*, MechEggmanCharObj2*> MechTails_runsActions_t(0x742C10);
+FunctionHook<void> ReadSET_1P_t(ReadSET_1P);
 Trampoline* sub_75DF80_t = nullptr;
 Trampoline* CCL_CalcColli_t = nullptr;
 
 UsercallFunc(int*, sub_74A6E0_t, (int* a1), (a1), 0x74A6E0, rEAX, rEAX);
-
 
 bool isInMech = false;
 
@@ -22,7 +22,12 @@ CollisionData SuperLaserCol = { 0, CollisionShape_Cube1, 7, 0xE1, 0x800400, {0.0
 
 static const uint16_t PowerLaserFullCD = 60 * 15;
 static uint16_t PowerLaserCD = 0;
+MechEggmanCharObj2_r* mechWK = nullptr;
 
+void resetMechWKPtr()
+{
+	mechWK = nullptr;
+}
 
 void SoundEffect_Tornado(ObjectMaster* obj)
 {
@@ -77,6 +82,7 @@ void DeleteAndLoadMiles(char pNum) {
 	LoadTails(pNum);
 	InitCharacterSound();
 	LoadTailsExtra(pNum);
+	resetMechWKPtr();
 	return;
 }
 
@@ -84,6 +90,7 @@ void DeleteMech(ObjectMaster* obj)
 {
 	isTornadoTransform = false;
 	isInMech = false;
+	resetMechWKPtr();
 }
 
 void UnTransfoMech_Display(ObjectMaster* obj) {
@@ -193,10 +200,11 @@ void Untransform_Mech(ObjectMaster* obj) {
 
 void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
-	if (GameState != GameStates_Ingame || !co2 || !isInMech)
+	if (GameState != GameStates_Ingame || !co2 || !isInMech || !mechWK || isBossLevel())
 		return;
 
-	if (playerData->Action <= Action_Run) {
+	if (playerData->Action <= Action_Run && mechWK->field_368 == 0 && mechWK->field_36A == 0) 
+	{
 
 		auto pNum = co2->PlayerNum;
 		if (Controllers[pNum].press & Buttons_Down && !isKeyboard() || isKeyboard() && GetKeyState('N') & 0x8000)
@@ -372,6 +380,15 @@ int* sub_74A6E0_r(int* a1)
 	return sub_74A6E0_t.Original(a1);
 }
 
+//fix random crash
+void __cdecl ReadSET_1P_r()
+{
+	if (isTornadoTransform || !MainCharObj1[0] || !MainCharObj2[0])
+		return;
+
+	ReadSET_1P_t.Original();
+}
+
 
 void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* tailsCO2) {
 
@@ -412,8 +429,10 @@ void Load_TornadoTransfo_ModelsTextures()
 void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, MechEggmanCharObj2* co2Miles) 
 {
 
-	if (!co2Miles || isTornadoTransform)
+	if (!co2 || !co2Miles || isTornadoTransform)
 		return;
+
+	mechWK = (MechEggmanCharObj2_r*)co2Miles;
 
 	MechTails_runsActions_t.Original(data1, data2, co2, co2Miles);
 
@@ -439,6 +458,7 @@ void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, Cha
 		}
 	}
 }
+
 
 void SuperLaserChild_Hack(ObjectMaster* tp)
 {
@@ -512,8 +532,11 @@ void Init_TailsMechHack()
 	MechTails_runsActions_t.Hook(MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
 
-	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); //fix nonsense crash 
-	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
-	sub_74A6E0_t.Hook(sub_74A6E0_r); //fix nonsense crash
 	WriteCall((void*)0x7607E2, SuperLaserColHack_ASM);
+
+	//fix nonsense crash 
+	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); 
+	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
+	sub_74A6E0_t.Hook(sub_74A6E0_r); 
+	ReadSET_1P_t.Hook(ReadSET_1P_r);
 }

@@ -234,7 +234,7 @@ void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom)
 bool isBossLevel() {
 	return CurrentLevel >= LevelIDs_BigFoot || CurrentLevel == LevelIDs_SonicVsShadow1 ||
 		CurrentLevel == LevelIDs_TailsVsEggman1 || CurrentLevel == LevelIDs_TailsVsEggman2
-		|| CurrentLevel == LevelIDs_SonicVsShadow2;
+		|| CurrentLevel == LevelIDs_SonicVsShadow2 || CurrentLevel == LevelIDs_KnucklesVsRouge;
 }
 
 typedef AnimationIndex* (CALLBACK* anim) (void);
