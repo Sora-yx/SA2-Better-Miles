@@ -538,3 +538,15 @@ struct MechEggmanCharObj2_r
 	AnimationIndex* MotionList;
 };
 #pragma pack(pop)
+
+
+static inline void SetAdjustMode_(int slot, int pnum, int adjust) // Set the adjust (see CameraAdjusts enum) of a camera slot
+{
+	__asm
+	{
+		mov edi, [adjust]
+		mov ecx, [pnum]
+		mov eax, [slot]
+		call SetAdjustModePtr
+	}
+}

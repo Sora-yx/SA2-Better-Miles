@@ -203,7 +203,7 @@ void UntransfoMech_CheckInput(CharObj2Base* co2, EntityData1* playerData) {
 	if (GameState != GameStates_Ingame || !co2 || !isInMech || !mechWK || isBossLevel())
 		return;
 
-	if (playerData->Action <= Action_Run && mechWK->field_368 == 0 && mechWK->field_36A == 0) 
+	if (playerData->Action <= Action_Run && mechWK->field_368 == 0 && mechWK->field_36A == 0)
 	{
 
 		auto pNum = co2->PlayerNum;
@@ -245,7 +245,7 @@ void TransfoMech_Display(ObjectMaster* obj) {
 	njPopMatrixEx();
 }
 
-void CallMech(ObjectMaster* obj) 
+void CallMech(ObjectMaster* obj)
 {
 
 	EntityData1* data = obj->Data1.Entity;
@@ -383,11 +383,11 @@ int* sub_74A6E0_r(int* a1)
 //fix random crash
 void __cdecl ReadSET_1P_r()
 {
-	if (CurrentCharacter == Characters_Tails || CurrentCharacter == Characters_MechTails)
+	if (isTornadoTransform || !MainCharObj2[0] || !MainCharObj1[0])
 	{
-		if (isTornadoTransform || !MainCharObj2[0] && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace)
+		if (CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace)
 			return;
-	}
+	}		
 
 	ReadSET_1P_t.Original();
 }
@@ -404,7 +404,7 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 	}
 	else
 	{
-		if (data->Action <= Action_Run) 
+		if (data->Action <= Action_Run)
 		{
 
 			if (Controllers[co2->PlayerNum].press & Buttons_Y)
@@ -417,7 +417,7 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 	}
 }
 
-void Load_TornadoTransfo_ModelsTextures() 
+void Load_TornadoTransfo_ModelsTextures()
 {
 	if (!TornadoTransfo)
 		TornadoTransfo = LoadMDL("tornadoTransfoMDL", ModelFormat_Chunk);
@@ -429,7 +429,7 @@ void Load_TornadoTransfo_ModelsTextures()
 	return;
 }
 
-void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, MechEggmanCharObj2* co2Miles) 
+void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, MechEggmanCharObj2* co2Miles)
 {
 
 	if (!co2 || !co2Miles || isTornadoTransform)
@@ -446,7 +446,7 @@ void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, Cha
 			isInMech = true;
 		}
 
-		if (co2->CharID2 == Characters_MechTails) 
+		if (co2->CharID2 == Characters_MechTails)
 		{
 			if (!isBossLevel())
 			{
@@ -518,7 +518,7 @@ static void __declspec(naked) SuperLaserColHack_ASM()
 	}
 }
 
-void Delete_TornadoTransform() 
+void Delete_TornadoTransform()
 {
 	FreeMDL(TornadoTransfo);
 	TornadoTransfo = nullptr;
@@ -530,7 +530,7 @@ void Delete_TornadoTransform()
 	return;
 }
 
-void Init_TailsMechHack() 
+void Init_TailsMechHack()
 {
 	MechTails_runsActions_t.Hook(MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
@@ -538,9 +538,9 @@ void Init_TailsMechHack()
 	WriteCall((void*)0x7607E2, SuperLaserColHack_ASM);
 
 	//fix nonsense crash 
-	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); 
+	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r);
 	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
-	
-	sub_74A6E0_t.Hook(sub_74A6E0_r); 
+
+	sub_74A6E0_t.Hook(sub_74A6E0_r);
 	ReadSET_1P_t.Hook(ReadSET_1P_r);
 }

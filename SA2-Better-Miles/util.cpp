@@ -217,11 +217,13 @@ void __fastcall njSubVector(NJS_VECTOR* vd, const NJS_VECTOR* vs)
 
 
 
-void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom)
+void SetCameraFacePlayer(int pNum, EntityData1* playerData, float zoom)
 {
 	sub_46C6D0(pNum, playerData->Position.x, playerData->Position.y, playerData->Position.z);
 	RegisterCameraMode(pNum, 20);
-	SetAdjustMode(CameraData[0].currentCameraSlot, 0, 0);
+
+	SetAdjustMode_(CameraData[0].currentCameraSlot, 0, 0);
+
 	*(int*)0x1DCFDE0 = 3;
 	*(int*)0x1DCFDE4 = 0;
 	*(int*)0x1DCFDE8 = 0;

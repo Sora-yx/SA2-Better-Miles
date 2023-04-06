@@ -163,7 +163,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 	EntityData1* parentData = obj->Parent->Data1.Entity;
-	char pNum = obj->Parent->Data1.Entity->Index;
+	int pNum = obj->Parent->Data1.Entity->Index;
 
 	EntityData1* player = MainCharObj1[pNum];
 	CharObj2Base* co2 = MainCharObj2[pNum];
@@ -189,7 +189,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 		data->Timer = 0;
 
 		RegisterCameraMode(pNum, 20);
-		SetAdjustMode(CameraData[pNum].currentCameraSlot, 0, 0);
+		SetAdjustMode_(CameraData[pNum].currentCameraSlot, 0, 0);
 		*(int*)0x1DCFDE0 = 3;
 		*(int*)0x1DCFDE4 = 0;
 		*(int*)0x1DCFDE8 = 0;
@@ -491,7 +491,7 @@ void Tornado_Moving(EntityData1* data1, CharObj2Base* co2)
 
 	if (Jump_Held[pnum])
 	{
-		curSpeed = 2.7;
+		curSpeed = 2.7f;
 		Tornado_SetNextAction(data1, TornadoAscending);
 		data1->Status |= Status_Attack;
 		if (co2->Speed.y >= 2.7f)
