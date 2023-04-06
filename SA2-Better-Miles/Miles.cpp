@@ -678,6 +678,7 @@ void BetterMiles_Init() {
 		init_RankScore();
 	}
 
+
 	//Improve physic
 	if (isCustomPhysics) 
 	{

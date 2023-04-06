@@ -141,5 +141,5 @@ void Cart_CheckInput(CharObj2Base* co2, EntityData1* data1) {
 void Cart_HackInit() {
 	//WriteCall((void*)0x61D139, Load_CartTimeOver_r);
 
-	CartExecuter_Main_t = new Trampoline((int)CartExecuter_Main, (int)CartExecuter_Main + 0x6, CartExecuter_Main_r);
+//	CartExecuter_Main_t = new Trampoline((int)CartExecuter_Main, (int)CartExecuter_Main + 0x6, CartExecuter_Main_r);
 }

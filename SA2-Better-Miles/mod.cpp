@@ -27,7 +27,6 @@ extern "C" {
 
 		ReadConfig(path); //get mod settings by the user
 
-
 		init_BassSound();
 
 		HelperFunctionsGlobal.ReplaceFile("Resource\\gd_PC\\MLT\\se_ch_te\\2.csb", "Resource\\gd_PC\\Sounds\\se_ch_te\\2.csb");

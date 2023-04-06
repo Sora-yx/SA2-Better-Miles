@@ -383,8 +383,11 @@ int* sub_74A6E0_r(int* a1)
 //fix random crash
 void __cdecl ReadSET_1P_r()
 {
-	if (isTornadoTransform || !MainCharObj1[0] || !MainCharObj2[0])
-		return;
+	if (CurrentCharacter == Characters_Tails || CurrentCharacter == Characters_MechTails)
+	{
+		if (isTornadoTransform || !MainCharObj2[0] && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace)
+			return;
+	}
 
 	ReadSET_1P_t.Original();
 }
@@ -537,6 +540,7 @@ void Init_TailsMechHack()
 	//fix nonsense crash 
 	sub_75DF80_t = new Trampoline(0x75DF80, 0x75DF86, sub_75DF80_r); 
 	CCL_CalcColli_t = new Trampoline((int)CCL_CalcColli, (int)CCL_CalcColli + 0x6, CCL_CalcColli_r);
+	
 	sub_74A6E0_t.Hook(sub_74A6E0_r); 
 	ReadSET_1P_t.Hook(ReadSET_1P_r);
 }
