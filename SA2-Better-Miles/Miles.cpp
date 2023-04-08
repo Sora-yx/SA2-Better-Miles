@@ -170,22 +170,14 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 	Check_LightDash(twp, pwp);
 
-	if (!MilesCheckInput(data2, co2Miles, co2, data1) && !Miles_SetNextActionSwim(co2Miles, data1))
+
+	if (data1->Action == Spinning)
 	{
-		if (data1->Action == Spinning)
-		{
-			spinLeaveGroundCheck(twp, pwp, co2Miles);
 
-			if (isCustomAnim)
-				spinOnFrames(pwp, data1, co2Miles);
-		}
-		else if (data1->Action == SpinningAir)
-		{
-			spinLandingCheck(twp, pwp);
+	}
+	else if (data1->Action == SpinningAir)
+	{
 
-			if (isCustomAnim)
-				spinOnFrames(pwp, data1, co2Miles);
-		}
 	}
 
 
@@ -260,6 +252,24 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 		Miles_ManageFly(twp, mwp, pwp, co2Miles);
 
+		break;
+	case Spinning:
+		if (!MilesCheckInput(data2, co2Miles, co2, data1) && !Miles_SetNextActionSwim(co2Miles, data1))
+		{
+			spinLeaveGroundCheck(twp, pwp, co2Miles);
+
+			if (isCustomAnim)
+				spinOnFrames(pwp, data1, co2Miles);
+		}
+		break;
+	case SpinningAir:
+		if (!MilesCheckInput(data2, co2Miles, co2, data1) && !Miles_SetNextActionSwim(co2Miles, data1))
+		{
+			spinLandingCheck(twp, pwp);
+
+			if (isCustomAnim)
+				spinOnFrames(pwp, data1, co2Miles);
+		}
 		break;
 	case Bounce:
 		if (Miles_SetNextActionSwim(co2Miles, data1))
@@ -338,11 +348,8 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		break;
 	}
 
-	if (!MilesCheckInput(data2, co2Miles, co2, data1))
-	{
-		Tornado_RunsActions(data1, co2);
-	}
 
+	Tornado_RunsActions(data2, co2Miles, data1, co2);
 }
 
 void Tails_Main_r(ObjectMaster* obj)
@@ -385,7 +392,7 @@ void Tails_Main_r(ObjectMaster* obj)
 		MoveCharacterOnRail(data1, co2, data2);
 		LoadRailParticules(co2Miles, data2);
 		break;
-	case HandGrinding: 
+	case HandGrinding:
 		SomethingAboutHandGrind(data1, data2, co2Miles);
 		MoveCharacterOnRail(data1, co2, data2);
 		SomethingAboutHandGrind2(data1, data2, co2Miles);
@@ -514,7 +521,7 @@ void Tails_Main_r(ObjectMaster* obj)
 
 		co2->PhysData.Weight = RestoreSpeed;
 	}
-		break;
+	break;
 	case VictoryPose:
 
 		AnimateMilesTails(data1, co2, co2Miles);
@@ -560,11 +567,11 @@ bool isLevelBanned() {
 
 extern bool isTornadoTransform;
 
-void RemoveMech(int player) 
+void RemoveMech(int player)
 {
 
 	if (!TwoPlayerMode && CurrentLevel != LevelIDs_Route101280 && CurrentLevel != LevelIDs_KartRace
-		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2) 
+		&& CurrentLevel != LevelIDs_TailsVsEggman1 && CurrentLevel != LevelIDs_TailsVsEggman2)
 	{
 		if (!isTornadoTransform)
 		{
@@ -596,7 +603,7 @@ void InitLandColMemory_r()
 	for (int i = 0; i < 2; i++) {
 
 		auto p = MainCharObj2[i];
-		if (p) 
+		if (p)
 		{
 			if (p->CharID == Characters_Tails)
 			{
@@ -631,7 +638,7 @@ void LoadCharacter_r() {
 		{
 			CurrentCharacter = Characters_Tails;
 		}
-		
+
 	}
 
 	if (CurrentLevel == LevelIDs_ChaoWorld)
@@ -668,19 +675,19 @@ void BetterMiles_Init() {
 
 	Init_LandColMemory_t = new Trampoline((int)0x47BB50, (int)0x47BB57, InitLandColMemory_r);
 
-	if (isMechRemoved) 
+	if (isMechRemoved)
 	{
 		LoadMechTails_t.Hook(RemoveMech);
 	}
 
-	if (isMilesAdventure || isMechRemoved) 
+	if (isMilesAdventure || isMechRemoved)
 	{
 		init_RankScore();
 	}
 
 
 	//Improve physic
-	if (isCustomPhysics) 
+	if (isCustomPhysics)
 	{
 		//copy Sonic physics since it's more closer to sadx tails
 		PhysicsArray[Characters_Tails] = PhysicsArray[Characters_Sonic];

@@ -124,7 +124,7 @@ signed int __cdecl MilesCheckInput(EntityData2* a1, TailsCharObj2* a2, CharObj2B
 
 void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* data1);
 
-void Tornado_RunsActions(EntityData1* data1, CharObj2Base* co2);
+void Tornado_RunsActions(EntityData2* data2, TailsCharObj2* co2Miles, EntityData1* data1, CharObj2Base* co2);
 void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* data2);
 
 void Cart_HackInit();

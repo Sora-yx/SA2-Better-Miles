@@ -442,7 +442,6 @@ signed int isTornadoStanding(CharObj2Base* a1, EntityData1* a2)
 
 void Tornado_Standing(EntityData1* data1, CharObj2Base* co2)
 {
-
 	float spdY = 0.0f;
 	char pnum = co2->PlayerNum;
 
@@ -570,21 +569,34 @@ void Tornado_Descending(EntityData1* data1, CharObj2Base* co2)
 	return;
 }
 
-void Tornado_RunsActions(EntityData1* data1, CharObj2Base* co2) {
+void Tornado_RunsActions(EntityData2* data2, TailsCharObj2* co2Miles, EntityData1* data1, CharObj2Base* co2) 
+{
 
 	switch (data1->Action)
 	{
 	case TornadoStanding:
-		Tornado_Standing(data1, co2);
+		if (!MilesCheckInput(data2, co2Miles, co2, data1))
+		{
+			Tornado_Standing(data1, co2);
+		}
 		return;
 	case TornadoMoving:
-		Tornado_Moving(data1, co2);
+		if (!MilesCheckInput(data2, co2Miles, co2, data1))
+		{
+			Tornado_Moving(data1, co2);
+		}
 		return;
 	case TornadoAscending:
-		Tornado_Ascending(data1, co2);
+		if (!MilesCheckInput(data2, co2Miles, co2, data1))
+		{
+			Tornado_Ascending(data1, co2);
+		}
 		return;
 	case TornadoDescending:
-		Tornado_Descending(data1, co2);
+		if (!MilesCheckInput(data2, co2Miles, co2, data1))
+		{
+			Tornado_Descending(data1, co2);
+		}
 		return;
 	default:
 		return;
