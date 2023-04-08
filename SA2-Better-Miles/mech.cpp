@@ -65,7 +65,8 @@ void SoundEffect_Tornado(ObjectMaster* obj)
 }
 
 
-void DeleteAndLoadMech(char pNum) {
+void DeleteAndLoadMech(char pNum) 
+{
 
 	DeleteObject_(MainCharacter[pNum]);
 	CurrentCharacter = Characters_MechTails;
@@ -164,6 +165,7 @@ void Untransform_Mech(ObjectMaster* obj) {
 
 		if (++data->Timer == 20)
 		{
+			CheckAndSetHackObject(co2);
 			co2->AnimInfo.Next = 35;
 			playerData->Position.y += 5;
 			data->Action++;
@@ -313,7 +315,11 @@ void CallMech(ObjectMaster* obj)
 			playerData->Position = SavePos;
 		co2 = MainCharObj2[pNum];
 		if (co2)
+		{
 			co2->Powerups |= Powerups_Invincibility;
+			CheckAndSetHackObject(co2);
+		}
+
 		data->Action++;
 		break;
 	case 4:
@@ -395,7 +401,7 @@ void __cdecl ReadSET_1P_r()
 
 void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityData2* data2, MechEggmanCharObj2* tailsCO2) {
 
-	if (GameState != GameStates_Ingame || !co2)
+	if (GameState != GameStates_Ingame || !co2 || !mechWK)
 		return;
 
 	if (PowerLaserCD > 0)
@@ -404,9 +410,8 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 	}
 	else
 	{
-		if (data->Action <= Action_Run)
+		if (data->Action <= Action_Run && mechWK->field_368 == 0 && mechWK->field_36A == 0)
 		{
-
 			if (Controllers[co2->PlayerNum].press & Buttons_Y)
 			{
 				TailsEggman_LaserAttack(co2, data, data2, tailsCO2);

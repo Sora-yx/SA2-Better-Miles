@@ -600,7 +600,8 @@ void InitLandColMemory_r()
 	bool isMiles = false;
 	resetMechWKPtr();
 
-	for (int i = 0; i < 2; i++) {
+	for (uint8_t i = 0u; i < 2u; i++) 
+	{
 
 		auto p = MainCharObj2[i];
 		if (p)

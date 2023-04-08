@@ -237,8 +237,10 @@ void CheckPrisonLaneDoor4(ObjectMaster* obj) {
 	PrisonLaneDoor4_t.Original(obj);
 }
 
-void CheckAndSetHackObject(CharObj2Base* co2) {
-	if (co2->CharID == Characters_MechTails || co2->CharID == Characters_MechEggman) {
+void CheckAndSetHackObject(CharObj2Base* co2) 
+{
+	if (co2->CharID == Characters_MechTails || co2->CharID == Characters_MechEggman) 
+	{
 		WriteData<1>((int*)0x715b58, 0x6);
 		WriteData<1>((int*)0x715aa8, 0x6);
 		WriteData<1>((int*)0x7158bf, 0x6);
@@ -250,14 +252,16 @@ void CheckAndSetHackObject(CharObj2Base* co2) {
 	}
 
 	//hack so non mech character can destroy the doors
-	if (CurrentLevel == LevelIDs_HiddenBase) {
+	if (CurrentLevel == LevelIDs_HiddenBase) 
+	{
 		//Hidden base door Col Stuff
 		WriteData<1>((int*)0x715b58, 0x1);
 		WriteData<1>((int*)0x715aa8, 0x1);
 		WriteData<1>((int*)0x7158bf, 0x1);
 	}
 
-	if (CurrentLevel == LevelIDs_CannonsCoreT) {
+	if (CurrentLevel == LevelIDs_CannonsCoreT) 
+	{
 		//CC door col Stuff
 		WriteData<1>((int*)0x79b427, 0x1);
 		WriteData<1>((int*)0x79b959, 0x1);
@@ -322,9 +326,12 @@ void LoadSuperFormFinalBattle() {
 	return;
 }
 
-void BrokenDownSmoke_r(ObjectMaster* a1) {
+void BrokenDownSmoke_r(ObjectMaster* a1) 
+{
 	if (MainCharObj2[0]->CharID != Characters_MechTails && MainCharObj2[0]->CharID != Characters_MechEggman)
+	{
 		DeleteObject_(a1);
+	}	
 	else 
 	{
 		ObjectFunc(origin, BrokenDownSmoke_t->Target());
@@ -343,7 +350,8 @@ void breaBoxCheck(EntityData1* data)
 
 				char pnum = GetPlayerNumber(data->Collision->CollidingObject->Object);
 
-				if (isMilesAttackingBox(pnum) && data->NextAction < 1) {
+				if (isMilesAttackingBox(pnum) && data->NextAction < 1) 
+				{
 					data->Collision->CollisionArray->push |= 0x4000u;
 					data->Timer = 1;
 					AddScore(20);
