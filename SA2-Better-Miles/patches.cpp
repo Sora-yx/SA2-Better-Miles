@@ -187,16 +187,16 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 	if (MilesCO2Extern) 
 	{
-
 		char pNum = MilesCO2Extern->base.PlayerNum;
 		char curAnim = MainCharObj2[pNum]->AnimInfo.Current;
-
 		int model = MilesCO2Extern->base.AnimInfo.Animations[curAnim].ModelNum;
 
 		if ((model == jmpBallID || isSA1Char(Characters_Tails) && model == 255 || isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
 			return;
 	}
 
+	NJS_POINT3 pos = { 0.0, -0.2f, 0.0 };
+	njTranslateV(0, &pos);
 	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
@@ -344,5 +344,4 @@ void init_Patches()
 		WriteJump((void*)0x43C9D0, (void*)0x43CADF); // Tails/Eggman fix
 
 	//WriteData<1>((int*)0x75310F, SpinningAir);
-
 }
