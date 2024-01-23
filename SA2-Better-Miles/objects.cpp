@@ -319,7 +319,7 @@ void LoadSuperFormFinalBattle() {
 
 	LoadTails(0);
 	TailsCharObj2* co2Miles = (TailsCharObj2*)MainCharObj2[0];
-	MainCharacter[0]->DisplaySub_Delayed3 = Super_Something;
+	MainCharacter[0]->DisplaySub_Delayed3 = Super_DispDelay3;
 	co2Miles->base.Upgrades = Upgrades_SuperSonic;
 	LastBossPlayerManager_Load();
 	InitPlayer(0);

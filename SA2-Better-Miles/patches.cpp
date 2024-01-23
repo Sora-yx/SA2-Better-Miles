@@ -175,7 +175,7 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 
 		if (!TwoPlayerMode)
 		{
-			PlayerAfterImage(obj, 0, a3->TextureList, 0.0f, 0);
+			PlayerAfterimage(obj, 0, a3->TextureList, 0.0f, 0);
 		}
 
 		njPopMatrix(1u);

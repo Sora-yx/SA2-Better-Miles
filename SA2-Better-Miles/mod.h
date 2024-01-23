@@ -16,6 +16,7 @@ extern bool isCustomPhysics;
 extern bool flySoundEffect;
 extern bool isJumpBall;
 extern bool tornadoMusic;
+extern bool tornadoConfig;
 extern uint8_t sfxVol;
 extern uint8_t voiceVol;
 extern Buttons RollBtn;

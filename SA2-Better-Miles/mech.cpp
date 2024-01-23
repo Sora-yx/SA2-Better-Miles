@@ -537,6 +537,9 @@ void Delete_TornadoTransform()
 
 void Init_TailsMechHack()
 {
+	if (!tornadoConfig)
+		return;
+
 	MechTails_runsActions_t.Hook(MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
 

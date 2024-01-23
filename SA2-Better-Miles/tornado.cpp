@@ -64,7 +64,7 @@ void Tornado_BoostCheckInput(CharObj2Base* co2, EntityData1* data) {
 
 void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* playerData) {
 
-	if (GameState != GameStates_Ingame || !co2 || isTornadoOn || isBossLevel())
+	if (!tornadoConfig || GameState != GameStates_Ingame || !co2 || isTornadoOn || isBossLevel())
 		return;
 
 	if (playerData->Action <= Action_Run)
