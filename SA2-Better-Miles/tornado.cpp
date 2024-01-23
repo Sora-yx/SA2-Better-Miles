@@ -163,7 +163,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 {
 	EntityData1* data = obj->Data1.Entity;
 	EntityData1* parentData = obj->Parent->Data1.Entity;
-	int pNum = obj->Parent->Data1.Entity->Index;
+	char pNum = obj->Parent->Data1.Entity->Index;
 
 	EntityData1* player = MainCharObj1[pNum];
 	CharObj2Base* co2 = MainCharObj2[pNum];
@@ -181,7 +181,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 		if (++data->Timer == 100)
 		{
 
-			ReleaseCamera(CameraData[pNum].currentCameraSlot, pNum);
+			ReleaseCamera(pNum, CameraData[pNum].currentCameraSlot);
 			data->Action++;
 		}
 		break;
@@ -222,7 +222,7 @@ void tornadoCam_Child(ObjectMaster* obj)
 
 		if (++data->Timer == 100)
 		{
-			ReleaseCamera(CameraData[pNum].currentCameraSlot, pNum);
+			ReleaseCamera(pNum, CameraData[pNum].currentCameraSlot);
 			data->Action++;
 
 		}

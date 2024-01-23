@@ -171,16 +171,6 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	Check_LightDash(twp, pwp);
 
 
-	if (data1->Action == Spinning)
-	{
-
-	}
-	else if (data1->Action == SpinningAir)
-	{
-
-	}
-
-
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
 	CheckAndFixTailsRotation(co2, co2Miles);

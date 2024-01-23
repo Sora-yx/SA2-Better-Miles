@@ -15,7 +15,7 @@ bool jumpVoice = false;
 bool isJumpBall = true;
 bool tornadoConfig = true;
 bool tornadoMusic = true;
-uint8_t sfxVol = 70;
+uint8_t sfxVol = 50;
 uint8_t voiceVol = 50;
 
 Buttons RollBtn = Buttons_B;
