@@ -490,10 +490,10 @@ void Tornado_Moving(EntityData1* data1, CharObj2Base* co2)
 
 	if (Jump_Held[pnum])
 	{
-		curSpeed = 2.7f;
+		curSpeed = 2.0f;
 		Tornado_SetNextAction(data1, TornadoAscending);
 		data1->Status |= Status_Attack;
-		if (co2->Speed.y >= 2.7f)
+		if (co2->Speed.y >= 2.0f)
 		{
 			VibeThing(0, 15, co2->PlayerNum, 4);
 			return;
@@ -526,7 +526,7 @@ void Tornado_Ascending(EntityData1* data1, CharObj2Base* co2)
 		data1->Status &= ~Status_Attack;
 	}
 
-	float spdY = 3.5f;
+	float spdY = 3.0f;
 
 	if (co2->Speed.y < spdY)
 	{

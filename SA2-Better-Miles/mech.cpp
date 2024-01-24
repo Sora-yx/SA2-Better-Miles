@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "tornado.h"
+#include "patches.h"
 
 NJS_VECTOR SavePos = { 0, 0, 0 };
 
@@ -67,8 +68,9 @@ void SoundEffect_Tornado(ObjectMaster* obj)
 
 void DeleteAndLoadMech(char pNum) 
 {
-
-	DeleteObject_(MainCharacter[pNum]);
+	UnloadLevelCharAnims();
+	ObjectMaster* p = MainCharacter[pNum];
+	DeleteObject_(p);
 	CurrentCharacter = Characters_MechTails;
 	MilesCO2Extern = nullptr;
 	LoadMechTails(pNum);
@@ -83,7 +85,9 @@ void DeleteAndLoadMiles(char pNum) {
 	LoadTails(pNum);
 	InitCharacterSound();
 	LoadTailsExtra(pNum);
+	ReloadLevelCharAnims();
 	resetMechWKPtr();
+
 	return;
 }
 
@@ -268,6 +272,8 @@ void CallMech(ObjectMaster* obj)
 		co2->Speed = { 0, 0, 0 };
 		SetCameraFacePlayer(pNum, playerData, 40.0f);
 		data->Scale.z = 0;
+
+		playerData->Position.y += 10.0f;
 
 		if (tornadoMusic)
 		{
@@ -551,4 +557,5 @@ void Init_TailsMechHack()
 
 	sub_74A6E0_t.Hook(sub_74A6E0_r);
 	ReadSET_1P_t.Hook(ReadSET_1P_r);
+
 }

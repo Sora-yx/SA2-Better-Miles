@@ -321,6 +321,92 @@ void __cdecl Miles_ManageTails_r(EntityData1* data1, CharObj2Base* a2, TailsChar
 }
 
 
+AnimationIndex* GetAnimFromDLL(const char* lvlName)
+{
+	if (datadllhandle)
+	{
+		auto dataDLL = **datadllhandle;
+
+		if (dataDLL)
+		{
+			return (AnimationIndex*)GetProcAddress(dataDLL, lvlName);
+		}
+	}
+
+	return nullptr;
+}
+
+//because of how the game handle anims, we need to unload the stage anims so they don't override the mech tails ones when swapping
+void UnloadLevelCharAnims(AnimationIndex* lvlAnim)
+{
+	if (!lvlAnim)
+		return;
+
+	if (lvlAnim[0].Index != UINT16_MAX)
+	{
+		uint16_t index = lvlAnim[0].Index;
+		AnimationIndex* curLvlAnim = lvlAnim;
+		uint16_t count = 0;
+		uint16_t failsafe = 0;
+		do
+		{
+			if (failsafe >= 301) //just to be super safe
+				break;
+
+			if (index  >= 0 && index < 300)
+			{
+				NJS_MOTION* curCharAnim = CharacterAnimations[index].Animation;
+				if (curCharAnim == curLvlAnim->Animation)
+				{
+					CharacterAnimations[index].Animation = 0;
+					CharacterAnimations[index].Count = 0;
+				}
+			}
+			index = lvlAnim[++count].Index;		
+			curLvlAnim = &lvlAnim[count];
+			failsafe++;
+		} while (index != UINT16_MAX);
+	}
+}
+
+void UnloadLevelCharAnims()
+{
+	switch (CurrentLevel)
+	{
+	case LevelIDs_GreenForest:
+		UnloadLevelCharAnims(GreenForestCharAnims);
+		break;
+	case LevelIDs_WhiteJungle:
+		UnloadLevelCharAnims(WhiteJungleCharAnims_);
+		break;
+	case LevelIDs_MetalHarbor:
+		UnloadLevelCharAnims(GetAnimFromDLL("header_stg10"));
+		break;
+	case LevelIDs_CityEscape:
+		UnloadLevelCharAnims(GetAnimFromDLL("header_stg13"));
+		break;
+	}
+}
+
+void ReloadLevelCharAnims()
+{
+	switch (CurrentLevel)
+	{
+	case LevelIDs_GreenForest:
+		LoadGreenForestCharAnims();
+		break;
+	case LevelIDs_WhiteJungle:
+		LoadWhiteJungleCharAnims();
+		break;
+	case LevelIDs_MetalHarbor:
+		LoadMetalHarborCharAnims();
+		break;
+	case LevelIDs_CityEscape:
+		LoadCityEscapeCharAnims();
+		break;
+	}
+}
+
 void init_Patches()
 {
 

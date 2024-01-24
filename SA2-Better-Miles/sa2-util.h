@@ -550,3 +550,5 @@ static inline void SetAdjustMode_(int slot, int pnum, int adjust) // Set the adj
 		call SetAdjustModePtr
 	}
 }
+
+DataArray(AnimationIndex, WhiteJungleCharAnims_, 0xEA22EC, 6);

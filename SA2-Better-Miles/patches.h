@@ -42,3 +42,5 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 void SetSpacePhysics(CharObj2Base* co2);
 void init_Patches();
 void CheckAndSetHackObject(CharObj2Base* co2);
+void UnloadLevelCharAnims();
+void ReloadLevelCharAnims();
