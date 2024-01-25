@@ -582,3 +582,47 @@ static inline void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2) // Set th
 DataArray(AnimationIndex, WhiteJungleCharAnims_, 0xEA22EC, 6);
 DataArray(HomingAttackTarget, around_ring_list_p0, 0x1DE8C40, 257);
 DataArray(HomingAttackTarget, around_ring_list_p1, 0x1DE46C0, 257);
+
+
+struct TailsCharObj2_r
+{
+	CharObj2Base base;
+	char field_1BC[40];
+	NJS_POINT3 righthand_pos;
+	NJS_POINT3 lefthand_pos;
+	NJS_POINT3 rightfoot_pos;
+	NJS_POINT3 leftfoot_pos;
+	NJS_POINT3 head0_pos;
+	NJS_POINT3 head1_pos;
+	NJS_POINT3 head2_pos;
+	NJS_POINT3 tailnode_pos;
+	char field_2BC[36];
+	NJS_POINT3 righthand_vec0;
+	NJS_POINT3 lefthand_vec0;
+	NJS_POINT3 righthand_vec1;
+	NJS_POINT3 lefthand_vec1;
+	NJS_POINT3 rightfoot_vec;
+	NJS_POINT3 leftfoot_vec;
+	NJS_POINT3 head0_vec;
+	NJS_POINT3 head1_vec;
+	NJS_POINT3 head2_vec;
+	NJS_POINT3 tailnode_vec;
+	char field_3BC[156];
+	NJS_POINT3 tailOriginPos;
+	char field_3BD[24];
+	int tailIdk;
+	JiggleInfo* tailJiggle0;
+	JiggleInfo* tailJiggle1;
+	NJS_TEXLIST* TextureList;
+	ModelIndex* ModelList;
+	AnimationIndex* MotionList;
+	char field_4BC[36];
+};
+
+//crap used for calc tails 
+DataPointer(int, dword_1AF017C, 0x1AF017C);
+DataPointer(int, dword_1AF0180, 0x1AF0180);
+DataPointer(int, dword_1AF0178, 0x1AF0178);
+DataPointer(int, dword_1AF0174, 0x1AF0174);
+DataPointer(int, dword_1AF0188, 0x1AF0188);
+DataPointer(int, dword_1AF0184, 0x1AF0184);

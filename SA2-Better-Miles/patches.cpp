@@ -5,7 +5,7 @@
 TaskHook Levelitem_t((intptr_t)LevelItem_Load);
 
 UsercallFuncVoid(TailsCalcColDamage_t, (TailsCharObj2* a1, taskwk* a2), (a1, a2), 0x753090, rECX, rESI);
-FunctionHook<void, EntityData1*, CharObj2Base*, TailsCharObj2*> Miles_ManageTails_t(0x751090);
+FunctionHook<void, taskwk*, playerwk*, TailsCharObj2_r*> Miles_ManageTails_t(0x751090);
 
 
 //used to make tails actually do damage since unlike regular character he doesn't have code for
@@ -25,7 +25,7 @@ void TailsCalcColDamage_r(TailsCharObj2* co2M, taskwk* twp)
 	CharObj2Base* pwp = &co2M->base;
 
 	auto colInfo = col->info;
-	colInfo->attr &= 0xFFFFBFFF;	
+	colInfo->attr &= 0xFFFFBFFF;
 	unsigned int attrCol = colInfo->attr;
 
 	int colFlag1 = 0;
@@ -185,7 +185,7 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
-	if (MilesCO2Extern) 
+	if (MilesCO2Extern)
 	{
 		char pNum = MilesCO2Extern->base.PlayerNum;
 		char curAnim = MainCharObj2[pNum]->AnimInfo.Current;
@@ -201,7 +201,7 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 }
 
 //Many animations make Miles's tails in a very weird rotation, we force a specific rotation so they look decent here.
-void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles) 
+void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles)
 {
 	if (co2->AnimInfo.Current == 74 || co2->AnimInfo.Current >= 121 && co2->AnimInfo.Current <= 130 || co2->AnimInfo.Current >= 195 && co2->AnimInfo.Current <= 197)
 		*(_DWORD*)&co2Miles->field_3BC[140] = -9000;
@@ -265,59 +265,248 @@ static void __declspec(naked) fixRocketGrabASM()
 	}
 }
 
-char field_3BCBackup[15]{ 0 };
-void __cdecl Miles_ManageTails_r(EntityData1* data1, CharObj2Base* a2, TailsCharObj2* a3)
+//rewrite the function that manage Miles's tails so they aren't static when you move + fix their pos when spinning in the air
+void __cdecl Miles_ManageTails_r(taskwk* twp, playerwk* pwp, TailsCharObj2_r* Mpwp)
 {
-	if (!data1 || data1->Action != SpinningAir)
+	auto curAction = twp->mode;
+
+	if ( curAction == Flying || twp->mode == Running && pwp->spd.x >= 2.0f)
 	{
-		if (data1 && data1->Action == Spinning)
+		return Miles_ManageTails_t.Original(twp, pwp, Mpwp);
+	}
+
+	Float tailSPD = twp->pos.y + 2.5f - *(float*)&Mpwp->field_4BC[20];
+
+	if (tailSPD < 0.0f)
+	{
+		tailSPD = 0.0f;
+	}
+
+	Mpwp->tailJiggle0->speed = tailSPD;
+	Mpwp->tailJiggle1->speed = tailSPD;
+
+	auto jiggle0 = Mpwp->tailJiggle0;
+	auto jiggle1 = Mpwp->tailJiggle1;
+	auto Jig0SourceModelCopy = Mpwp->tailJiggle0->SourceModelCopy;
+	auto Jig1SourceModelCopy = Mpwp->tailJiggle1->SourceModelCopy;
+	int angleForSomething = 0;
+	Float ZIdk = 0.0f;
+
+	if (curAction == Spinning || curAction == SpinningAir)
+	{
+		if (jiggle0->type != 9)
 		{
-			memcpy(&a3->field_3BC[125], field_3BCBackup, sizeof(field_3BCBackup));
+			for (uint8_t i = 0; i < 3; i++)
+			{
+				Jig0SourceModelCopy->ang[i] = 0;
+				Jig1SourceModelCopy->ang[i] = 0;
+			}
+
+			//reset tail angle properly (fix tail rot when swapping to spin while running)
+			for (uint16_t i = 100; i < LengthOfArray(Mpwp->field_3BC); i++)
+			{
+				Mpwp->field_3BC[i] = 0;
+			}
+
+			jiggle0->field_24 = { 0, 0, 0 };
+			*(DWORD*)jiggle0->gap30 = 0;
+			jiggle1->field_24 = { 0, 0, 0 };
+			*(DWORD*)jiggle1->gap30 = 0;
+
+			jiggle0->type = 9;
+			Mpwp->tailJiggle1->type = 9;
 		}
-		return Miles_ManageTails_t.Original(data1, a2, a3);
+		*(DWORD*)&Mpwp->field_3BC[136] += *(DWORD*)&Mpwp->field_3BC[132];
+		Jig0SourceModelCopy->ang[0] = BAMS_SubWrap(49152, 4096, Jig0SourceModelCopy->ang[0]);
+		Jig1SourceModelCopy->ang[0] = BAMS_SubWrap(0x4000, 4096, Jig1SourceModelCopy->ang[0]);
+		Jig0SourceModelCopy->ang[1] = BAMS_SubWrap(0, 4096, Jig0SourceModelCopy->ang[1]);
+		Jig1SourceModelCopy->ang[1] = BAMS_SubWrap(0, 4096, Jig1SourceModelCopy->ang[1]);
+		angleForSomething = BAMS_SubWrap(4096, 0x2000, *(_DWORD*)&Mpwp->field_3BC[140]);
 	}
-
-
-	memcpy(&a3->field_3BC[125], field_3BCBackup, sizeof(field_3BCBackup));;
-	int angle = 0;
-
-	Float TailPos = data1->Position.y + 2.5f - *(float*)&a3->field_4BC[20];
-
-	if (TailPos < 0.0f)
+	else
 	{
-		TailPos = 0.0f;
+
+		if (jiggle0->type == 8 || jiggle0->type == 9)
+		{
+			jiggle0->type = 12;
+			Mpwp->tailJiggle1->type = 12;
+			Mpwp->tailJiggle0->field_C = 0;
+			Mpwp->tailJiggle0->field_24.x = 0.0f;
+			Mpwp->tailJiggle0->field_24.y = 0.0f;
+			Mpwp->tailJiggle0->field_24.z = 0.0f;
+			*(_DWORD*)Mpwp->tailJiggle0->gap30 = 0;
+			Mpwp->tailJiggle1->field_C = 0;
+			Mpwp->tailJiggle1->field_24.x = 0.0;
+			Mpwp->tailJiggle1->field_24.y = 0.0;
+			Mpwp->tailJiggle1->field_24.z = 0.0;
+			*(_DWORD*)Mpwp->tailJiggle1->gap30 = 0;
+			if (twp->mode == 6)
+			{
+				Mpwp->tailJiggle1->field_C = dword_1AF017C;
+				Mpwp->tailJiggle0->field_C = dword_1AF017C;
+			}
+		}
+		else
+		{
+
+			if (jiggle1->type == 12)
+			{
+				auto v15 = jiggle1->field_C;
+				auto v16 = v15 < dword_1AF0180;
+				jiggle1->field_C = v15 + 1;
+				if (!v16 && !*(_DWORD*)&Mpwp->field_3BC[136])
+				{
+					Mpwp->tailJiggle0->type = 6;
+					Mpwp->tailJiggle1->type = 6;
+					Mpwp->tailJiggle0->field_10 = 0;
+					Mpwp->tailJiggle0->field_C = 0;
+					Mpwp->tailJiggle0->field_8 = 0;
+					Mpwp->tailJiggle1->field_10 = 0;
+					Mpwp->tailJiggle1->field_C = 0;
+					Mpwp->tailJiggle1->field_8 = 0;
+				}
+			}
+			else
+			{
+				//originally the game takes the position of the player and the tails so when you move the tails get static, we don't want that.
+				NJS_POINT3 pos = { 0.0f, 0.0f, 0.0f };
+
+				auto v20 = (twp->ang.y) - (Mpwp->tailIdk);
+				PConvertVector_G2P((EntityData1*)twp, &pos);
+				auto curAction2 = twp->mode;
+				auto v21 = v20;
+
+
+				auto v23 = pos.x;
+				auto v24 = pos.y;
+				auto v25 = pos.z;
+				auto v26 = (NJS_VECTOR*)&Mpwp->tailJiggle0->field_24;
+				v26->x = pos.x;
+				v26->y = v24;
+				v26->z = v25;
+				*(_DWORD*)&Mpwp->tailJiggle0->gap30 = v21;
+
+				jiggle0->field_C -= 1;
+				if (jiggle0->field_C <= 0)
+				{
+					Mpwp->tailJiggle0->field_10 = (int)((double)rand() * 0.000030517578125f * 128.0f + 448.0f);
+					Mpwp->tailJiggle0->field_C = (int)((double)rand() * 0.000030517578125f * (double)dword_1AF0178
+						+ (double)dword_1AF0174);
+				}
+
+				if (jiggle0->field_10)
+				{
+					jiggle0->field_8 += jiggle0->field_10;
+					Mpwp->tailJiggle0->field_24.y = njSin(Mpwp->tailJiggle0->field_8) * -0.07999999821186066f;
+				}
+				auto v31 = pos.z;
+				auto v32 = &Mpwp->tailJiggle1->field_24;
+				v32->x = v23;
+				v32->y = v24;
+				v32->z = v31;
+				*(DWORD*)Mpwp->tailJiggle1->gap30 = v21;
+
+				auto v34 = jiggle1->field_C;
+				jiggle1->field_C = v34 - 1;
+				if (v34 <= 0)
+				{
+					Mpwp->tailJiggle1->field_10 = (int)((double)rand() * 0.000030517578125 * 128.0 + 448.0);
+					Mpwp->tailJiggle1->field_C = (int)((double)rand() * 0.000030517578125 * (double)dword_1AF0178
+						+ (double)dword_1AF0174);
+				}
+
+				auto v36 = Mpwp->tailJiggle0->field_8 - jiggle1->field_8;
+				if (v36 < 0)
+				{
+					v36 = jiggle1->field_8 - Mpwp->tailJiggle0->field_8;
+				}
+				if ((unsigned __int16)v36 < 0x6000u)
+				{
+					jiggle1->field_10 = (int)((double)jiggle1->field_10 * 0.9800000190734863);;
+				}
+
+				auto v38 = jiggle1->field_10;
+				if (v38)
+				{
+					jiggle1->field_8 += v38;
+
+					auto v40 = njSin(jiggle1->field_8);
+					auto v41 = dword_1AF0188;
+					auto v42 = dword_1AF0184;
+					jiggle1->field_24.y = v40 * -0.07999999821186066;
+
+					jiggle1->field_10 = BAMS_SubWrap(v42, v41, jiggle1->field_10);
+				}
+
+
+
+				Float v50 = 0.0f;
+
+
+				if (jiggle0->type == 7)
+				{
+					v50 = 0.0f;
+				}
+				else
+				{
+					jiggle0->field_24.x = 10.0f;
+					v50 = 0.0;
+					Mpwp->tailJiggle0->field_24.y = 0.0f;
+					Mpwp->tailJiggle0->field_24.z = 0.0f;
+				}
+
+				ZIdk = v50;
+				if (jiggle1->type != 7)
+				{
+					jiggle1->field_24.x = 10.0f;
+					Mpwp->tailJiggle1->field_24.y = v50;
+					Mpwp->tailJiggle1->field_24.z = v50;
+				}
+				Mpwp->tailJiggle0->type = 7;
+				Mpwp->tailJiggle1->type = 7;
+
+
+				auto curAnim = (__int16)pwp->mj.lastaction;
+				{
+
+					if (jiggle0->field_34[31] < 8.0f)
+					{
+						jiggle0->field_24.x = 2.0f;
+						jiggle0->field_24.y = 0.40000001f;
+						jiggle0->field_24.z = ZIdk;
+					}
+
+					if (jiggle1->field_34[31] < 8.0f)
+					{
+						jiggle1->field_24.x = 2.0f;
+						Mpwp->tailJiggle1->field_24.y = 0.40000001f;
+						Mpwp->tailJiggle1->field_24.z = ZIdk;
+					}
+				}
+			}
+		}
+
+		Angle v57 = BAMS_SubWrap(0, 2048, *(_DWORD*)&Mpwp->field_3BC[132]);
+		*(_DWORD*)&Mpwp->field_3BC[136] += v57;
+		Angle v58 = *(_DWORD*)&Mpwp->field_3BC[136];
+		*(_DWORD*)&Mpwp->field_3BC[132] = v57;
+		if (!v57)
+		{
+			*(_DWORD*)&Mpwp->field_3BC[136] = BAMS_SubWrap(0, 2048, v58);
+		}
+
+		Jig0SourceModelCopy->ang[0] = BAMS_SubWrap(60928, 0x8000, Jig0SourceModelCopy->ang[0]);
+		Jig1SourceModelCopy->ang[0] = BAMS_SubWrap(4608, 0x8000, Jig1SourceModelCopy->ang[0]);
+		Jig0SourceModelCopy->ang[1] = BAMS_SubWrap(0, 0x8000, Jig0SourceModelCopy->ang[1]);
+		Jig1SourceModelCopy->ang[1] = BAMS_SubWrap(0, 0x8000, Jig1SourceModelCopy->ang[1]);
+		angleForSomething = BAMS_SubWrap(0, 2048, *(_DWORD*)&Mpwp->field_3BC[140]);
 	}
 
-	*(float*)(*(_DWORD*)&a3->field_3BC[196] + 4) = TailPos;
-	*(float*)(*(_DWORD*)&a3->field_3BC[200] + 4) = TailPos;
-
-	int curAction = data1->Action;
-
-	auto v7 = *(BYTE**)&a3->field_3BC[196];
-	if (*v7 != 9)
-	{
-		*v7 = 9;
-		**(BYTE**)&a3->field_3BC[200] = 9;
-	}
-	*(_DWORD*)&a3->field_3BC[136] += *(_DWORD*)&a3->field_3BC[132];
-	auto v8 = *(_DWORD*)(*(_DWORD*)&a3->field_3BC[196] + 24);
-	*(_DWORD*)(v8 + 20) = BAMS_SubWrap(49152, 4096, *(_DWORD*)(v8 + 20));
-	auto v9 = *(_DWORD*)(*(_DWORD*)&a3->field_3BC[200] + 24);
-	*(_DWORD*)(v9 + 20) = BAMS_SubWrap(0x4000, 4096, *(_DWORD*)(v9 + 20));
-	auto v10 = *(_DWORD*)(*(_DWORD*)&a3->field_3BC[196] + 24);
-	*(_DWORD*)(v10 + 24) = BAMS_SubWrap(0, 4096, *(_DWORD*)(v10 + 24));
-	auto v11 = *(_DWORD*)(*(_DWORD*)&a3->field_3BC[200] + 24);
-	*(_DWORD*)(v11 + 24) = BAMS_SubWrap(0, 4096, *(_DWORD*)(v11 + 24));
-	angle = BAMS_SubWrap(4096, 0x2000, *(_DWORD*)&a3->field_3BC[140]);
-
-	*(_DWORD*)&a3->field_3BC[140] = angle;
-
-	DoJiggleThing(*(JiggleInfo**)&a3->field_3BC[196]);
-	DoJiggleThing(*(JiggleInfo**)&a3->field_3BC[200]);
-	*(Float*)&a3->field_3BC[156] = data1->Position.x;
-	*(Float*)&a3->field_3BC[160] = data1->Position.y;
-	*(Float*)&a3->field_3BC[164] = data1->Position.z;
-	*(_DWORD*)&a3->field_3BC[192] = data1->Rotation.y;
+	*(_DWORD*)&Mpwp->field_3BC[140] = angleForSomething;
+	DoJiggleThing(Mpwp->tailJiggle0);
+	DoJiggleThing(Mpwp->tailJiggle1);
+	Mpwp->tailOriginPos = twp->pos;
+	Mpwp->tailIdk = twp->ang.y;
 }
 
 
@@ -353,7 +542,7 @@ void UnloadLevelCharAnims(AnimationIndex* lvlAnim)
 			if (failsafe >= 301) //just to be super safe
 				break;
 
-			if (index  >= 0 && index < 300)
+			if (index >= 0 && index < 300)
 			{
 				NJS_MOTION* curCharAnim = CharacterAnimations[index].Animation;
 				if (curCharAnim == curLvlAnim->Animation)
@@ -362,7 +551,7 @@ void UnloadLevelCharAnims(AnimationIndex* lvlAnim)
 					CharacterAnimations[index].Count = 0;
 				}
 			}
-			index = lvlAnim[++count].Index;		
+			index = lvlAnim[++count].Index;
 			curLvlAnim = &lvlAnim[count];
 			failsafe++;
 		} while (index != UINT16_MAX);
@@ -414,9 +603,9 @@ void init_Patches()
 	WriteJump((void*)0x47A9C0, CheckAndSetPlayerSpeed); //make Miles bouncing when hitting enemy like other characters
 
 	//fixes "static" Miles's Tails
-	WriteJump(reinterpret_cast<void*>(0x7512ea), (void*)0x7512F2); 
+	WriteJump(reinterpret_cast<void*>(0x7512ea), (void*)0x7512F2);
 	WriteData<2>((int*)0x751529, 0x90);
-	
+
 	WriteCall((void*)0x6D6324, fixRocketGrabASM);
 
 	//Draw the tails depending on the action
