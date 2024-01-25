@@ -170,7 +170,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		return;
 
 	Check_LightDash(twp, pwp);
-	HelperFunctionsGlobal.DisplayDebugStringFormatted(NJM_LOCATION(2, 2), "Is On ground %d", (data1->Status & 3) != 0);
+
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
 	switch (data1->Action)

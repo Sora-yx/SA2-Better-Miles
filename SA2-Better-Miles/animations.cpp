@@ -300,10 +300,14 @@ void Init_NewAnimation() {
 		if (!isJumpBall)
 		{
 			TailsAnimationList_R[30].ModelNum = 208;
+
 			TailsAnimationList_R[66].AnimNum = 66;
+
+			TailsAnimationList_R[67].mtnmode = 4;
 			TailsAnimationList_R[67].AnimNum = 107;
-			TailsAnimationList_R[68].AnimNum = 108;
 			TailsAnimationList_R[67].AnimationSpeed = 0.4f;
+
+			TailsAnimationList_R[68].AnimNum = 108;
 			TailsAnimationList_R[68].AnimationSpeed = 0.4f;
 		}
 

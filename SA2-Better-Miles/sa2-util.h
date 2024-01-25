@@ -603,3 +603,5 @@ DataPointer(int, dword_1AF0178, 0x1AF0178);
 DataPointer(int, dword_1AF0174, 0x1AF0174);
 DataPointer(int, dword_1AF0188, 0x1AF0188);
 DataPointer(int, dword_1AF0184, 0x1AF0184);
+
+VoidFunc(sub_42D340, 0x42D340);

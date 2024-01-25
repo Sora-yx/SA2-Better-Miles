@@ -154,6 +154,28 @@ void SetSpacePhysics(CharObj2Base* co2) {
 	}
 }
 
+static void DrawTailOnAfterImage(uint8_t tailID, TailsCharObj2* a3, EntityData1* twp)
+{
+	njPushMatrix(flt_25F02A0);
+	njTranslateEx(&twp->Position);
+	NJS_POINT3 t = { 0.0f, 4.5f, 0.0f };
+	njTranslateV(0, &t);
+	auto co2Miles = (TailsCharObj2_r*)a3;
+	auto matrix = _nj_current_matrix_ptr_;
+	if (co2Miles->field_3BC[140])
+	{
+		njRotateZ_(matrix, *(_DWORD*)&co2Miles->field_3BC[140]);
+	}
+	if (*(_DWORD*)&co2Miles->field_3BC[136])
+	{
+		njRotateX(matrix, *(_DWORD*)&co2Miles->field_3BC[136]);
+	}
+	njRotateY(matrix, 0x8000 - twp->Rotation.y);
+	auto tailMDL = tailID == 0 ? co2Miles->tailJiggle0->SourceModelCopy : co2Miles->tailJiggle1->SourceModelCopy;
+	PlayerAfterimage(tailMDL, 0, a3->TextureList, 0.0f, 0);
+
+	njPopMatrix(1u);
+}
 
 void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* pwp, TailsCharObj2* a3)
 {
@@ -180,8 +202,10 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* pwp, TailsCharObj2* 
 		{
 			PlayerAfterimage(obj, CharacterAnimations[pwp->AnimInfo.Current].Animation, a3->TextureList, 0.0f, 0);
 		}
-	
+
 		njPopMatrix(1u);
+		DrawTailOnAfterImage(0, a3, a1); //why do I bother adding such detail lol
+		DrawTailOnAfterImage(1, a3, a1);
 	}
 }
 
@@ -195,10 +219,33 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
 		if ((model == jmpBallID || isSA1Char(Characters_Tails) && model == 255 || isJumpBall && MainCharObj1[pNum]->Status & Status_Ball) || MainCharObj1[pNum]->Action == Rolling || isInTornado(pNum))
 			return;
+
+		//fix tail pos on Miles's body
+		auto mode = MainCharObj1[pNum]->Action;
+
+		NJS_POINT3 pos = { 0.0, 0.0f, 0.0 };
+		
+		switch (mode)
+		{
+		case Running:
+			if (MainCharObj2[pNum]->Speed.x >= 2.0f)
+				pos.x += 0.2f;
+			else if (MainCharObj2[pNum]->Speed.x >= 1.2f)
+				pos.y -= 0.3f;
+			//pos.y -= 0.1f;
+			break;
+		case Flying:
+			pos.x += 0.1f;
+			break;
+		default:
+			pos.y -= 0.2f;
+			break;
+		}
+	
+
+		njTranslateV(0, &pos);
 	}
 
-	NJS_POINT3 pos = { 0.0, -0.2f, 0.0 };
-	njTranslateV(0, &pos);
 	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
 }
 
@@ -259,7 +306,7 @@ void __cdecl Miles_ManageTails_r(taskwk* twp, playerwk* pwp, TailsCharObj2_r* Mp
 {
 	auto curAction = twp->mode;
 
-	if ( curAction == Flying || twp->mode == Running && pwp->spd.x >= 2.0f)
+	if (curAction == Flying || twp->mode == Running && pwp->spd.x >= 2.0f)
 	{
 		return Miles_ManageTails_t.Original(twp, pwp, Mpwp);
 	}
@@ -541,7 +588,7 @@ void UnloadLevelCharAnims(AnimationIndex* lvlAnim)
 					if (curCharAnim == curLvlAnim->Animation)
 					{
 						SetCharacterAnim_r(index, 0, 0);
-					}		
+					}
 				}
 				else
 				{
