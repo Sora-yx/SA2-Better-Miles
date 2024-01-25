@@ -277,17 +277,17 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	case HandGrinding: //Whatever you call that thing in CG
 		DoHangGrinding(data1, co2);
 		return;
-	case 76:
+	case Action_Board:
 		BoardStuff(data2, co2Miles, data1, co2);
 		return;
-	case 79:
+	case Action_BoardFall:
 		if (MilesCheckInput(data2, co2Miles, co2, data1) || (data1->Status & 3) == 0)
 		{
 			return;
 		}
 
 		PlaySoundProbably(8195, 0, 0, 0);
-		data1->Action = 76;
+		data1->Action = Action_Board;
 		co2->AnimInfo.Next = 121;
 		co2->AnimInfo.nframe = 0.0f;
 		if (co2->Speed.x <= 0.30000001f)
@@ -296,8 +296,9 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		}
 		data1->Rotation.x = data2->Forward.x;
 		data1->Rotation.z = data2->Forward.z;
+		VibeThing(0, 15, co2->PlayerNum, 6);
 		break;
-	case 80:
+	case Action_BoardJump:
 		BoardJumpStuff(data1, co2Miles, co2, data2);
 		break;
 	case Action_TurtleDive:
@@ -401,8 +402,8 @@ void Tails_Main_r(ObjectMaster* obj)
 		BoardSoundEffect(co2, data1);
 	}
 	break;
-	case 79:
-	case 80:
+	case Action_BoardFall:
+	case Action_BoardJump:
 		PResetAngle(data1, co2);
 		PhysicsBoardStuff2(data1, data2, co2);
 		PGetSpeed(data1, co2, data2);
@@ -500,7 +501,8 @@ void Tails_Delete_r(ObjectMaster* obj)
 	Delete_MilesAnim();
 }
 
-signed char GetCharacterLevel() {
+signed char GetCharacterLevel() 
+{
 	for (int i = 0; i < 33; i++)
 	{
 		if (CurrentLevel == StageSelectLevels[i].Level)

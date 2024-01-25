@@ -79,9 +79,8 @@ static inline void BoardSparklesMaybe(EntityData2* a1, EntityData1* a2, TailsCha
 
 
 static const void* const sub_45E9A0Ptr = (void*)0x45E9A0;
-static inline float PhysicsBoardStuff2(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
+static inline void PhysicsBoardStuff2(EntityData1* a1, EntityData2* a2, CharObj2Base* a3)
 {
-	float result;
 	__asm
 	{
 		push[a3]
@@ -89,11 +88,8 @@ static inline float PhysicsBoardStuff2(EntityData1* a1, EntityData2* a2, CharObj
 		mov eax, a1
 		call sub_45E9A0Ptr
 		add esp, 8
-		fstp result
 	}
-	return result;
 }
-
 
 
 static const void* const Sub4372E0Ptr = (void*)0x4372E0;
@@ -253,25 +249,6 @@ static inline void PGetInertia(EntityData1* a1, EntityData2* a2, CharObj2Base* a
 		call PGetInertiaPtr
 	}
 }
-
-static const void* const PlayerCheckFallGravityPtr = (void*)0x4751D0;
-static inline int PlayerCheckFallGravityStuff(EntityData1* a1, int a2, EntityData2* a3, CharObj2Base* a4)
-{
-	int result;
-	__asm
-	{
-		push[a4] // a4
-		push[a3] // a3
-		mov ecx, [a2] // a1
-		mov eax, [a1]
-		// Call your __cdecl function here:
-		call PlayerCheckFallGravityPtr
-		add esp, 12 // a1<eax> is also used for return value
-		mov result, eax
-	}
-	return result;
-}
-
 
 static const void* const somethingAboutTrick3Ptr = (void*)0x474F80;
 static inline int somethingAboutTrick3(CharObj2Base* a1, EntityData1* a2)
