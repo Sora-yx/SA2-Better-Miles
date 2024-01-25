@@ -2,6 +2,12 @@
 
 int lightdashTime = 0;
 int lightdashTimer = 0;
+
+void resetLightdashTimer()
+{
+	lightdashTime = 0;
+	lightdashTimer = 0;
+}
 Trampoline* RingMain_t = nullptr;
 NJS_VECTOR LightDashPos = { 0 };
 
@@ -19,12 +25,13 @@ void Miles_PerformLightDash(CharObj2Base* co2, EntityData1* data)
 	PlaySoundProbably(8210, 0, 0, 0);
 }
 
-void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1) 
+
+void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1)
 {
 	int lightdashTimee = lightdashTime;
 	int getTimer = lightdashTimee - 1;
 	lightdashTime = lightdashTimee - 1;
-	NJS_VECTOR vecIDK;
+	NJS_VECTOR vecIDK{ 0 };
 
 	if (lightdashTimee > 0)
 	{
@@ -42,95 +49,154 @@ void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* 
 					{
 						data1->Action = 10;
 						co2->AnimInfo.Next = 15;
-						co2->Speed.x = 0.0;
+						co2->Speed.y = 0.0f;
 						lightdashTime = 0;
 						data1->Status &= 0xFBFFu;
 						//PlaySound3(-1025, 8210);
 						return;
 					}
+					if (IDThing == 17)
+					{
+						if (lightdashTimer <= 0)
+						{
+							lightdashTimer++;
+						}
+					}
 				}
 			}
-			GetBufferedPositionAndRot(co2->PlayerNum, 0, &vecIDK, 1);
 
-			if (CheckDistance(&data1->Position, &vecIDK) <= 1.5f)
-			{
-				data1->Action = 12;
-				bool spd = co2->Speed.x > 2.0f;
-				co2->AnimInfo.Next = 18;
-				co2->AnimInfo.field_8 = 0;
-				if (spd)
-				{
-					co2->Speed.x = 2.0f;
-				}
-				else {
-					co2->Speed.x += 2.0f;
-				}
-				data1->Status &= 0xFBFFu;
-				lightdashTime = 0;
-				//PlaySound3(0, 8210);
-			}
-			
 			return;
 		}
 	}
 
 	data1->Action = 10;
 	co2->AnimInfo.Next = 15;
-	co2->Speed.x += 2.0f * 6.5f;
-	co2->Speed.y += 2.0f * 2.4f;
-	co2->Speed.z += 2.0f * 1.3f;
 
-	if (sub_45B2C0(co2, getTimer, data1) < 2 || lightdashTimer <= 1)
+	NJS_VECTOR* spd = &co2->Speed;
+
+	if (sub_45B2C0(co2, 0, data1) < 2 || lightdashTimer <= 1)
 	{
-		njUnitVector(&co2->Speed);
-		co2->Speed.x *= 2.0f;
-		co2->Speed.y *= 2.0f;
-		co2->Speed.z *= 2.0f;
+		if (njScalor(spd) > 2.0f)
+		{
+			njUnitVector(spd);
+			co2->Speed.x *= 2.0f;
+			co2->Speed.y *= 4.0f;
+			co2->Speed.z *= 2.0f;
+		}
 	}
 	else
 	{
-		co2->Speed.x = co2->PhysData.DashSpeed;
-		if (njScalor(&co2->Speed) > 0.0f)
+		player_parameter* physics = (player_parameter*)&co2->PhysData;
+		co2->Speed.x = physics->jmp_addit;
+		if (njScalor(spd) > 0.0f)
 		{
-			njUnitVector(&co2->Speed);
-			co2->Speed.x *= co2->PhysData.DashSpeed;
-			co2->Speed.y *= co2->PhysData.DashSpeed;
-			co2->Speed.z *= co2->PhysData.DashSpeed;
+			njUnitVector(spd);
+			co2->Speed.x *= physics->jmp_addit;
+			co2->Speed.y *= physics->jmp_addit;
+			co2->Speed.z *= physics->jmp_addit;
 		}
 	}
 
-	co2->Speed.z *= co2->PhysData.DashSpeed;
 	lightdashTime = 0;
 	data1->Status &= 0xFBFFu;
-	//PlaySound3(0, 8210);
-	return;
 }
 
 
-void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data) {
-	HomingAttackTarget* v6 = sub_721480(co2, data, 32.0);
-	if (v6)
+void CheckRefreshLightDashTimer(CharObj2Base* pwp, EntityData1* twp, motionwk2* mwp)
+{
+	HomingAttackTarget* ring_list = ring_list = around_ring_list_p0;
+
+	if (pwp->PlayerNum)
+		ring_list = around_ring_list_p1;
+
+	if (ring_list->entity)
 	{
-		if (lightdashTime < 5)
+		NJS_VECTOR vd = { 1.0f, 0.0f, 0.0f };
+		PConvertVector_P2G(twp, &vd);
+		njUnitVector(&vd);
+		taskwk* ringtwp = (taskwk*)ring_list->entity;
+		taskwk* ringtwp2 = 0;
+		if (ring_list->entity)
 		{
-			lightdashTime = 5;
+			Float dist = 0;
+			NJS_VECTOR ringpos;
+			do
+			{
+				ringpos = ringtwp->pos;
+				njAddVector(&ringpos, &ringtwp->cwp->info->center);
+				njSubVector(&ringpos, &twp->Position);
+				Float vd_sqrt = njSqrt(ringpos.y * ringpos.y + ringpos.z * ringpos.z + ringpos.x * ringpos.x);
+				if (vd_sqrt == 0.0f)
+				{
+					ringpos = { 0.0f, 0.0f, 0.0f };
+				}
+				else
+				{
+					Float div = 1.0f / vd_sqrt;
+					ringpos.x *= div;
+					ringpos.y *= div;
+					ringpos.z *= div;
+				}
+				if (VectorAngle(0, &vd, &ringpos) <= 0x3000 && (!ringtwp2 || ring_list->distance < dist))
+				{
+					ringtwp2 = ringtwp;
+					dist = ring_list->distance;
+				}
+				ringtwp = (taskwk*)ring_list[1].entity;
+				++ring_list;
+			} while (ringtwp);
+
+			if (ringtwp2)
+			{
+				if (lightdashTime < 5)
+				{
+					lightdashTime = 5;
+				}
+				ringpos = ringtwp2->pos;
+				njAddVector(&ringpos, &ringtwp2->cwp->info->center);
+				njSubVector(&ringpos, &twp->Position);
+				twp->Rotation.y = AdjustAngle(twp->Rotation.y, njArcTan2(ringpos.z, ringpos.x), 0x1800);
+				mwp->ang_aim.y = twp->Rotation.y;
+				Float dist_sqrt = njSqrt(dist);
+				if (dist_sqrt <= 16.0f)
+				{
+					if (dist_sqrt < 2.0f)
+					{
+						dist_sqrt = 2.0f;
+					}
+				}
+				else
+				{
+					dist_sqrt = 16.0f;
+				}
+				if (njScalor(&ringpos) <= 1.0f)
+				{
+					ringpos = mwp->spd;
+				}
+				njUnitVector(&ringpos);
+				mwp->spd.x = ringpos.x * dist_sqrt;
+				mwp->spd.y = ringpos.y * dist_sqrt;
+				mwp->spd.z = ringpos.z * dist_sqrt;
+				PConvertVector_G2P(twp, &ringpos);
+				pwp->Speed = ringpos;
+			}
 		}
 	}
-	else {
-		if (lightdashTimer <= 1 && !sub_721480(co2, data, 64.0f))
+	else
+	{
+		if (lightdashTimer <= 1 && !sub_721480(pwp, twp, 64.0f))
 		{
-			if (njScalor(&co2->Speed) > 2.0f)
+			if (njScalor(&pwp->Speed) > 2.0f)
 			{
-				njUnitVector(&co2->Speed);
-				/**co2->Speed.x *= 2.0f;
-				co2->Speed.y *= 2.0f;
-				co2->Speed.z *= 2.0f;*/
-				co2->Speed.x *= co2->PhysData.DashSpeed;
-				co2->Speed.y *= co2->PhysData.DashSpeed;
-				co2->Speed.z *= co2->PhysData.DashSpeed;
+				njUnitVector(&pwp->Speed);
+				pwp->Speed.x *= 2.0f;
+				pwp->Speed.y *= 2.0f;
+				pwp->Speed.z *= 2.0;
 			}
 			lightdashTime = 0;
 		}
+		PGetInertia(twp, (EntityData2*)mwp, pwp);
+		PGetSpeed(twp, pwp, (EntityData2*)mwp);
 	}
 }
 

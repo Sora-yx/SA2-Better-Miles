@@ -209,7 +209,7 @@ static inline void PConvertVector_G2P(EntityData1* a1, NJS_VECTOR* a2)
 }
 
 static const void* const sub721480ptr = (void*)0x721480;
-static inline HomingAttackTarget* sub_721480(CharObj2Base* a1, EntityData1* a2, float a3)
+static inline HomingAttackTarget* sub_721480(CharObj2Base* a1, EntityData1* a2, Float a3)
 {
 	HomingAttackTarget* result;
 	__asm
@@ -551,4 +551,34 @@ static inline void SetAdjustMode_(int slot, int pnum, int adjust) // Set the adj
 	}
 }
 
+
+static const void* const VectorAnglePtr = (void*)0x4469E0;
+//int __usercall VectorAngle@<eax>(NJS_POINT3 *a1@<ebx>, NJS_VECTOR *a2@<edi>, NJS_POINT3 *a3@<esi>)
+static inline int VectorAngle(NJS_POINT3* a1, NJS_VECTOR* a2, NJS_POINT3* a3)
+{
+	int result;
+	__asm
+	{
+		mov esi, [a3]
+		mov edi, [a2]
+		mov ebx, [a1]
+		call VectorAnglePtr
+		mov result, eax
+	}
+	return result;
+}
+
+static const void* const PConvertVector_P2GPtr = (void*)0x468E70;
+static inline void PConvertVector_P2G(EntityData1* a1, NJS_VECTOR* a2) // Set the adjust (see CameraAdjusts enum) of a camera slot
+{
+	__asm
+	{
+		mov esi, [a2]
+		mov edi, [a1]
+		call PConvertVector_P2GPtr
+	}
+}
+
 DataArray(AnimationIndex, WhiteJungleCharAnims_, 0xEA22EC, 6);
+DataArray(HomingAttackTarget, around_ring_list_p0, 0x1DE8C40, 257);
+DataArray(HomingAttackTarget, around_ring_list_p1, 0x1DE46C0, 257);

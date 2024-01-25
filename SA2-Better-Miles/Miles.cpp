@@ -320,6 +320,18 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		Miles_UnrollCheckInput(data1, co2);
 		return;
 	case LightDash:
+		if (MilesCheckInput(data2, co2Miles, co2, data1))
+		{
+
+			resetLightdashTimer();
+			if (co2->Speed.y > 2.0f)
+			{
+				co2->Speed.y = 2.0f;
+			}
+			data1->Status &= 0xFBFFu;
+
+			return;
+		}
 		CheckLightDashEnd(co2Miles, co2, data1);
 		return;
 	case FloatingOnWater:
@@ -413,11 +425,12 @@ void Tails_Main_r(ObjectMaster* obj)
 		break;
 	case LightDash:
 	{
-		CheckRefreshLightDashTimer(co2, data1);
-		Miles_InitLightDash(data1, co2, data2, co2Miles);
-		int check = PSetPosition(data1, data2, co2);
-		if (check == 2) {
-			if (((short)CurrentLevel != LevelIDs_GreenHill)) {
+		CheckRefreshLightDashTimer(co2, data1, (motionwk2*)data2);
+
+		if (PSetPosition(data1, data2, co2) == 2)
+		{
+			if (((short)CurrentLevel != LevelIDs_GreenHill)) 
+			{
 				PlaySoundProbably(0x7f, 0, 0, 0);
 			}
 
@@ -429,41 +442,10 @@ void Tails_Main_r(ObjectMaster* obj)
 			CrashStar_Load();
 			Miles_DisplayAfterImage(data1, co2, co2Miles);
 		}
-		else {
-			if (check == 0)
-			{
-				Miles_DisplayAfterImage(data1, co2, co2Miles);
-				PResetPosition(data1, data2, co2);
-			}
-			else {
-				data1->Action = 10;
-				co2->AnimInfo.Next = 15;
-				data1->Status &= 0xFBFFu;
-				if (njScalor(&data2->Velocity) <= 2.0f) {
-					if (&data2->Velocity)
-					{
-						data2->Velocity = { 0.0f };
-					}
-				}
-				else {
-					njUnitVector(&data2->Velocity);
-					data2->Velocity.x *= 2.0f;
-					data2->Velocity.y *= 2.0f;
-					data2->Velocity.z *= 2.0f;
-				}
-				PResetPosition(data1, data2, co2);
-
-				if (njScalor(&co2->Speed) <= 2.0f) {
-					co2->Speed = { 0.0f };
-					Miles_DisplayAfterImage(data1, co2, co2Miles);
-				}
-				else {
-					njUnitVector(&co2->Speed);
-					co2->Speed.x += 2.0f;
-					co2->Speed.y += 2.0f;
-					co2->Speed.z += 2.0f;
-				}
-			}
+		else
+		{
+			PResetPosition(data1, data2, co2);
+			Miles_DisplayAfterImage(data1, co2, co2Miles);
 		}
 	}
 	break;
@@ -590,7 +572,7 @@ void InitLandColMemory_r()
 	bool isMiles = false;
 	resetMechWKPtr();
 
-	for (uint8_t i = 0u; i < 2u; i++) 
+	for (uint8_t i = 0u; i < 2u; i++)
 	{
 
 		auto p = MainCharObj2[i];

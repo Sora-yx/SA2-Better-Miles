@@ -119,7 +119,7 @@ int PhysicsBoardStuff(CharObj2Base* a1, EntityData1* a2, EntityData2* a3, float 
 
 void Check_LightDash(taskwk* twp, playerwk* pwp);
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
-void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data);
+void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data, motionwk2* data2);
 signed int __cdecl MilesCheckInput(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);
 
 void Tornado_CallCheckInput(CharObj2Base* co2, EntityData1* data1);
@@ -134,3 +134,5 @@ void LoadTailsExtra(char pnum);
 void Delete_MilesAnim();
 void RestoreNextAnim();
 void resetMechWKPtr();
+
+void resetLightdashTimer();

@@ -208,15 +208,6 @@ void FreeAnim(AnimationFile* pointer) {
 	if (pointer) delete pointer;
 }
 
-void __fastcall njSubVector(NJS_VECTOR* vd, const NJS_VECTOR* vs)
-{
-	vd->x = vd->x - vs->x;
-	vd->y = vd->y - vs->y;
-	vd->z = vd->z - vs->z;
-}
-
-
-
 void SetCameraFacePlayer(char pNum, EntityData1* playerData, float zoom)
 {
 	sub_46C6D0(pNum, playerData->Position.x, playerData->Position.y, playerData->Position.z);
@@ -305,4 +296,51 @@ bool isKeyboard()
 	}
 
 	return false;
+}
+
+void njAddVector(NJS_VECTOR* vd, const NJS_VECTOR* vs)
+{
+	vd->x = vd->x + vs->x;
+	vd->y = vs->y + vd->y;
+	vd->z = vs->z + vd->z;
+}
+
+void njSubVector(NJS_VECTOR* vd, const NJS_VECTOR* vs)
+{
+	vd->x = vd->x - vs->x;
+	vd->y = vd->y - vs->y;
+	vd->z = vd->z - vs->z;
+}
+
+int __cdecl AdjustAngle(__int16 bams_a, unsigned __int16 bams_b, int limit)
+{
+	int result; // eax
+	__int16 v4; // cx
+
+	result = bams_b;
+	v4 = bams_b - bams_a;
+	if ((bams_b - bams_a) > limit || v4 < -limit)
+	{
+		if (v4 >= 0)
+		{
+			result = (limit + bams_a);
+		}
+		else
+		{
+			result = (bams_a - limit);
+		}
+	}
+	return result;
+}
+
+Float njSqrt(Float n)
+{
+	if (n < 0.0f)
+	{
+		return -sqrtf(n * -1.0f);
+	}
+	else
+	{
+		return sqrtf(n);
+	}
 }

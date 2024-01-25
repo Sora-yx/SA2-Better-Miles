@@ -13,7 +13,6 @@ bool isRando();
 bool isCharaSelect();
 bool isSA1Char(uint8_t charID);
 
-int IsPlayerInsideSphere(NJS_VECTOR* position, float a2);
 void DoNextAction_r(int playerNum, char action, int unknown);
 int DiffAngle(int ang0, int ang1);
 
@@ -26,8 +25,6 @@ ModelInfo* LoadMDL(const char* name, ModelFormat format);
 AnimationFile* LoadAnim(const char* name);
 void FreeMDL(ModelInfo* pointer);
 void FreeAnim(AnimationFile* pointer);
-void LookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy);
-void PlayerLookAt(NJS_VECTOR* from, NJS_VECTOR* to, Angle* outx, Angle* outy);
 bool isInTornado(char pNum);
 void Tornado_Main(ObjectMaster* obj);
 void Cart_CheckInput(CharObj2Base* co2, EntityData1* data1);
@@ -38,10 +35,12 @@ void Delete_Tornado();
 bool isBossLevel();
 bool isMiles();
 AnimationIndex* getCharAnim_r();
-void SetCharacterAnim(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
 bool isTailsAI();
-void Draw_MilesWrapper(NJS_OBJECT* object, int(__cdecl* callback)(NJS_CNK_MODEL*));
 bool isAttacking();
 
 void njRotateXYZ(NJS_MATRIX_PTR m, Angle angx, Angle angy, Angle angz);
 bool isKeyboard();
+void njAddVector(NJS_VECTOR* vd, const NJS_VECTOR* vs);
+void njSubVector(NJS_VECTOR* vd, const NJS_VECTOR* vs);
+int __cdecl AdjustAngle(__int16 bams_a, unsigned __int16 bams_b, int limit);
+Float njSqrt(Float n);

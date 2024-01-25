@@ -429,5 +429,4 @@ void init_Patches()
 	if (!isCharaSelect())
 		WriteJump((void*)0x43C9D0, (void*)0x43CADF); // Tails/Eggman fix
 
-	//WriteData<1>((int*)0x75310F, SpinningAir);
 }
