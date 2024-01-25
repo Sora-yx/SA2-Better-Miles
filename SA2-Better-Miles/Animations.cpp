@@ -294,7 +294,8 @@ void RestoreNextAnim()
 void Init_NewAnimation() {
 
 	//sa1 tails as its own animation list and jumpball
-	if (!isSA1Char(Characters_Tails)) {
+	if (!isSA1Char(Characters_Tails)) 
+	{
 
 		if (!isJumpBall)
 		{

@@ -57,7 +57,8 @@ void ResumeSound_r() {
 	}
 }
 
-int GetFreeSoundEntry() {
+int GetFreeSoundEntry() 
+{
 	for (int i = 0; i < LengthOfArray(SoundListEntries); ++i) {
 		if (SoundListEntries[i].stream == NULL) {
 			SoundListEntries[i].dist = 0;
@@ -327,7 +328,8 @@ void RunCustomSounds() {
 	if (GameState < GameStates_Ingame || GameState > GameStates_Pause)
 		return;
 
-	for (int i = 0; i < LengthOfArray(SoundListEntries); ++i) {
+	for (int i = 0; i < LengthOfArray(SoundListEntries); ++i) 
+	{
 		if (SoundListEntries[i].stream != NULL) {
 			HSTREAM stream = SoundListEntries[i].stream;
 

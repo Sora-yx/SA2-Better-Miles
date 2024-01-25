@@ -1,17 +1,16 @@
 #include "pch.h"
 #include "patches.h"
 
+//Patche a ton of stuff to make Tails more like regular characters, also fixes some stuff with the tails
+
 //miscellaneous fixes 
 TaskHook Levelitem_t((intptr_t)LevelItem_Load);
 
 UsercallFuncVoid(TailsCalcColDamage_t, (TailsCharObj2* a1, taskwk* a2), (a1, a2), 0x753090, rECX, rESI);
 FunctionHook<void, taskwk*, playerwk*, TailsCharObj2_r*> Miles_ManageTails_t(0x751090);
 
-
 //used to make tails actually do damage since unlike regular character he doesn't have code for
 //this is mostly a port of sonic col damage
-
-
 void TailsCalcColDamage_r(TailsCharObj2* co2M, taskwk* twp)
 {
 	TailsCalcColDamage_t.Original(co2M, twp);
@@ -153,14 +152,12 @@ void SetSpacePhysics(CharObj2Base* co2) {
 		co2->PhysData.AirDecel = -0.018999999f;
 		break;
 	}
-
-	return;
 }
 
 
-void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3)
+void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* pwp, TailsCharObj2* a3)
 {
-	if ((FrameCountIngame & 1) == 0 && a2->CharID == Characters_Tails && CharacterModels[208].Model)
+	if ((FrameCountIngame & 1) == 0 && pwp->CharID == Characters_Tails && CharacterModels[208].Model)
 	{
 		NJS_OBJECT* obj = CharacterModels[208].Model;
 		njPushMatrix(flt_25F02A0);
@@ -173,15 +170,20 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a
 		njRotateX(matrix, a1->Rotation.x);
 		njRotateY(matrix, 0x8000 - a1->Rotation.y);
 
-		if (!TwoPlayerMode)
-		{
-			PlayerAfterimage(obj, 0, a3->TextureList, 0.0f, 0);
-		}
+		AnimationIndex* sa2anim = getCharAnim_r();
 
+		if (sa2anim)
+		{
+			PlayerAfterimage(obj, sa2anim[pwp->AnimInfo.Current].Animation, a3->TextureList, 0.0f, 0);
+		}
+		else
+		{
+			PlayerAfterimage(obj, CharacterAnimations[pwp->AnimInfo.Current].Animation, a3->TextureList, 0.0f, 0);
+		}
+	
 		njPopMatrix(1u);
 	}
 }
-
 
 void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 
@@ -198,18 +200,6 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 	NJS_POINT3 pos = { 0.0, -0.2f, 0.0 };
 	njTranslateV(0, &pos);
 	ProcessChunkModelsWithCallback(Tail, ProcessChunkModel);
-}
-
-//Many animations make Miles's tails in a very weird rotation, we force a specific rotation so they look decent here.
-void CheckAndFixTailsRotation(CharObj2Base* co2, TailsCharObj2* co2Miles)
-{
-	if (co2->AnimInfo.Current == 74 || co2->AnimInfo.Current >= 121 && co2->AnimInfo.Current <= 130 || co2->AnimInfo.Current >= 195 && co2->AnimInfo.Current <= 197)
-		*(_DWORD*)&co2Miles->field_3BC[140] = -9000;
-}
-
-void SetNewTailsRotation(TailsCharObj2* co2Miles, int angle)
-{
-	*(_DWORD*)&co2Miles->field_3BC[140] = angle;
 }
 
 void LevelItem_r(ObjectMaster* tp)
@@ -236,7 +226,6 @@ int BAMS_SubWrap(int result, int ang0, __int16 ang1)
 	}
 	return result;
 }
-
 
 void fixRocketGrab_r(task* obj)
 {
@@ -433,7 +422,7 @@ void __cdecl Miles_ManageTails_r(taskwk* twp, playerwk* pwp, TailsCharObj2_r* Mp
 					auto v40 = njSin(jiggle1->field_8);
 					auto v41 = dword_1AF0188;
 					auto v42 = dword_1AF0184;
-					jiggle1->field_24.y = v40 * -0.07999999821186066;
+					jiggle1->field_24.y = v40 * -0.07999999821186066f;
 
 					jiggle1->field_10 = BAMS_SubWrap(v42, v41, jiggle1->field_10);
 				}
@@ -544,11 +533,24 @@ void UnloadLevelCharAnims(AnimationIndex* lvlAnim)
 
 			if (index >= 0 && index < 300)
 			{
-				NJS_MOTION* curCharAnim = CharacterAnimations[index].Animation;
-				if (curCharAnim == curLvlAnim->Animation)
+				AnimationIndex* sa2anim = getCharAnim_r();
+
+				if (sa2anim)
 				{
-					CharacterAnimations[index].Animation = 0;
-					CharacterAnimations[index].Count = 0;
+					NJS_MOTION* curCharAnim = sa2anim[index].Animation;
+					if (curCharAnim == curLvlAnim->Animation)
+					{
+						SetCharacterAnim_r(index, 0, 0);
+					}		
+				}
+				else
+				{
+					NJS_MOTION* curCharAnim = CharacterAnimations[index].Animation;
+					if (curCharAnim == curLvlAnim->Animation)
+					{
+						CharacterAnimations[index].Animation = 0;
+						CharacterAnimations[index].Count = 0;
+					}
 				}
 			}
 			index = lvlAnim[++count].Index;
@@ -598,14 +600,8 @@ void ReloadLevelCharAnims()
 
 void init_Patches()
 {
-
 	TailsCalcColDamage_t.Hook(TailsCalcColDamage_r);
 	WriteJump((void*)0x47A9C0, CheckAndSetPlayerSpeed); //make Miles bouncing when hitting enemy like other characters
-
-	//fixes "static" Miles's Tails
-	WriteJump(reinterpret_cast<void*>(0x7512ea), (void*)0x7512F2);
-	WriteData<2>((int*)0x751529, 0x90);
-
 	WriteCall((void*)0x6D6324, fixRocketGrabASM);
 
 	//Draw the tails depending on the action
@@ -617,5 +613,4 @@ void init_Patches()
 
 	if (!isCharaSelect())
 		WriteJump((void*)0x43C9D0, (void*)0x43CADF); // Tails/Eggman fix
-
 }

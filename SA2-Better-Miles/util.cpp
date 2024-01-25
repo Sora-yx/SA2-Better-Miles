@@ -248,6 +248,20 @@ AnimationIndex* getCharAnim_r()
 	return nullptr;
 }
 
+typedef void(__cdecl* SetCharacterAnimFunc)(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
+void SetCharacterAnim_r(uint16_t Index, uint16_t Count, NJS_MOTION* Animation)
+{
+	if (!SA2Anim)
+		return;
+
+	SetCharacterAnimFunc Obj = (SetCharacterAnimFunc)GetProcAddress(SA2Anim, "SetCharacterAnim");
+
+	if (Obj)
+	{
+		Obj(Index, Count, Animation);
+	}
+}
+
 typedef bool (*isChar) (uint8_t charID);
 
 bool isSA1Char(uint8_t charID) {

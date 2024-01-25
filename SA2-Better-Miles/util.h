@@ -44,3 +44,4 @@ void njAddVector(NJS_VECTOR* vd, const NJS_VECTOR* vs);
 void njSubVector(NJS_VECTOR* vd, const NJS_VECTOR* vs);
 int __cdecl AdjustAngle(__int16 bams_a, unsigned __int16 bams_b, int limit);
 Float njSqrt(Float n);
+void SetCharacterAnim_r(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);

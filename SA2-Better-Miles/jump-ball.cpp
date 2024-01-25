@@ -5,7 +5,6 @@ ModelInfo* JumpBallMdl = nullptr;
 NJS_TEXNAME MilesBallTex[2];
 
 NJS_TEXLIST MilesBall_Texlist = { arrayptrandlength(MilesBallTex) };
-
 NJS_TEXLIST MilesBall1_Texlist = { arrayptrandlength(MilesBallTex) };
 
 int spinTimer = 0;
@@ -40,7 +39,8 @@ void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
 		{
 			mdl = CharacterModels[jmpBallID].Model;
 
-			if (!isSA1Char(Characters_Tails)) {
+			if (!isSA1Char(Characters_Tails)) 
+			{
 				njSetTexture(&MilesBall1_Texlist);
 			}
 
@@ -51,8 +51,9 @@ void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
 			{
 				motion = sa2anim[mCO2->base.AnimInfo.Animations[curAnim].AnimNum].Animation;
 			}
-			else {
-				motion = CharacterAnimations[mCO2->base.AnimInfo.Animations[mCO2->base.AnimInfo.Animations[curAnim].AnimNum].AnimNum].Animation;
+			else 
+			{
+				motion = CharacterAnimations[mCO2->base.AnimInfo.Animations[curAnim].AnimNum].Animation;
 			}
 		}
 	}

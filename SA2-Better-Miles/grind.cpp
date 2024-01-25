@@ -1,7 +1,8 @@
 #include "pch.h"
 
 //Most of the functions here are directly copied pasted from the disassembly from Sonic grinding, with few extra fixes.
-int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) {
+int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
+{
 
 	int v8 = 0;
 	signed int v37 = 0;
@@ -37,11 +38,11 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 		v40 = fabs(result.y);
 		v23 = v22 * v40 + a3->Speed.x;
 	}
-	a3->Speed.x = v23 + 1.0;
+	a3->Speed.x = v23 + 1.0f;
 	a4->Action = Grinding;
 
 	if (isCustomAnim && (a3->CharID2 == Characters_Tails)) {
-		if (njRandom() <= 0.5) 
+		if (njRandom() <= 0.5f) 
 		{
 			a3->AnimInfo.Next = Anm_Tails_RailFastL; //Anm_RailFastL;
 		}
@@ -73,7 +74,8 @@ int setGrindingNextAction(TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4) 
 	return 1;
 }
 
-void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) {
+void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles) 
+{
 	if (MilesCheckInput(data2, co2Miles, co2, data1)) {
 		return;
 	}
@@ -145,21 +147,32 @@ void MoveCharacterOnRail(EntityData1* a1, CharObj2Base* a2, EntityData2* a3) {
 	return;
 }
 
-void PowderExecute_Rails(TailsCharObj2* sco2, NJS_VECTOR* dir) {
-	float idk = static_cast<float>(rand()) * 0.00003f * 3.0f;
-	if (idk > 0.0f) {
-		PowderExecute(dir, idk, (NJS_VECTOR*)&sco2->field_1BC[68], sco2->base.PlayerNum);
+void PowderExecute_Rails(TailsCharObj2* sco2, NJS_VECTOR* dir) 
+{
+	float rng = static_cast<float>(rand()) * 0.00003f * 3.0f;
+	if (rng > 0.0f) 
+	{
+		PowderExecute(dir, rng, (NJS_VECTOR*)&sco2->rightfoot_pos, sco2->base.PlayerNum);
+	}
+
+	rng = static_cast<float>(rand()) * 0.00003f * 3.0f;
+
+	if (rng > 0.0f)
+	{
+		PowderExecute(dir, rng, (NJS_VECTOR*)&sco2->leftfoot_pos, sco2->base.PlayerNum);
 	}
 }
 
 void LoadRailParticules(TailsCharObj2* co2, EntityData2* data2) {
-	if (fabs(co2->base.Speed.x) >= 3.7f) {
+	
+	Float fabsSpd = fabs(co2->base.Speed.x);
+	if (fabsSpd >= 3.7f) 
+	{
 		NJS_VECTOR speed;
 		speed.x = data2->Velocity.x * 0.9f;
 		speed.y = data2->Velocity.y * 0.9f;
 		speed.z = data2->Velocity.z * 0.9f;
 
-		PowderExecute_Rails(co2, &speed);
 		PowderExecute_Rails(co2, &speed);
 		sub_754EC0(co2->base.PlayerNum);
 	}
@@ -374,7 +387,8 @@ void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2* data2, 
 	DeleteObject_(dispScore);
 }
 
-signed int SetHandGranding(EntityData2* data2, CharObj2Base* co2, EntityData1* data1) {
+signed int SetHandGranding(EntityData2* data2, CharObj2Base* co2, EntityData1* data1) 
+{
 	NJS_VECTOR* vec = (NJS_VECTOR*)&co2->SomeVectors[4];
 
 	data1->Status = data1->Status & 0xFAFF | Status_OnPath;
@@ -406,12 +420,13 @@ signed int SetHandGranding(EntityData2* data2, CharObj2Base* co2, EntityData1* d
 		co2->AnimInfo.Next = 200;
 	else
 		co2->AnimInfo.Next = 75;
-	co2->Speed.x += 2.3;
+	co2->Speed.x += 2.3f;
 	co2->Speed.y = 0.0f;
 	return 1;
 }
 
-void DoHangGrinding(EntityData1* data, CharObj2Base* co2) {
+void DoHangGrinding(EntityData1* data, CharObj2Base* co2) 
+{
 	if (data->NextAction != 0)
 		return;
 

@@ -112,7 +112,8 @@ signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, C
 
 			if (sa2anim)
 			{
-				if (!sa2anim[200].Animation) {
+				if (!sa2anim[200 * (a3->PlayerNum + 1)].Animation)
+				{
 					return 1;
 				}
 			}
@@ -170,10 +171,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 
 	Check_LightDash(twp, pwp);
 
-
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
-
-	CheckAndFixTailsRotation(co2, co2Miles);
 
 	switch (data1->Action)
 	{
@@ -210,7 +208,6 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		if (Miles_SetNextActionSwim(co2Miles, data1))
 			return;
 
-		SetNewTailsRotation(co2Miles, -17000);
 		Miles_CheckSpinAttack(co2Miles, data1, co2, data2);
 
 		break;
@@ -235,9 +232,6 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 			TailsJump(co2, data1);
 		}
 		return;
-	case Action_AirBubble:
-		SetNewTailsRotation(co2Miles, -17000);
-		break;
 	case Flying:
 
 		Miles_ManageFly(twp, mwp, pwp, co2Miles);
@@ -277,7 +271,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 	case Grinding:
 		if (MilesCheckInput(data2, co2Miles, co2, data1))
 			return;
-		SetNewTailsRotation(co2Miles, -9000);
+
 		CheckGrindThing(data1, data2, co2, co2Miles);
 		break;
 	case HandGrinding: //Whatever you call that thing in CG
@@ -335,17 +329,12 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		CheckLightDashEnd(co2Miles, co2, data1);
 		return;
 	case FloatingOnWater:
-		if (co2->Speed.x > 0.0f)
-			SetNewTailsRotation(co2Miles, -17000);
-
 		CheckFloatingStuff(data2, data1, co2, co2Miles);
 		break;
 	case Swimming:
-		SetNewTailsRotation(co2Miles, -17000); //fix "rotation Y" of the tails
 		CheckSwimmingStuff(data2, data1, co2, co2Miles);
 		break;
 	case Diving:
-		SetNewTailsRotation(co2Miles, -17000);
 		CheckDivingStuff(data2, data1, co2, co2Miles);
 		break;
 	}
