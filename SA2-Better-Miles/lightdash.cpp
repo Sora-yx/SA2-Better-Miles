@@ -79,9 +79,9 @@ void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* 
 		if (njScalor(spd) > 2.0f)
 		{
 			njUnitVector(spd);
-			co2->Speed.x *= 2.0f;
+			co2->Speed.x *= 4.0f;
 			co2->Speed.y *= 4.0f;
-			co2->Speed.z *= 2.0f;
+			co2->Speed.z *= 4.0f;
 		}
 	}
 	else
@@ -91,9 +91,9 @@ void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* 
 		if (njScalor(spd) > 0.0f)
 		{
 			njUnitVector(spd);
-			co2->Speed.x *= physics->jmp_addit;
-			co2->Speed.y *= physics->jmp_addit;
-			co2->Speed.z *= physics->jmp_addit;
+			co2->Speed.x *= physics->jmp_addit + 1.0f;
+			co2->Speed.y *= physics->jmp_addit + 1.0f;
+			co2->Speed.z *= physics->jmp_addit * 2.0f;
 		}
 	}
 

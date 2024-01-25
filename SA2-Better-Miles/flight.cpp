@@ -6,7 +6,8 @@ void Tails_FlyStart(EntityData1* a1, CharObj2Base* a2, TailsCharObj2* a3) { //re
 
 	a1->Action = Flying;
 	a1->Status &= 0xDAFFu;
-	a2->AnimInfo.Current = FlyingAnim;
+	a2->AnimInfo.Next = FlyingAnim;
+
 	a3->field_3BC[122] |= 1u; //idk
 	TailsFlightTime = 0.0f;
 

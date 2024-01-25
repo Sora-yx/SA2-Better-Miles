@@ -74,6 +74,7 @@ double sub_77FBA0(NJS_VECTOR* a1, NJS_VECTOR* a2)
 	v7 = a2->z * a1->z;
 	return (float)(v3 + v7);
 }
+
 void ResetPlayerSpeed(CharObj2Base* pwp, EntityData2* mwp)
 {
 	if (pwp)
@@ -144,7 +145,6 @@ void Miles_UnrollCheck(EntityData1* data1, EntityData2* data2, CharObj2Base* co2
 		if (TailsJump(co2, data1))
 		{
 			RestorePhysic(co2);
-			data1->Status &= ~Status_Ball;
 			return;
 		}
 
@@ -155,10 +155,10 @@ void Miles_UnrollCheck(EntityData1* data1, EntityData2* data2, CharObj2Base* co2
 			return;
 		}
 	}
-
 }
 
-void Miles_UnrollCheckInput(EntityData1* data1, CharObj2Base* co2) {
+void Miles_UnrollCheckInput(EntityData1* data1, CharObj2Base* co2) 
+{
 
 	if ((Controllers[co2->PlayerNum].press & RollBtn) != 0 || co2->Speed.x < 1.3f)
 	{

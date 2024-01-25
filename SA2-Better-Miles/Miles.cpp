@@ -170,7 +170,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		return;
 
 	Check_LightDash(twp, pwp);
-
+	HelperFunctionsGlobal.DisplayDebugStringFormatted(NJM_LOCATION(2, 2), "Is On ground %d", (data1->Status & 3) != 0);
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
 	switch (data1->Action)
@@ -278,7 +278,10 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		DoHangGrinding(data1, co2);
 		return;
 	case Action_Board:
-		BoardStuff(data2, co2Miles, data1, co2);
+		if (BoardStuff(data2, co2Miles, data1, co2))
+		{
+			break;
+		}
 		return;
 	case Action_BoardFall:
 		if (MilesCheckInput(data2, co2Miles, co2, data1) || (data1->Status & 3) == 0)

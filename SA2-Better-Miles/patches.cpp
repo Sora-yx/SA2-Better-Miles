@@ -607,6 +607,8 @@ void init_Patches()
 	//Draw the tails depending on the action
 	WriteCall((void*)0x750B32, Miles_DrawTail);
 	WriteCall((void*)0x750BB8, Miles_DrawTail);
+	WriteCall((void*)0x750201, Miles_DrawTail); //tails's shadow
+	WriteCall((void*)0x75027F, Miles_DrawTail);
 
 	Levelitem_t.Hook(LevelItem_r);
 	Miles_ManageTails_t.Hook(Miles_ManageTails_r);

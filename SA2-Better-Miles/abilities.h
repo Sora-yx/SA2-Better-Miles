@@ -111,7 +111,7 @@ signed int SetHandGranding(EntityData2* data2, CharObj2Base* co2, EntityData1* d
 void DoHangGrinding(EntityData1* data, CharObj2Base* co2);
 void CheckScoreTrick(EntityData1* data1, CharObj2Base* co2, EntityData2* data2, TailsCharObj2* MilesCO2);
 
-void BoardStuff(EntityData2* data2, TailsCharObj2* co2Miles, EntityData1* data, CharObj2Base* co2);
+bool BoardStuff(EntityData2* data2, TailsCharObj2* co2Miles, EntityData1* data, CharObj2Base* co2);
 void BoardJumpStuff(EntityData1* data, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData2* data2);
 void BoardSparklesMaybe(EntityData2* a1, EntityData1* a2, TailsCharObj2* a3);
 
