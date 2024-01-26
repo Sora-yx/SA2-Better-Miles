@@ -132,8 +132,45 @@ int DiffAngle(int ang0, int ang1)
 	return (unsigned __int16)v2;
 }
 
-//Load Object File
-ModelInfo* LoadMDL(const char* name, ModelFormat format) {
+
+std::unique_ptr<ModelInfo> LoadMDLSmartPtr(const char* name, ModelFormat format)
+{
+	std::string fullPath;
+
+	if (format == ModelFormat_Chunk) {
+		fullPath = "resource\\gd_PC\\Models\\";
+	}
+
+	fullPath += name;
+
+	switch (format) {
+	case ModelFormat_Basic:
+		fullPath += ".sa1mdl";
+		break;
+	case ModelFormat_Chunk:
+		fullPath += ".sa2mdl";
+		break;
+	case ModelFormat_SA2B:
+		fullPath += ".sa2bmdl";
+		break;
+	}
+
+	const char* foo = fullPath.c_str();
+
+	std::unique_ptr<ModelInfo> temp = std::make_unique<ModelInfo>(HelperFunctionsGlobal.GetReplaceablePath(foo));
+
+	if (temp->getformat() == format) {
+		PrintDebug("[Better Miles] Loaded %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+	}
+	else {
+		PrintDebug("[Better Miles] Failed loading %s model: %s.", ModelFormatStrings[(int)format - 1], name);
+	}
+
+	return temp;
+}
+
+ModelInfo* LoadMDL(const char* name, ModelFormat format) 
+{
 	std::string fullPath;
 
 	if (format == ModelFormat_Chunk) {
@@ -198,6 +235,25 @@ AnimationFile* LoadAnim(const char* name) {
 	}
 
 	return file;
+}
+
+std::unique_ptr<AnimationFile> LoadANMSmartPtr(const char* name)
+{
+	std::string fullPath = "resource\\gd_PC\\animations\\";
+	fullPath = fullPath + name + ".saanim";
+
+	std::unique_ptr<AnimationFile> temp = std::make_unique<AnimationFile>(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+
+	if (temp->getmodelcount()) 
+	{
+		PrintDebug("Done.\n\n");
+		return temp;
+	}
+	else
+	{
+		PrintDebug("Failed.\n");
+		return nullptr;
+	}
 }
 
 void FreeMDL(ModelInfo* pointer) {

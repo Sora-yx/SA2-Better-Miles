@@ -169,7 +169,7 @@ void MilesGetAccelerationFly(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCh
 	PGetAccelerationFly(twp, mwp, pwp, co2Tails);
 }
 
-void Miles_ManageFly(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCharObj2* tailsCO2)
+void Miles_ManageFly(taskwk* twp, motionwk2* mwp, CharObj2Base* pwp, TailsCharObj2* tailsCO2)
 {
 	EntityData1* data = (EntityData1*)twp;
 	CharObj2Base* co2 = (CharObj2Base*)pwp;
@@ -185,11 +185,11 @@ void Miles_ManageFly(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCharObj2* 
 		{
 			tailsCO2->field_3BC[122] &= 0xFEu;
 			PlaySoundProbably(8195, 0, 0, 0);
-			if (PlayerCheckBreak(0, data, co2) && pwp->spd.x > 0.0f)
+			if (PlayerCheckBreak(0, data, co2) && pwp->Speed.x > 0.0f)
 			{
 				twp->mode = 12;
-				pwp->mj.reqaction = 18;
-				pwp->mj.lastaction = 0;
+				pwp->AnimInfo.Next = 18;
+				//pwp->AnimInfo. = 0;
 				tailsCO2->field_3BC[128] = 0.80000001f;
 				twp->flag &= 0xFBFFu;
 			}
@@ -201,7 +201,7 @@ void Miles_ManageFly(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCharObj2* 
 				{
 					twp->ang.z = mwp->ang_aim.z;
 					tailsCO2->field_3BC[128] = 0.80000001f;
-					pwp->mj.reqaction = 1;
+					pwp->AnimInfo.Next = 1;
 				}
 				else
 				{

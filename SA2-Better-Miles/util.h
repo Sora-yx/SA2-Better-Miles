@@ -18,11 +18,11 @@ int DiffAngle(int ang0, int ang1);
 
 bool isSuperForm(char pID);
 void Load_MilesNewAnim();
-void Miles_LoadJmpBall(TailsCharObj2* mco2);
 void LoadTornado_ModelAnim();
 
+std::unique_ptr<ModelInfo> LoadMDLSmartPtr(const char* name, ModelFormat format);
 ModelInfo* LoadMDL(const char* name, ModelFormat format);
-AnimationFile* LoadAnim(const char* name);
+std::unique_ptr<AnimationFile> LoadANMSmartPtr(const char* name);
 void FreeMDL(ModelInfo* pointer);
 void FreeAnim(AnimationFile* pointer);
 bool isInTornado(char pNum);
@@ -45,3 +45,4 @@ void njSubVector(NJS_VECTOR* vd, const NJS_VECTOR* vs);
 int __cdecl AdjustAngle(__int16 bams_a, unsigned __int16 bams_b, int limit);
 Float njSqrt(Float n);
 void SetCharacterAnim_r(uint16_t Index, uint16_t Count, NJS_MOTION* Animation);
+void Miles_SetJmpBall(TailsCharObj2* mco2);

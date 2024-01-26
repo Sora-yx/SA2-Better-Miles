@@ -7,7 +7,7 @@
 TaskHook Levelitem_t((intptr_t)LevelItem_Load);
 
 UsercallFuncVoid(TailsCalcColDamage_t, (TailsCharObj2* a1, taskwk* a2), (a1, a2), 0x753090, rECX, rESI);
-FunctionHook<void, taskwk*, playerwk*, TailsCharObj2_r*> Miles_ManageTails_t(0x751090);
+FunctionHook<void, taskwk*, CharObj2Base*, TailsCharObj2_r*> Miles_ManageTails_t(0x751090);
 
 //used to make tails actually do damage since unlike regular character he doesn't have code for
 //this is mostly a port of sonic col damage
@@ -209,7 +209,8 @@ void Miles_DisplayAfterImage(EntityData1* a1, CharObj2Base* pwp, TailsCharObj2* 
 	}
 }
 
-void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
+void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) 
+{
 
 	if (MilesCO2Extern)
 	{
@@ -230,9 +231,8 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 		case Running:
 			if (MainCharObj2[pNum]->Speed.x >= 2.0f)
 				pos.x += 0.2f;
-			else if (MainCharObj2[pNum]->Speed.x >= 1.2f)
+			else if (MainCharObj2[pNum]->Speed.x >= 0.2f)
 				pos.y -= 0.3f;
-			//pos.y -= 0.1f;
 			break;
 		case Flying:
 			pos.x += 0.1f;
@@ -241,7 +241,6 @@ void Miles_DrawTail(NJS_OBJECT* Tail, int(__cdecl* callback)(NJS_CNK_MODEL*)) {
 			pos.y -= 0.2f;
 			break;
 		}
-	
 
 		njTranslateV(0, &pos);
 	}
@@ -302,11 +301,11 @@ static void __declspec(naked) fixRocketGrabASM()
 }
 
 //rewrite the function that manage Miles's tails so they aren't static when you move + fix their pos when spinning in the air
-void __cdecl Miles_ManageTails_r(taskwk* twp, playerwk* pwp, TailsCharObj2_r* Mpwp)
+void __cdecl Miles_ManageTails_r(taskwk* twp, CharObj2Base* pwp, TailsCharObj2_r* Mpwp)
 {
 	auto curAction = twp->mode;
 
-	if (curAction == Flying || twp->mode == Running && pwp->spd.x >= 2.0f)
+	if (curAction == Flying || twp->mode == Running && pwp->Speed.x >= 2.0f)
 	{
 		return Miles_ManageTails_t.Original(twp, pwp, Mpwp);
 	}
@@ -409,10 +408,8 @@ void __cdecl Miles_ManageTails_r(taskwk* twp, playerwk* pwp, TailsCharObj2_r* Mp
 
 				auto v20 = (twp->ang.y) - (Mpwp->tailIdk);
 				PConvertVector_G2P((EntityData1*)twp, &pos);
-				auto curAction2 = twp->mode;
+
 				auto v21 = v20;
-
-
 				auto v23 = pos.x;
 				auto v24 = pos.y;
 				auto v25 = pos.z;
@@ -474,10 +471,7 @@ void __cdecl Miles_ManageTails_r(taskwk* twp, playerwk* pwp, TailsCharObj2_r* Mp
 					jiggle1->field_10 = BAMS_SubWrap(v42, v41, jiggle1->field_10);
 				}
 
-
-
 				Float v50 = 0.0f;
-
 
 				if (jiggle0->type == 7)
 				{
@@ -498,27 +492,10 @@ void __cdecl Miles_ManageTails_r(taskwk* twp, playerwk* pwp, TailsCharObj2_r* Mp
 					Mpwp->tailJiggle1->field_24.y = v50;
 					Mpwp->tailJiggle1->field_24.z = v50;
 				}
+
 				Mpwp->tailJiggle0->type = 7;
 				Mpwp->tailJiggle1->type = 7;
 
-
-				auto curAnim = (__int16)pwp->mj.lastaction;
-				{
-
-					if (jiggle0->field_34[31] < 8.0f)
-					{
-						jiggle0->field_24.x = 2.0f;
-						jiggle0->field_24.y = 0.40000001f;
-						jiggle0->field_24.z = ZIdk;
-					}
-
-					if (jiggle1->field_34[31] < 8.0f)
-					{
-						jiggle1->field_24.x = 2.0f;
-						Mpwp->tailJiggle1->field_24.y = 0.40000001f;
-						Mpwp->tailJiggle1->field_24.z = ZIdk;
-					}
-				}
 			}
 		}
 

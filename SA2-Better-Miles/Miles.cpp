@@ -10,9 +10,9 @@ Trampoline* LoadCharacters_t = nullptr;
 static FunctionHook<void, int> LoadMechTails_t(LoadMechTails);
 static Trampoline* Init_LandColMemory_t = nullptr;
 
-UsercallFunc(signed int, Tails_CheckActionWindow_t, (taskwk* data1, motionwk2* data2, playerwk* co2, TailsCharObj2* sonicCO2), (data1, data2, co2, sonicCO2), 0x752400, rEAX, rEAX, rEDX, rECX, stack4);
+UsercallFunc(signed int, Tails_CheckActionWindow_t, (taskwk* data1, motionwk2* data2, CharObj2Base* co2, TailsCharObj2* sonicCO2), (data1, data2, co2, sonicCO2), 0x752400, rEAX, rEAX, rEDX, rECX, stack4);
 
-static Sint32 Tails_CheckActionWindow_r(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCharObj2* co2M)
+static Sint32 Tails_CheckActionWindow_r(taskwk* twp, motionwk2* mwp, CharObj2Base* pwp, TailsCharObj2* co2M)
 {
 	// This code is based on the pseudocode of the original function
 	int  pnum = pwp->PlayerNum;
@@ -162,14 +162,15 @@ signed int __cdecl Miles_CheckNextAction_r(EntityData2* a1, TailsCharObj2* a2, C
 
 void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, TailsCharObj2* co2Miles)
 {
-	auto pwp = (playerwk*)co2;
+
 	auto twp = (taskwk*)data1;
 	auto mwp = (motionwk2*)data2;
+	auto pwp = (playerwk*)co2;
 
 	if (!data1 || !co2)
 		return;
 
-	Check_LightDash(twp, pwp);
+	Check_LightDash(twp, co2);
 
 	Tails_RunsAction_t.Original(data1, data2, co2, co2Miles);
 
@@ -234,7 +235,7 @@ void __cdecl Tails_runsAction_r(EntityData1* data1, EntityData2* data2, CharObj2
 		return;
 	case Flying:
 
-		Miles_ManageFly(twp, mwp, pwp, co2Miles);
+		Miles_ManageFly(twp, mwp, co2, co2Miles);
 
 		break;
 	case Spinning:
@@ -500,7 +501,7 @@ void Tails_Main_r(ObjectMaster* obj)
 void Tails_Delete_r(ObjectMaster* obj)
 {
 	Tails_Delete_t.Original(obj);
-
+	MilesCO2Extern = nullptr;
 	Delete_MilesAnim();
 }
 
@@ -555,7 +556,7 @@ void LoadTailsExtra(char pnum)
 	auto p = MainCharObj2[pnum];
 	Load_MilesNewAnim();
 	SetSpacePhysics(p);
-	Miles_LoadJmpBall((TailsCharObj2*)MainCharacter[pnum]->Data2.Undefined);
+	Miles_SetJmpBall((TailsCharObj2*)MainCharacter[pnum]->Data2.Undefined);
 	spinTimer = 0;
 	CheckAndSetHackObject(p);
 }
@@ -568,7 +569,6 @@ void InitLandColMemory_r()
 
 	for (uint8_t i = 0u; i < 2u; i++)
 	{
-
 		auto p = MainCharObj2[i];
 		if (p)
 		{
@@ -584,12 +584,6 @@ void InitLandColMemory_r()
 				break;
 			}
 		}
-	}
-
-
-	if (!isMiles)
-	{
-		MilesCO2Extern = nullptr; //reset the pointer because the vanilla game never do lol
 	}
 
 	VoidFunc(origin, Init_LandColMemory_t->Target());

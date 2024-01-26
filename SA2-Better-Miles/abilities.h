@@ -74,7 +74,7 @@ extern bool isLightDash;
 extern bool isBounce;
 
 void Init_MilesFly();
-void Miles_ManageFly(taskwk* twp, motionwk2* mwp, playerwk* pwp, TailsCharObj2* tailsCO2);
+void Miles_ManageFly(taskwk* twp, motionwk2* mwp, CharObj2Base* pwp, TailsCharObj2* tailsCO2);
 int CheckGravityFallThing(EntityData1* twp, EntityData2* a3, CharObj2Base* pwp);
 void Miles_UnrollCheck(EntityData1* data1, EntityData2* data2, CharObj2Base* co2);
 void Miles_UnrollCheckInput(EntityData1* data1, CharObj2Base* co2);
@@ -115,7 +115,7 @@ bool BoardStuff(EntityData2* data2, TailsCharObj2* co2Miles, EntityData1* data, 
 void BoardJumpStuff(EntityData1* data, TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData2* data2);
 void BoardSparklesMaybe(EntityData2* a1, EntityData1* a2, TailsCharObj2* a3);
 
-void Check_LightDash(taskwk* twp, playerwk* pwp);
+void Check_LightDash(taskwk* twp, CharObj2Base* pwp);
 void CheckLightDashEnd(TailsCharObj2* co2Miles, CharObj2Base* co2, EntityData1* data1);
 void CheckRefreshLightDashTimer(CharObj2Base* co2, EntityData1* data, motionwk2* data2);
 signed int __cdecl MilesCheckInput(EntityData2* a1, TailsCharObj2* a2, CharObj2Base* a3, EntityData1* a4);

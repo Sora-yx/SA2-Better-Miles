@@ -135,7 +135,7 @@ void CheckGrindThing(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, 
 		data1->Rotation.y = data1->Rotation.y - (12288.0 - njScalor(&co2->Speed) * 800.0);
 	}
 	else {
-		data1->Rotation.y = 12288.0 - njScalor(&co2->Speed) * 800.0 + data1->Rotation.y;
+		data1->Rotation.y = 12288.0f - njScalor(&co2->Speed) * 800.0 + data1->Rotation.y;
 	}
 }
 

@@ -3,8 +3,8 @@
 
 extern bool isTornadoTransform;
 
-ModelInfo* Tornado = nullptr;
-AnimationFile* TornadoMotion = nullptr;
+std::shared_ptr<ModelInfo> Tornado = nullptr;
+std::shared_ptr<AnimationFile> TornadoMotion = nullptr;
 
 NJS_TEXLIST* tornadoTex = nullptr;
 bool isTornadoOn = false;
@@ -625,9 +625,8 @@ void Tornado_MainActions(EntityData1* data1, CharObj2Base* co2, EntityData2* dat
 
 void LoadTornado_ModelAnim() 
 {
-
-	if (!Tornado)
-		Tornado = LoadMDL("tornadoMDL", ModelFormat_Chunk);
+	if (!Tornado.get())
+		Tornado = LoadMDLSmartPtr("tornadoMDL", ModelFormat_Chunk);
 
 	HMODULE** DLL = datadllhandle;
 
@@ -648,10 +647,6 @@ void LoadTornado_ModelAnim()
 
 void Delete_Tornado() 
 {
-	Tornado = nullptr;
-	TornadoMotion = nullptr;
 	isTornadoOn = false;
 	isTornadoTransform = false;
-	FreeAnim(TornadoMotion);
-	FreeMDL(Tornado);
 }

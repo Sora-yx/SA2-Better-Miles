@@ -1,7 +1,7 @@
 #include "pch.h"
 
-ModelInfo* JumpBallMdl = nullptr;
-ModelInfo* JumpBallShadowMdl = nullptr;
+std::shared_ptr<ModelInfo> JumpBallMdl;
+std::shared_ptr<ModelInfo> JumpBallShadowMdl;
 
 NJS_TEXNAME MilesBallTex[2];
 
@@ -12,12 +12,13 @@ int spinTimer = 0;
 
 static UsercallFunc(signed int, Tails_JumpStart_t, (CharObj2Base* a1, EntityData1* a2), (a1, a2), 0x751B80, rEAX, rEAX, rECX);
 
-void Miles_LoadJmpBall(TailsCharObj2* mco2) {
+void Miles_SetJmpBall(TailsCharObj2* mco2) 
+{
+	if (!isJumpBall)
+		return;
 
 	if (!isSA1Char(Characters_Tails)) 
 	{
-		JumpBallMdl = LoadMDL("230", ModelFormat_Chunk);
-		JumpBallShadowMdl = LoadMDL("230_shadow", ModelFormat_Chunk);
 		CharacterModels[jmpBallID].Model = JumpBallMdl->getmodel();
 	}
 
@@ -154,10 +155,11 @@ void Init_JumpBallhack() {
 	if (!isJumpBall)
 		return;
 
-
 	WriteCall((void*)0x750ABF, DrawMotionAndObject_Hack);
 	WriteCall((void*)0x750196, DrawMilesJumpBall_ShadowASM);
 
 	Tails_JumpStart_t.Hook(Tails_JumpStart_r);
+	JumpBallMdl = LoadMDLSmartPtr("230", ModelFormat_Chunk);
+	JumpBallShadowMdl = LoadMDLSmartPtr("230_shadow", ModelFormat_Chunk);
 	return;
 }

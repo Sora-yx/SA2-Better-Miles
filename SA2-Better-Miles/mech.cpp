@@ -4,8 +4,8 @@
 
 NJS_VECTOR SavePos = { 0, 0, 0 };
 
-ModelInfo* TornadoTransfo = nullptr;
-AnimationFile* TornadoTransfoMotion = nullptr;
+std::shared_ptr<ModelInfo> TornadoTransfo = nullptr;
+std::shared_ptr<AnimationFile> TornadoTransfoMotion = nullptr;
 
 NJS_TEXNAME tornadoTransfoTex[150];
 NJS_TEXLIST tornadoTransfoTexList = { arrayptrandlength(tornadoTransfoTex) };
@@ -430,14 +430,7 @@ void Tails_SuperAttack_CheckInput(CharObj2Base* co2, EntityData1* data, EntityDa
 
 void Load_TornadoTransfo_ModelsTextures()
 {
-	if (!TornadoTransfo)
-		TornadoTransfo = LoadMDL("tornadoTransfoMDL", ModelFormat_Chunk);
-
-	if (!TornadoTransfoMotion)
-		TornadoTransfoMotion = LoadAnim("TornadoTransfo");
-
 	LoadTextureList("tornadoTransfoTex", &tornadoTransfoTexList);
-	return;
 }
 
 void __cdecl MechTails_runsActions_r(EntityData1* data1, EntityData2* data2, CharObj2Base* co2, MechEggmanCharObj2* co2Miles)
@@ -531,11 +524,7 @@ static void __declspec(naked) SuperLaserColHack_ASM()
 
 void Delete_TornadoTransform()
 {
-	FreeMDL(TornadoTransfo);
-	TornadoTransfo = nullptr;
 	FreeTexList(&tornadoTransfoTexList);
-	FreeAnim(TornadoTransfoMotion);
-	TornadoTransfoMotion = nullptr;
 	isInMech = false;
 	WriteData<1>((int*)0x749E90, 0xFF); //restore laser delay
 	return;
@@ -545,6 +534,12 @@ void Init_TailsMechHack()
 {
 	if (!tornadoConfig)
 		return;
+
+	if (!TornadoTransfo.get())
+		TornadoTransfo = LoadMDLSmartPtr("tornadoTransfoMDL", ModelFormat_Chunk);
+
+	if (!TornadoTransfoMotion.get())
+		TornadoTransfoMotion = LoadANMSmartPtr("TornadoTransfo");
 
 	MechTails_runsActions_t.Hook(MechTails_runsActions_r);
 	WriteCall((void*)0x438C23, ResetSoundSystem_r); //fix an issue where stage sound effect are unload when swapping Character.
