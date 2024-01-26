@@ -8,6 +8,8 @@ NJS_TEXNAME MilesBallTex[2];
 NJS_TEXLIST MilesBall_Texlist = { arrayptrandlength(MilesBallTex) };
 NJS_TEXLIST MilesBall1_Texlist = { arrayptrandlength(MilesBallTex) };
 
+UsercallFuncVoid(SetBarrierPos_t, (taskwk* a1, taskwk* a2), (a1, a2), 0x753350, rEAX, rEDX);
+
 int spinTimer = 0;
 
 static UsercallFunc(signed int, Tails_JumpStart_t, (CharObj2Base* a1, EntityData1* a2), (a1, a2), 0x751B80, rEAX, rEAX, rECX);
@@ -28,7 +30,7 @@ void Miles_SetJmpBall(TailsCharObj2* mco2)
 
 void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
 
-	if (MilesCO2Extern && JumpBallMdl != nullptr) 
+	if (MilesCO2Extern && JumpBallMdl.get() != nullptr) 
 	{
 
 		char pID = MilesCO2Extern->base.PlayerNum;
@@ -65,6 +67,31 @@ void DrawMiles_JumpBall(NJS_MOTION* motion, NJS_OBJECT* mdl, float frame) {
 
 
 	return DrawMotionAndObject(motion, mdl, frame);
+}
+
+void SetBarrierPos_r(taskwk* a1, taskwk* pTwp)
+{
+	if (!a1)
+		return;
+
+	const uint8_t pnum = a1->smode;
+	CharObj2Base* co2 = MainCharObj2[pnum];
+	EntityData1* data1 = MainCharObj1[pnum];
+
+	if ((data1->Status & Status_Ball) != 0 && co2->CharID2 == Characters_Tails)
+	{
+		a1->scl.x = pTwp->scl.x;
+		a1->scl.y = pTwp->scl.x * 6.0f;
+		a1->pos = pTwp->cwp->info->center;
+		if (pTwp->mode == Rolling)
+		{
+			a1->pos = pTwp->pos;
+			a1->pos.y += 4.5f;
+		}
+		return;
+	}
+
+	SetBarrierPos_t.Original(a1, pTwp);
 }
 
 static void __declspec(naked) DrawMotionAndObject_Hack()
@@ -161,5 +188,6 @@ void Init_JumpBallhack() {
 	Tails_JumpStart_t.Hook(Tails_JumpStart_r);
 	JumpBallMdl = LoadMDLSmartPtr("230", ModelFormat_Chunk);
 	JumpBallShadowMdl = LoadMDLSmartPtr("230_shadow", ModelFormat_Chunk);
+	SetBarrierPos_t.Hook(SetBarrierPos_r);
 	return;
 }
